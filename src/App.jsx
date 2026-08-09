@@ -1185,7 +1185,10 @@ function SightingForm({ report, onCancel, onSubmit, t }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!location.trim()) { setError(t.errRequired); return; }
+    if (!location.trim() || !seenCity.trim() || !date || !time || !yourName.trim() || !contactInfo.trim()) {
+      setError(t.errRequired);
+      return;
+    }
     setSubmitting(true);
     setError("");
     try {
@@ -1209,11 +1212,11 @@ function SightingForm({ report, onCancel, onSubmit, t }) {
       </p>
 
       <Field label={t.seenLocation} required icon={MapPin}><Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder={t.seenLocationPh} /></Field>
-      <Field label={t.seenCity} icon={MapPin}><Input value={seenCity} onChange={(e) => setSeenCity(e.target.value)} placeholder={t.cityPh} /></Field>
+      <Field label={t.seenCity} required icon={MapPin}><Input value={seenCity} onChange={(e) => setSeenCity(e.target.value)} placeholder={t.cityPh} /></Field>
 
       <div className="grid grid-cols-2 gap-3">
-        <Field label={t.seenDate} icon={Calendar}><Input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></Field>
-        <Field label={t.seenTime} icon={Clock}><Input type="time" value={time} onChange={(e) => setTime(e.target.value)} /></Field>
+        <Field label={t.seenDate} required icon={Calendar}><Input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></Field>
+        <Field label={t.seenTime} required icon={Clock}><Input type="time" value={time} onChange={(e) => setTime(e.target.value)} /></Field>
       </div>
 
       <Field label={t.notes}><TextArea rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder={t.notesPh} /></Field>
@@ -1235,8 +1238,8 @@ function SightingForm({ report, onCancel, onSubmit, t }) {
       </Field>
 
       <div className="grid grid-cols-2 gap-3">
-        <Field label={t.yourName} icon={User}><Input value={yourName} onChange={(e) => setYourName(e.target.value)} placeholder={t.yourNamePh} /></Field>
-        <Field label={t.optionalContact} icon={Phone}><Input value={contactInfo} onChange={(e) => setContactInfo(e.target.value)} placeholder={t.optionalContactPh} /></Field>
+        <Field label={t.yourName} required icon={User}><Input value={yourName} onChange={(e) => setYourName(e.target.value)} placeholder={t.yourNamePh} /></Field>
+        <Field label={t.optionalContact} required icon={Phone}><Input value={contactInfo} onChange={(e) => setContactInfo(e.target.value)} placeholder={t.optionalContactPh} /></Field>
       </div>
 
       {error && <p className="text-[13px] mb-4" style={{ color: C.rose }}>{error}</p>}
