@@ -1,0 +1,13 @@
+@import url("https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root { height: 100%; margin: 0; }
+
+@keyframes khoj-pulse { 0% { transform: scale(0.9); opacity: 0.9; } 70% { transform: scale(2.2); opacity: 0; } 100% { transform: scale(2.2); opacity: 0; } }
+@keyframes khoj-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.khoj-card-in { animation: khoj-rise 0.45s cubic-bezier(.2,.7,.3,1) both; }
+.khoj-nastaliq { font-family: 'Noto Nastaliq Urdu', serif; }
