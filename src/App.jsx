@@ -164,10 +164,13 @@ const EN = {
   callAmbulance: "Call Ambulance",
   emergencyHelplines: "Emergency Helplines",
   verifyContactTitle: "Confirm it's you",
-  verifyContactSub: "Enter the family contact number you used when filing this report to mark it Reunited.",
-  verifyContactPh: "Enter contact number",
+  verifyContactSub: "Enter the security PIN you set when filing this report to mark it Reunited.",
+  verifyContactPh: "Enter your 4-6 digit PIN",
   verifyContinue: "Confirm & Mark Reunited",
-  verifyWrong: "That number doesn't match this report.",
+  verifyWrong: "Incorrect PIN. Only the person who filed this report knows it.",
+  reunionPin: "Set a security PIN",
+  reunionPinPh: "Choose a 4-6 digit PIN",
+  reunionPinHint: "Private — only you will know this. You'll need it later to mark this case Reunited. Do not share it publicly.",
   adminLogin: "Admin",
   adminPasswordTitle: "Developer Access",
   adminPasswordSub: "Enter the admin password to manage all cases.",
@@ -358,10 +361,13 @@ const ROMAN = {
   callAmbulance: "Ambulance ko Call Karein",
   emergencyHelplines: "Emergency Helplines",
   verifyContactTitle: "Tasdeeq karein ke yeh aap hain",
-  verifyContactSub: "Report ko Reunited mark karne ke liye wohi family contact number likhein jo report file karte waqt diya tha.",
-  verifyContactPh: "Contact number likhein",
+  verifyContactSub: "Report ko Reunited mark karne ke liye wohi security PIN likhein jo report file karte waqt set kiya tha.",
+  verifyContactPh: "Apna 4-6 digit PIN likhein",
   verifyContinue: "Tasdeeq karein & Reunited Mark Karein",
-  verifyWrong: "Yeh number is report se match nahi karta.",
+  verifyWrong: "Ghalat PIN. Sirf jisne ye report file ki hai usay hi ye maloom hai.",
+  reunionPin: "Security PIN set karein",
+  reunionPinPh: "4-6 digit ka PIN chunein",
+  reunionPinHint: "Private hai — sirf aapko maloom hoga. Baad mein case ko Reunited mark karne ke liye chahiye hoga. Kisi ke saath share na karein.",
   adminLogin: "Admin",
   adminPasswordTitle: "Developer Access",
   adminPasswordSub: "Tamam cases manage karne ke liye admin password likhein.",
@@ -915,7 +921,7 @@ function VerifyReunitedModal({ report, onClose, onConfirmed, t }) {
   const [wrong, setWrong] = useState(false);
   const submit = (e) => {
     e.preventDefault();
-    if (normalizePhone(value) && normalizePhone(value) === normalizePhone(report.contactInfo)) {
+    if (value.trim() && value.trim() === (report.reunionPin || "").trim()) {
       onConfirmed();
     } else {
       setWrong(true);
@@ -924,12 +930,12 @@ function VerifyReunitedModal({ report, onClose, onConfirmed, t }) {
   return (
     <ModalShell onClose={onClose}>
       <div className="flex items-center gap-2 mb-1.5">
-        <CheckCircle2 size={18} color={C.emerald} />
+        <Lock size={18} color={C.emerald} />
         <h3 style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }} className="text-[17px]">{t.verifyContactTitle}</h3>
       </div>
       <p className="text-[13px] mb-4" style={{ color: C.textMuted }}>{t.verifyContactSub}</p>
       <form onSubmit={submit}>
-        <Input value={value} onChange={(e) => { setValue(e.target.value); setWrong(false); }} placeholder={t.verifyContactPh} />
+        <Input value={value} onChange={(e) => { setValue(e.target.value.replace(/[^0-9]/g, "").slice(0, 6)); setWrong(false); }} placeholder={t.verifyContactPh} inputMode="numeric" type="password" />
         {wrong && <p className="text-[12.5px] mt-2" style={{ color: C.rose }}>{t.verifyWrong}</p>}
         <button type="submit" className="w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px]" style={{ background: `linear-gradient(135deg, ${C.emerald}, #00E0A8)`, color: "#0D1F1A" }}>
           {t.verifyContinue}
@@ -1064,6 +1070,7 @@ function ReportForm({ onCancel, onSubmit, t }) {
   const [homeAddress, setHomeAddress] = useState("");
   const [description, setDescription] = useState("");
   const [contactInfo, setContactInfo] = useState("");
+  const [reunionPin, setReunionPin] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const fileRef = useRef(null);
@@ -1093,6 +1100,10 @@ function ReportForm({ onCancel, onSubmit, t }) {
       setError(t.errRequired);
       return;
     }
+    if (!/^[0-9]{4,6}$/.test(reunionPin.trim())) {
+      setError(t.reunionPin + " — 4-6 digits.");
+      return;
+    }
     setSubmitting(true);
     setError("");
     try {
@@ -1100,6 +1111,7 @@ function ReportForm({ onCancel, onSubmit, t }) {
         id: genId(), name: name.trim(), age: age.trim(), gender, photo, city: city.trim(),
         lastSeenLocation: lastSeenLocation.trim(), lastSeenDate, lastSeenTime,
         homeAddress: homeAddress.trim(), description: description.trim(), contactInfo: contactInfo.trim(),
+        reunionPin: reunionPin.trim(),
         status: "missing", createdAt: new Date().toISOString(),
       });
     } catch { setError(t.errSave); setSubmitting(false); }
@@ -1145,6 +1157,11 @@ function ReportForm({ onCancel, onSubmit, t }) {
       <Field label={t.homeAddress} icon={Home}><Input value={homeAddress} onChange={(e) => setHomeAddress(e.target.value)} placeholder={t.homeAddressPh} /></Field>
       <Field label={t.description}><TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t.descriptionPh} /></Field>
       <Field label={t.yourContact} required icon={Phone}><Input value={contactInfo} onChange={(e) => setContactInfo(e.target.value)} placeholder={t.yourContactPh} /></Field>
+
+      <Field label={t.reunionPin} required icon={Lock}>
+        <Input value={reunionPin} onChange={(e) => setReunionPin(e.target.value.replace(/[^0-9]/g, "").slice(0, 6))} placeholder={t.reunionPinPh} inputMode="numeric" type="password" />
+        <p className="text-[11px] mt-1.5" style={{ color: C.textFaint }}>{t.reunionPinHint}</p>
+      </Field>
 
       {error && <p className="text-[13px] mb-4" style={{ color: C.rose }}>{error}</p>}
 
