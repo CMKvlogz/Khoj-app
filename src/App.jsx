@@ -153,8 +153,8 @@ const EN = {
   eventSighting: "New sighting reported for",
   eventFound: "has been reported Reunited!",
   photoRequired: "A photo of the missing person is required.",
-  pinLocation: "Pin location (optional)",
-  shareLocation: "Share my current location",
+  pinLocation: "Missing person's location (optional)",
+  shareLocation: "Pin this location",
   locationShared: "Location attached",
   locationFailed: "Could not get location",
   viewOnMap: "View on map",
@@ -181,6 +181,9 @@ const EN = {
   confirmDeleteCase: "Delete this case permanently? This cannot be undone.",
   confirmDeleteSighting: "Delete this sighting?",
   adminMarkFound: "Mark Reunited (admin)",
+  timelineHeading: "Timeline",
+  reportedMissingOn: "Reported missing",
+  sightedAt: "Sighted at",
 };
 
 const UR = {
@@ -344,8 +347,8 @@ const ROMAN = {
   follow: "Is case ki updates hasil karein",
   following: "Updates mil rahi hain",
   photoRequired: "Laapta shaks ki tasveer lagana zaroori hai.",
-  pinLocation: "Pin location (optional)",
-  shareLocation: "Meri current location share karein",
+  pinLocation: "Laapta shaks ki location (optional)",
+  shareLocation: "Ye location pin karein",
   locationShared: "Location attach ho gayi",
   locationFailed: "Location nahi mil saki",
   viewOnMap: "Map par dekhein",
@@ -372,6 +375,9 @@ const ROMAN = {
   confirmDeleteCase: "Ye case hamesha ke liye delete karna hai? Ye wapis nahi ho sakega.",
   confirmDeleteSighting: "Ye sighting delete karni hai?",
   adminMarkFound: "Reunited Mark Karein (admin)",
+  timelineHeading: "Timeline",
+  reportedMissingOn: "Laapta report hui",
+  sightedAt: "Yahan dekha gaya",
 };
 
 const PA = {
@@ -1334,48 +1340,66 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
       )}
 
       <h3 className="text-[14px] font-semibold mb-3 flex items-center gap-1.5" style={{ color: C.textPrimary }}>
-        <Radio size={14} /> {t.sightingsHeading} ({mySightings.length})
+        <Radio size={14} /> {t.timelineHeading} ({mySightings.length})
       </h3>
-      {mySightings.length === 0 ? (
-        <p className="text-[13.5px]" style={{ color: C.textFaint }}>{t.noSightings}</p>
-      ) : (
-        <div className="space-y-3">
-          {mySightings.map((s) => (
-            <div key={s.id} className="rounded-xl p-3.5" style={{ background: C.surface, border: `1px solid ${C.surfaceBorder}` }}>
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-[13.5px] font-medium flex items-center gap-1.5" style={{ color: C.textPrimary }}>
-                  <MapPin size={12} color={C.amber} /> {s.location}{s.city && `, ${s.city}`}
-                </span>
-                <span className="text-[11px]" style={{ color: C.textFaint }}>{fmtDate(s.createdAt)}</span>
+      <div className="relative pl-5">
+          <div className="absolute left-[7px] top-1.5 bottom-1.5 w-[1.5px]" style={{ background: C.surfaceBorder }} />
+          {mySightings.length === 0 && <p className="text-[13.5px] mb-4" style={{ color: C.textFaint }}>{t.noSightings}</p>}
+          {mySightings
+            .slice()
+            .sort((a, b) => {
+              const ta = new Date(`${a.date || a.createdAt.slice(0, 10)}T${a.time || "00:00"}`).getTime() || new Date(a.createdAt).getTime();
+              const tb = new Date(`${b.date || b.createdAt.slice(0, 10)}T${b.time || "00:00"}`).getTime() || new Date(b.createdAt).getTime();
+              return tb - ta;
+            })
+            .map((s) => (
+              <div key={s.id} className="relative mb-4 last:mb-0">
+                <span className="absolute -left-5 top-1 w-3 h-3 rounded-full border-2" style={{ background: C.amber, borderColor: C.bgTo }} />
+                <div className="rounded-xl p-3.5" style={{ background: C.surface, border: `1px solid ${C.surfaceBorder}` }}>
+                  <div className="flex items-center gap-2 mb-1 text-[11.5px]" style={{ color: C.textMuted }}>
+                    <Calendar size={11} />
+                    <span>{t.sightedAt} {fmtDate(s.date) || fmtDate(s.createdAt)}{s.time && `, ${fmtTime(s.time)}`}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[14px] font-semibold mb-1" style={{ color: C.textPrimary }}>
+                    <MapPin size={13} color={C.amber} className="shrink-0" />
+                    <span>{s.location}{s.city && `, ${s.city}`}</span>
+                  </div>
+                  {s.notes && <p className="text-[13.5px] mb-1" style={{ color: C.textPrimary }}>{s.notes}</p>}
+                  {(s.yourName || s.contactInfo) && (
+                    <p className="text-[11.5px]" style={{ color: C.textFaint }}>
+                      {s.yourName && s.yourName} {s.contactInfo && `· ${t.contact}: ${s.contactInfo}`}
+                    </p>
+                  )}
+                  {s.lat != null && s.lng != null && (
+                    <a href={`https://www.google.com/maps?q=${s.lat},${s.lng}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[11.5px] mt-1.5 font-medium" style={{ color: C.amber }}>
+                      <MapPin size={11} /> {t.viewOnMap}
+                    </a>
+                  )}
+                  <div className="flex items-center gap-2 mt-2.5">
+                    {s.contactInfo && <CallButton number={s.contactInfo} label={t.callReporter} tone="amber" />}
+                    {isAdmin && (
+                      <button
+                        onClick={() => { if (window.confirm(t.confirmDeleteSighting)) onDeleteSighting(s); }}
+                        className="inline-flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
+                        style={{ background: "rgba(255,84,112,0.1)", color: C.rose }}
+                      >
+                        <Trash2 size={12} /> {t.deleteSighting}
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
-              {(s.date || s.time) && <p className="text-[11.5px] mb-1" style={{ color: C.textMuted }}>{fmtDate(s.date)}{s.time && `, ${fmtTime(s.time)}`}</p>}
-              {s.notes && <p className="text-[13.5px]" style={{ color: C.textPrimary }}>{s.notes}</p>}
-              {(s.yourName || s.contactInfo) && (
-                <p className="text-[11.5px] mt-1" style={{ color: C.textFaint }}>
-                  {s.yourName && s.yourName} {s.contactInfo && `· ${t.contact}: ${s.contactInfo}`}
-                </p>
-              )}
-              {s.lat != null && s.lng != null && (
-                <a href={`https://www.google.com/maps?q=${s.lat},${s.lng}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[11.5px] mt-1.5 font-medium" style={{ color: C.amber }}>
-                  <MapPin size={11} /> {t.viewOnMap}
-                </a>
-              )}
-              <div className="flex items-center gap-2 mt-2.5">
-                {s.contactInfo && <CallButton number={s.contactInfo} label={t.callReporter} tone="amber" />}
-                {isAdmin && (
-                  <button
-                    onClick={() => { if (window.confirm(t.confirmDeleteSighting)) onDeleteSighting(s); }}
-                    className="inline-flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
-                    style={{ background: "rgba(255,84,112,0.1)", color: C.rose }}
-                  >
-                    <Trash2 size={12} /> {t.deleteSighting}
-                  </button>
-                )}
+            ))}
+          <div className="relative">
+            <span className="absolute -left-5 top-1 w-3 h-3 rounded-full border-2" style={{ background: C.rose, borderColor: C.bgTo }} />
+            <div className="rounded-xl p-3.5 flex items-center gap-2.5" style={{ background: "rgba(255,84,112,0.06)", border: `1px solid ${C.surfaceBorder}` }}>
+              <ShieldAlert size={14} color={C.rose} className="shrink-0" />
+              <div className="text-[12.5px]" style={{ color: C.textMuted }}>
+                <span style={{ color: C.textPrimary, fontWeight: 600 }}>{t.reportedMissingOn}</span> — {fmtDate(report.createdAt)}
               </div>
             </div>
-          ))}
+          </div>
         </div>
-      )}
     </div>
   );
 }
