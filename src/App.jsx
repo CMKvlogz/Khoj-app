@@ -639,7 +639,7 @@ async function deleteListItem(key, id) {
 // ============================== Admin ==============================
 // Change this password to whatever you like — this is the only thing
 // that gates access to deleting cases / force-marking Reunited / etc.
-const ADMIN_PASSWORD = "khoj2026admin";
+const ADMIN_PASSWORD = "khoj@2026admincmk";
 const ADMIN_SESSION_KEY = "khoj_admin_session";
 function genId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
