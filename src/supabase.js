@@ -32,6 +32,21 @@ export async function loadCollection(name) {
   }
 }
 
+export async function deleteItem(name, id) {
+  try {
+    const { error } = await supabase
+      .from("khoj_items")
+      .delete()
+      .eq("collection", name)
+      .eq("id", id);
+    if (error) throw error;
+    return true;
+  } catch (e) {
+    console.error("deleteItem failed", name, id, e);
+    return false;
+  }
+}
+
 export async function saveItem(name, item) {
   try {
     const { error } = await supabase
