@@ -62,3 +62,30 @@ export async function saveItem(name, item) {
     return false;
   }
 }
+
+// ---- Live/real-time updates ----
+// Subscribes to INSERT / UPDATE / DELETE changes on a given collection so the
+// UI can update instantly for everyone, without needing a manual refresh.
+// Requires Realtime replication enabled for the "khoj_items" table in
+// Supabase (Database -> Replication, or run the extra SQL in supabase-setup.sql).
+export function subscribeToCollection(name, { onInsertOrUpdate, onDelete }) {
+  const channel = supabase
+    .channel(`khoj_items_${name}`)
+    .on(
+      "postgres_changes",
+      { event: "INSERT", schema: "public", table: "khoj_items", filter: `collection=eq.${name}` },
+      (payload) => onInsertOrUpdate && onInsertOrUpdate(payload.new.data)
+    )
+    .on(
+      "postgres_changes",
+      { event: "UPDATE", schema: "public", table: "khoj_items", filter: `collection=eq.${name}` },
+      (payload) => onInsertOrUpdate && onInsertOrUpdate(payload.new.data)
+    )
+    .on(
+      "postgres_changes",
+      { event: "DELETE", schema: "public", table: "khoj_items", filter: `collection=eq.${name}` },
+      (payload) => onDelete && onDelete(payload.old?.id)
+    )
+    .subscribe();
+  return () => { supabase.removeChannel(channel); };
+}
