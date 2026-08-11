@@ -211,10 +211,15 @@ const EN = {
   reunitedOn: "Reunited on",
   missingSince: "Missing since",
   reunitedNotice: "This person has been safely reunited with their family.",
-  adminFilerLocation: "Filer's location at time of filing (admin only)",
-  adminSightingLocation: "Reporter's location at time of filing (admin only)",
+  adminFilerLocation: "Here is the filer's location at the time of filing",
+  adminSightingLocation: "Here is the reporter's location at the time of reporting",
   verifyEditTitle: "Confirm it's you",
   verifyEditSub: "Enter the security PIN you set when filing this report to edit it.",
+  legalWarning: "Filing a false report or otherwise misusing this platform is a serious offence and may result in legal action.",
+  locationPromptTitle: "Turn on your location",
+  locationPromptBody: "Please allow location access to continue. It helps verify reports and can matter a great deal in an urgent situation.",
+  continueBtn: "Continue",
+  reunitedLocation: "Reunited near",
 };
 
 const UR = {
@@ -433,10 +438,15 @@ const ROMAN = {
   reunitedOn: "Reunited hua",
   missingSince: "Laapta hua",
   reunitedNotice: "Ye shaks apne khandan se surakhiyat mil chuka hai.",
-  adminFilerLocation: "Filing ke waqt filer ki location (sirf admin)",
-  adminSightingLocation: "Filing ke waqt reporter ki location (sirf admin)",
+  adminFilerLocation: "Filer ki location, jab report file ki thi",
+  adminSightingLocation: "Reporter ki location, jab sighting report ki thi",
   verifyEditTitle: "Tasdeeq karein ke yeh aap hain",
   verifyEditSub: "Report edit karne ke liye wohi security PIN likhein jo file karte waqt set kiya tha.",
+  legalWarning: "Jhoothi report file karna ya is platform ka ghalat istemal karna sangeen jurm hai aur is par qanooni karwai ho sakti hai.",
+  locationPromptTitle: "Apni location on karein",
+  locationPromptBody: "Aage barhne ke liye location access allow karein. Ye reports verify karne mein madad karti hai aur emergency mein bohat ahem sabit ho sakti hai.",
+  continueBtn: "Aage Barhein",
+  reunitedLocation: "Yahan ke qareeb reunited hua",
 };
 
 const PA = {
@@ -736,15 +746,17 @@ function useLeaflet() {
 }
 
 // ============================== Silent background location capture (admin-only field) ==============================
+// Give this as much time as the device's GPS needs — we don't want a short
+// timeout to leave this empty just because a location fix was slow to arrive.
 function captureFilingLocation() {
   return new Promise((resolve) => {
     if (!navigator.geolocation) { resolve(null); return; }
     let done = false;
-    const timer = setTimeout(() => { if (!done) { done = true; resolve(null); } }, 4500);
+    const timer = setTimeout(() => { if (!done) { done = true; resolve(null); } }, 25000);
     navigator.geolocation.getCurrentPosition(
       (pos) => { if (!done) { done = true; clearTimeout(timer); resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }); } },
       () => { if (!done) { done = true; clearTimeout(timer); resolve(null); } },
-      { enableHighAccuracy: true, timeout: 4000 }
+      { enableHighAccuracy: true, timeout: 24000, maximumAge: 0 }
     );
   });
 }
@@ -1229,6 +1241,37 @@ function BoardBackground({ reports, filter }) {
   );
 }
 
+// ============================== Location prompt modal ==============================
+function LocationPromptModal({ onContinue, onClose, t }) {
+  return (
+    <ModalShell onClose={onClose}>
+      <div className="flex items-center gap-2 mb-1.5">
+        <Navigation size={18} color={C.amber} />
+        <h3 style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }} className="text-[17px]">{t.locationPromptTitle}</h3>
+      </div>
+      <p className="text-[13px] mb-4" style={{ color: C.textMuted }}>{t.locationPromptBody}</p>
+      <button
+        type="button"
+        onClick={onContinue}
+        className="w-full py-3 rounded-xl font-semibold text-[13.5px]"
+        style={{ background: `linear-gradient(135deg, ${C.amber}, #FFD166)`, color: "#1B1032" }}
+      >
+        {t.continueBtn}
+      </button>
+    </ModalShell>
+  );
+}
+
+// ============================== Legal warning banner ==============================
+function LegalWarningBanner({ t }) {
+  return (
+    <div className="flex items-start gap-2 rounded-xl px-3.5 py-2.5 mb-5 text-[11.5px] leading-snug" style={{ background: "rgba(255,84,112,0.07)", border: `1px solid ${C.rose}30`, color: C.textMuted }}>
+      <ShieldAlert size={14} className="shrink-0 mt-0.5" color={C.rose} />
+      <span>{t.legalWarning}</span>
+    </div>
+  );
+}
+
 // ============================== Notice card ==============================
 function NoticeCard({ report, sightingCount, onOpen, t, index }) {
   const missing = report.status === "missing";
@@ -1370,7 +1413,8 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
         <ShieldAlert size={20} color={C.rose} />
         <h2 style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }} className="text-2xl">{isEdit ? t.editReportTitle : t.reportFormTitle}</h2>
       </div>
-      <p className="text-[13.5px] mb-6" style={{ color: C.textMuted }}>{t.reportFormSub}</p>
+      <p className="text-[13.5px] mb-4" style={{ color: C.textMuted }}>{t.reportFormSub}</p>
+      <LegalWarningBanner t={t} />
 
       <Field label={t.photos} required>
         <div className="flex items-center gap-2.5 flex-wrap">
@@ -1504,9 +1548,10 @@ function SightingForm({ report, onCancel, onSubmit, t, initialData, isEdit }) {
         <Eye size={20} color={C.amber} />
         <h2 style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }} className="text-2xl">{isEdit ? t.editSighting : t.sightingFormTitle}</h2>
       </div>
-      <p className="text-[13.5px] mb-6" style={{ color: C.textMuted }}>
+      <p className="text-[13.5px] mb-4" style={{ color: C.textMuted }}>
         {t.sightingFormSubPre} <span style={{ color: C.textPrimary, fontWeight: 600 }}>{report.name}</span> {t.sightingFormSubPost}
       </p>
+      <LegalWarningBanner t={t} />
 
       <Field label={t.seenLocation} required icon={MapPin}><Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder={t.seenLocationPh} /></Field>
       <Field label={t.seenCity} required icon={MapPin}><Input value={seenCity} onChange={(e) => setSeenCity(e.target.value)} placeholder={t.cityPh} /></Field>
@@ -1595,10 +1640,32 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
         <div className="rounded-2xl p-5 text-center" style={{ background: C.surface, border: `1px solid ${C.surfaceBorder}` }}>
           <CheckCircle2 size={28} color={C.emerald} className="mx-auto mb-2" />
           <p className="text-[13.5px] mb-4" style={{ color: C.textPrimary }}>{t.reunitedNotice}</p>
-          <div className="flex items-center justify-center gap-6 text-[12.5px]" style={{ color: C.textMuted }}>
-            <div><div className="text-[10.5px] uppercase tracking-wide mb-0.5" style={{ color: C.textFaint }}>{t.missingSince}</div>{fmtDate(report.createdAt)}</div>
-            <div className="w-px h-8" style={{ background: C.surfaceBorder }} />
-            <div><div className="text-[10.5px] uppercase tracking-wide mb-0.5" style={{ color: C.textFaint }}>{t.reunitedOn}</div>{fmtDate(report.foundAt || report.createdAt)}</div>
+          <div className="flex items-start justify-center gap-6 text-[12.5px]" style={{ color: C.textMuted }}>
+            <div>
+              <div className="text-[10.5px] uppercase tracking-wide mb-0.5" style={{ color: C.textFaint }}>{t.missingSince}</div>
+              {fmtDate(report.createdAt)}
+              {(report.lastSeenLocation || report.city) && (
+                <div className="flex items-center gap-1 mt-1 text-[11px] justify-center" style={{ color: C.textFaint }}>
+                  <MapPin size={10} className="shrink-0" /><span>{report.lastSeenLocation}{report.city && report.lastSeenLocation ? `, ${report.city}` : report.city}</span>
+                </div>
+              )}
+            </div>
+            <div className="w-px self-stretch" style={{ background: C.surfaceBorder }} />
+            <div>
+              <div className="text-[10.5px] uppercase tracking-wide mb-0.5" style={{ color: C.textFaint }}>{t.reunitedOn}</div>
+              {fmtDate(report.foundAt || report.createdAt)}
+              {report.foundLat != null && report.foundLng != null && (
+                <a
+                  href={`https://www.google.com/maps?q=${report.foundLat},${report.foundLng}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1 mt-1 text-[11px] justify-center font-medium"
+                  style={{ color: C.amber }}
+                >
+                  <MapPin size={10} className="shrink-0" /><span>{t.reunitedLocation}</span>
+                </a>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -1677,11 +1744,17 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
       </div>
 
       {isAdmin && (report.filingLat != null || mySightings.some((s) => s.filingLat != null)) && (
-        <div className="mb-5 rounded-xl p-3.5 text-[12px]" style={{ background: "rgba(255,182,39,0.08)", border: `1px dashed ${C.amber}55` }}>
-          <div className="flex items-center gap-1.5 mb-1.5 font-semibold" style={{ color: C.amber }}><Lock size={11} /> Admin only</div>
+        <div className="mb-5 rounded-xl p-3.5" style={{ background: "rgba(255,182,39,0.08)", border: `1px dashed ${C.amber}55` }}>
+          <div className="flex items-center gap-1.5 mb-2 text-[12px] font-semibold" style={{ color: C.amber }}><Lock size={11} /> Admin only</div>
           {report.filingLat != null && (
-            <a href={`https://www.google.com/maps?q=${report.filingLat},${report.filingLng}`} target="_blank" rel="noreferrer" className="block mb-1" style={{ color: C.textMuted }}>
-              {t.adminFilerLocation} <span style={{ color: C.amber }}>({t.viewOnMap})</span>
+            <a
+              href={`https://www.google.com/maps?q=${report.filingLat},${report.filingLng}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
+              style={{ background: "rgba(255,182,39,0.14)", color: C.amber }}
+            >
+              <MapPin size={12} /> {t.adminFilerLocation}
             </a>
           )}
         </div>
@@ -1776,8 +1849,14 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
                     </a>
                   )}
                   {isAdmin && s.filingLat != null && (
-                    <a href={`https://www.google.com/maps?q=${s.filingLat},${s.filingLng}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-[10.5px] mt-1.5" style={{ color: C.amber }}>
-                      <Lock size={9} /> {t.adminSightingLocation}
+                    <a
+                      href={`https://www.google.com/maps?q=${s.filingLat},${s.filingLng}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1.5 text-[11px] font-medium mt-2 px-2.5 py-1.5 rounded-lg"
+                      style={{ background: "rgba(255,182,39,0.14)", color: C.amber }}
+                    >
+                      <Lock size={10} /> {t.adminSightingLocation}
                     </a>
                   )}
                   <div className="flex items-center gap-2 mt-2.5">
@@ -1844,6 +1923,14 @@ export default function App() {
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [editingReport, setEditingReport] = useState(null);
   const [editingSighting, setEditingSighting] = useState(null);
+  const [locationPromptFor, setLocationPromptFor] = useState(null); // null | 'report' | { sighting: report }
+
+  const requestLocationThen = (proceed) => {
+    if (navigator.geolocation) {
+      try { navigator.geolocation.getCurrentPosition(() => {}, () => {}, { timeout: 1000 }); } catch {}
+    }
+    proceed();
+  };
 
   const refresh = useCallback(async () => {
     const [r, s, n] = await Promise.all([loadList("khoj-reports"), loadList("khoj-sightings"), loadList("khoj-notifications")]);
@@ -1917,7 +2004,11 @@ export default function App() {
     pushNotification(`${t.eventSighting} ${report?.name || ""}`, sighting.reportId, "sighting");
   };
   const handleMarkFound = async (report) => {
-    const updatedReport = { ...report, status: "found", foundAt: new Date().toISOString() };
+    const foundLoc = await captureFilingLocation();
+    const updatedReport = {
+      ...report, status: "found", foundAt: new Date().toISOString(),
+      foundLat: foundLoc?.lat ?? null, foundLng: foundLoc?.lng ?? null,
+    };
     await saveList("khoj-reports", null, updatedReport);
     setReports((prev) => prev.map((r) => (r.id === report.id ? updatedReport : r)));
     setActiveReport(updatedReport);
@@ -2063,7 +2154,7 @@ export default function App() {
           report={reports.find((r) => r.id === activeReport.id) || activeReport}
           sightings={sightings}
           onBack={() => setView("board")}
-          onReportSighting={(r) => { setActiveReport(r); setView("sighting"); }}
+          onReportSighting={(r) => setLocationPromptFor({ sighting: r })}
           onMarkFound={handleMarkFound}
           onFollow={handleFollow}
           isFollowing={!!followed[activeReport.id]}
@@ -2082,6 +2173,8 @@ export default function App() {
             <Pill active={filter === "found"} onClick={() => setFilter("found")} activeColor={C.emerald}>{t.tabFound}</Pill>
             <Pill active={filter === "all"} onClick={() => setFilter("all")} activeColor={C.amber}>{t.tabAll}</Pill>
           </div>
+
+          <div className="relative z-10"><LegalWarningBanner t={t} /></div>
 
           <div className="flex gap-2 mb-6 relative z-10">
             <select
@@ -2120,13 +2213,32 @@ export default function App() {
             </div>
           )}
 
-          <button onClick={() => setView("report")} className="fixed bottom-6 right-6 z-30 flex items-center gap-2 px-5 py-3.5 rounded-full font-semibold text-[14px]" style={{ background: `linear-gradient(135deg, ${C.rose}, #FF7B54)`, color: "#1B1032", boxShadow: `0 10px 28px ${C.rose}55` }}>
+          <button onClick={() => setLocationPromptFor("report")} className="fixed bottom-6 right-6 z-30 flex items-center gap-2 px-5 py-3.5 rounded-full font-semibold text-[14px]" style={{ background: `linear-gradient(135deg, ${C.rose}, #FF7B54)`, color: "#1B1032", boxShadow: `0 10px 28px ${C.rose}55` }}>
             <Plus size={18} strokeWidth={2.5} /> {t.report}
           </button>
         </div>
       )}
 
       {showAdminLogin && <AdminLoginModal t={t} onClose={() => setShowAdminLogin(false)} onSuccess={handleAdminSuccess} />}
+
+      {locationPromptFor && (
+        <LocationPromptModal
+          t={t}
+          onClose={() => setLocationPromptFor(null)}
+          onContinue={() => {
+            const target = locationPromptFor;
+            setLocationPromptFor(null);
+            requestLocationThen(() => {
+              if (target === "report") {
+                setView("report");
+              } else if (target && target.sighting) {
+                setActiveReport(target.sighting);
+                setView("sighting");
+              }
+            });
+          }}
+        />
+      )}
 
       <footer className="max-w-lg mx-auto px-5 pb-24 pt-4 text-center">
         <p className="text-[10.5px] leading-relaxed mb-3" style={{ color: "#3D3654" }}>{t.footerNote}</p>
