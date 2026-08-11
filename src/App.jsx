@@ -181,6 +181,10 @@ const EN = {
   adminPasswordPh: "Password",
   adminEnter: "Enter",
   adminWrong: "Incorrect password.",
+  adminNext: "Next",
+  adminStep2Of: "Step 2 of 2",
+  adminStep2Sub: "Enter the second security PIN to finish signing in.",
+  adminStep2Ph: "Security PIN",
   adminModeOn: "Admin mode active — you can manage all cases.",
   adminExit: "Exit admin",
   deleteCase: "Delete case",
@@ -230,6 +234,18 @@ const EN = {
   shareText: "Missing:",
   shareHelp: "Please help find this person and share:",
   cooldownMsg: "Please wait a moment before submitting another report — this helps us prevent spam.",
+  verifyFilerTitle: "Confirm it's you",
+  verifyFilerSub: "Enter this case's security PIN to view sighting reporters' contact details.",
+  viewReporterInfo: "Case filer? Verify to view reporter contact",
+  reporterInfoLocked: "Reporter contact is only visible to the case filer.",
+  foundLocationTitle: "Share where they were found?",
+  foundLocationBody: "Optionally share the location where this person was found — it helps our team verify the case. This is completely optional; you can skip it.",
+  skipBtn: "Skip",
+  shareLocationBtn: "Share Location",
+  statusPending: "Pending Review",
+  tabPending: "Pending",
+  pendingNotice: "This report is awaiting review by the Khoj team before it goes live.",
+  pendingBanner: "Submitted! Your report will go live once our team reviews it — usually within a few hours.",
 };
 
 const UR = {
@@ -417,6 +433,10 @@ const ROMAN = {
   adminPasswordPh: "Password",
   adminEnter: "Enter Karein",
   adminWrong: "Ghalat password.",
+  adminNext: "Agla",
+  adminStep2Of: "Step 2 of 2",
+  adminStep2Sub: "Sign in mukammal karne ke liye doosra security PIN likhein.",
+  adminStep2Ph: "Security PIN",
   adminModeOn: "Admin mode active hai — ab aap tamam cases manage kar sakte hain.",
   adminExit: "Admin se bahar niklein",
   deleteCase: "Case delete karein",
@@ -466,6 +486,18 @@ const ROMAN = {
   shareText: "Laapta:",
   shareHelp: "Barah-e-meharbani is shaks ko dhoondhne mein madad karein aur share karein:",
   cooldownMsg: "Please thoda intezar karein doosri report submit karne se pehle — isse spam rokne mein madad milti hai.",
+  verifyFilerTitle: "Tasdeeq karein ke yeh aap hain",
+  verifyFilerSub: "Sighting reporters ka contact dekhne ke liye is case ka security PIN likhein.",
+  viewReporterInfo: "Case filer hain? Reporter ka contact dekhne ke liye verify karein",
+  reporterInfoLocked: "Reporter ka contact sirf case filer ko hi dikhta hai.",
+  foundLocationTitle: "Jahan mile, wo location share karni hai?",
+  foundLocationBody: "Optional taur pe wo location share karein jahan ye shaks mila tha — isse hamari team case verify karne mein madad milti hai. Ye bilkul optional hai, aap skip kar sakte hain.",
+  skipBtn: "Skip Karein",
+  shareLocationBtn: "Location Share Karein",
+  statusPending: "Review Pending",
+  tabPending: "Pending",
+  pendingNotice: "Ye report abhi Khoj team ke review ka intezar kar rahi hai, live hone se pehle.",
+  pendingBanner: "Submit ho gayi! Aapki report team ke review ke baad live hogi — usually kuch ghanton mein.",
 };
 
 const PA = {
@@ -784,7 +816,7 @@ function captureFilingLocation() {
 // A simple client-side cooldown between new submissions from the same device.
 // Not a substitute for real server-side rate limiting, but a reasonable first line of defence.
 const SUBMIT_COOLDOWN_KEY = "khoj_last_submit_ts";
-const SUBMIT_COOLDOWN_MS = 20000;
+const SUBMIT_COOLDOWN_MS = 2 * 60 * 60 * 1000; // 2 hours
 function canSubmitNow() {
   try {
     const last = parseInt(localStorage.getItem(SUBMIT_COOLDOWN_KEY) || "0", 10);
@@ -816,6 +848,7 @@ async function deleteListItem(key, id) {
 // Change this password to whatever you like — this is the only thing
 // that gates access to deleting cases / force-marking Reunited / etc.
 const ADMIN_PASSWORD = "khoj@2026admincmk";
+const ADMIN_STEP2_PIN = "778899";
 const ADMIN_SESSION_KEY = "khoj_admin_session";
 const MY_SIGHTINGS_KEY = "khoj_my_sighting_ids";
 function getMySightingIds() {
@@ -1060,7 +1093,7 @@ function LangPicker({ lang, setLang }) {
 }
 
 // ============================== Notifications panel ==============================
-function NotifPanel({ notifications, t, onClose }) {
+function NotifPanel({ notifications, t, onClose, onOpenReport }) {
   return (
     <div className="absolute right-0 top-11 w-[300px] max-w-[85vw] rounded-2xl overflow-hidden z-50 shadow-2xl" style={{ background: "#1C1330", border: `1px solid ${C.surfaceBorder}` }}>
       <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: `1px solid ${C.surfaceBorder}` }}>
@@ -1071,13 +1104,18 @@ function NotifPanel({ notifications, t, onClose }) {
           <p className="text-[12.5px] px-4 py-6 text-center" style={{ color: C.textFaint }}>{t.notifEmpty}</p>
         ) : (
           notifications.slice(0, 25).map((n) => (
-            <div key={n.id} className="px-4 py-3 flex gap-2.5" style={{ borderBottom: `1px solid ${C.surfaceBorder}` }}>
+            <button
+              key={n.id}
+              onClick={() => n.reportId && onOpenReport && onOpenReport(n.reportId)}
+              className="w-full text-left px-4 py-3 flex gap-2.5 transition-colors hover:bg-white/5"
+              style={{ borderBottom: `1px solid ${C.surfaceBorder}` }}
+            >
               <div className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: n.type === "found" ? C.emerald : n.type === "sighting" ? C.amber : C.rose }} />
               <div className="min-w-0">
                 <p className="text-[12.5px] leading-snug" style={{ color: C.textPrimary }}>{n.message}</p>
                 <p className="text-[10.5px] mt-0.5" style={{ color: C.textFaint }}>{timeAgo(n.createdAt)}</p>
               </div>
-            </div>
+            </button>
           ))
         )}
       </div>
@@ -1223,27 +1261,51 @@ function MapPickerModal({ initial, onClose, onConfirm, t }) {
 
 // ============================== Admin login modal ==============================
 function AdminLoginModal({ onClose, onSuccess, t }) {
+  const [step, setStep] = useState(1);
   const [pw, setPw] = useState("");
+  const [pin, setPin] = useState("");
   const [wrong, setWrong] = useState(false);
-  const submit = (e) => {
+  const submitStep1 = (e) => {
     e.preventDefault();
-    if (pw === ADMIN_PASSWORD) onSuccess();
+    if (pw === ADMIN_PASSWORD) { setWrong(false); setStep(2); }
+    else setWrong(true);
+  };
+  const submitStep2 = (e) => {
+    e.preventDefault();
+    if (pin === ADMIN_STEP2_PIN) onSuccess();
     else setWrong(true);
   };
   return (
     <ModalShell onClose={onClose}>
       <div className="flex items-center gap-2 mb-1.5">
         <Lock size={18} color={C.amber} />
-        <h3 style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }} className="text-[17px]">{t.adminPasswordTitle}</h3>
+        <h3 style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }} className="text-[17px]">
+          {t.adminPasswordTitle} {step === 2 && <span style={{ color: C.textFaint, fontWeight: 400 }}>· {t.adminStep2Of}</span>}
+        </h3>
       </div>
-      <p className="text-[13px] mb-4" style={{ color: C.textMuted }}>{t.adminPasswordSub}</p>
-      <form onSubmit={submit}>
-        <Input type="password" value={pw} onChange={(e) => { setPw(e.target.value); setWrong(false); }} placeholder={t.adminPasswordPh} />
-        {wrong && <p className="text-[12.5px] mt-2" style={{ color: C.rose }}>{t.adminWrong}</p>}
-        <button type="submit" className="w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px]" style={{ background: `linear-gradient(135deg, ${C.amber}, #FFD166)`, color: "#1B1032" }}>
-          {t.adminEnter}
-        </button>
-      </form>
+      {step === 1 ? (
+        <>
+          <p className="text-[13px] mb-4" style={{ color: C.textMuted }}>{t.adminPasswordSub}</p>
+          <form onSubmit={submitStep1}>
+            <Input type="password" value={pw} onChange={(e) => { setPw(e.target.value); setWrong(false); }} placeholder={t.adminPasswordPh} />
+            {wrong && <p className="text-[12.5px] mt-2" style={{ color: C.rose }}>{t.adminWrong}</p>}
+            <button type="submit" className="w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px]" style={{ background: `linear-gradient(135deg, ${C.amber}, #FFD166)`, color: "#1B1032" }}>
+              {t.adminNext}
+            </button>
+          </form>
+        </>
+      ) : (
+        <>
+          <p className="text-[13px] mb-4" style={{ color: C.textMuted }}>{t.adminStep2Sub}</p>
+          <form onSubmit={submitStep2}>
+            <Input type="password" value={pin} onChange={(e) => { setPin(e.target.value.replace(/[^0-9]/g, "").slice(0, 6)); setWrong(false); }} placeholder={t.adminStep2Ph} inputMode="numeric" />
+            {wrong && <p className="text-[12.5px] mt-2" style={{ color: C.rose }}>{t.adminWrong}</p>}
+            <button type="submit" className="w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px]" style={{ background: `linear-gradient(135deg, ${C.amber}, #FFD166)`, color: "#1B1032" }}>
+              {t.adminEnter}
+            </button>
+          </form>
+        </>
+      )}
     </ModalShell>
   );
 }
@@ -1316,9 +1378,41 @@ function LegalWarningBanner({ t }) {
   );
 }
 
+// ============================== Found-location modal (optional) ==============================
+function FoundLocationModal({ onSkip, onShare, t }) {
+  return (
+    <ModalShell onClose={onSkip}>
+      <div className="flex items-center gap-2 mb-1.5">
+        <Navigation size={18} color={C.emerald} />
+        <h3 style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }} className="text-[17px]">{t.foundLocationTitle}</h3>
+      </div>
+      <p className="text-[13px] mb-4" style={{ color: C.textMuted }}>{t.foundLocationBody}</p>
+      <div className="flex gap-2.5">
+        <button type="button" onClick={onSkip} className="flex-1 py-3 rounded-xl font-medium text-[12.5px]" style={{ border: `1px solid ${C.surfaceBorder}`, color: C.textMuted }}>
+          {t.skipBtn}
+        </button>
+        <button type="button" onClick={onShare} className="flex-1 py-3 rounded-xl font-semibold text-[12.5px]" style={{ background: `linear-gradient(135deg, ${C.emerald}, #00E0A8)`, color: "#0D1F1A" }}>
+          {t.shareLocationBtn}
+        </button>
+      </div>
+    </ModalShell>
+  );
+}
+
+// ============================== WhatsApp icon (inline SVG, no extra dependency) ==============================
+function WhatsAppIcon({ size = 13, color = "currentColor" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={color}>
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+      <path d="M12.017 2C6.5 2 2.032 6.469 2.032 11.987c0 2.115.658 4.076 1.782 5.688L2.06 22l4.44-1.723a9.937 9.937 0 0 0 5.517 1.664c5.517 0 9.985-4.469 9.985-9.987C21.986 6.469 17.518 2 12.017 2zm0 18.184a8.16 8.16 0 0 1-4.647-1.44l-.334-.218-3.14 1.221 1.246-3.056-.24-.334a8.19 8.19 0 0 1-1.32-4.37c0-4.53 3.686-8.216 8.435-8.216 4.75 0 8.436 3.686 8.436 8.216 0 4.529-3.686 8.197-8.436 8.197z" />
+    </svg>
+  );
+}
+
 // ============================== Notice card ==============================
 function NoticeCard({ report, sightingCount, onOpen, t, index }) {
   const missing = report.status === "missing";
+  const pending = report.status === "pending";
   const photo = getPhotos(report)[0];
   return (
     <button
@@ -1334,14 +1428,14 @@ function NoticeCard({ report, sightingCount, onOpen, t, index }) {
         )}
         <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(13,8,24,0) 40%, rgba(13,8,24,0.92) 100%)" }} />
         <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide"
-          style={{ background: missing ? "rgba(255,84,112,0.18)" : "rgba(0,200,150,0.18)", color: missing ? C.rose : C.emerald, backdropFilter: "blur(6px)" }}>
+          style={{ background: pending ? "rgba(255,182,39,0.2)" : missing ? "rgba(255,84,112,0.18)" : "rgba(0,200,150,0.18)", color: pending ? C.amber : missing ? C.rose : C.emerald, backdropFilter: "blur(6px)" }}>
           {missing && (
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full rounded-full opacity-80" style={{ background: C.rose, animation: "khoj-pulse 1.8s cubic-bezier(0,0,0.2,1) infinite" }} />
               <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ background: C.rose }} />
             </span>
           )}
-          {missing ? t.statusMissing : t.statusFound}
+          {missing ? t.statusMissing : pending ? t.statusPending : t.statusFound}
         </div>
         {missing && sightingCount > 0 && (
           <div className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold" style={{ background: "rgba(255,182,39,0.2)", color: C.amber, backdropFilter: "blur(6px)" }}>
@@ -1448,7 +1542,7 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
         homeAddress: homeAddress.trim(), description: description.trim(), contactInfo: contactInfo.trim(),
         reunionPin: (initialData?.reunionPin || reunionPin).trim(),
         homeLat: homeCoords?.lat ?? null, homeLng: homeCoords?.lng ?? null,
-        status: initialData?.status || "missing",
+        status: initialData?.status || "pending",
         createdAt: initialData?.createdAt || new Date().toISOString(),
         foundAt: initialData?.foundAt || null,
       };
@@ -1524,7 +1618,7 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
       </Field>
 
       <Field label={t.description}><TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t.descriptionPh} /></Field>
-      <Field label={t.yourContact} required icon={Phone}><Input value={contactInfo} onChange={(e) => setContactInfo(e.target.value)} placeholder={t.yourContactPh} /></Field>
+      <Field label={t.yourContact} required icon={Phone}><Input value={contactInfo} onChange={(e) => setContactInfo(e.target.value.replace(/[^0-9]/g, ""))} placeholder={t.yourContactPh} inputMode="numeric" type="tel" /></Field>
 
       {!isEdit && (
         <Field label={t.reunionPin} required icon={Lock}>
@@ -1638,7 +1732,7 @@ function SightingForm({ report, onCancel, onSubmit, t, initialData, isEdit }) {
 
       <div className="grid grid-cols-2 gap-3">
         <Field label={t.yourName} required icon={User}><Input value={yourName} onChange={(e) => setYourName(e.target.value)} placeholder={t.yourNamePh} /></Field>
-        <Field label={t.optionalContact} required icon={Phone}><Input value={contactInfo} onChange={(e) => setContactInfo(e.target.value)} placeholder={t.optionalContactPh} /></Field>
+        <Field label={t.optionalContact} required icon={Phone}><Input value={contactInfo} onChange={(e) => setContactInfo(e.target.value.replace(/[^0-9]/g, ""))} placeholder={t.optionalContactPh} inputMode="numeric" type="tel" /></Field>
       </div>
 
       {error && <p className="text-[13px] mb-4" style={{ color: C.rose }}>{error}</p>}
@@ -1666,14 +1760,34 @@ function SightingForm({ report, onCancel, onSubmit, t, initialData, isEdit }) {
 function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, onFollow, isFollowing, t, isAdmin, onDeleteCase, onDeleteSighting, onEditReport, onEditSighting, onLockedNotice, onToggleVerified }) {
   const mySightings = sightings.filter((s) => s.reportId === report.id).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   const missing = report.status === "missing";
+  const pending = report.status === "pending";
   const seeLabel = report.gender === "male" ? t.iSawHim : report.gender === "female" ? t.iSawHer : t.iSawThem;
-  const [verifyMode, setVerifyMode] = useState(null); // 'markFound' | 'edit' | null
+  const [verifyMode, setVerifyMode] = useState(null); // 'markFound' | 'edit' | 'viewFiler' | null
+  const [filerVerified, setFilerVerified] = useState(false);
+  const [showFoundLocationPrompt, setShowFoundLocationPrompt] = useState(false);
   const photos = getPhotos(report);
   const [heroIdx, setHeroIdx] = useState(0);
   const [myIds, setMyIds] = useState([]);
   const [reportedCaseIds, setReportedCaseIds] = useState([]);
   useEffect(() => { setMyIds(getMySightingIds()); setReportedCaseIds(getReportedCaseIds()); }, []);
   const hasContactAccess = isAdmin || reportedCaseIds.includes(report.id);
+
+  // ---- Pending review — hidden from everyone except admin ----
+  if (pending && !isAdmin) {
+    return (
+      <div className="max-w-lg mx-auto px-5 pb-20">
+        <div className="flex items-center mt-3 mb-4">
+          <button onClick={onBack} className="flex items-center gap-1.5 text-[13px] transition-colors" style={{ color: C.textMuted }}>
+            <ArrowLeft size={15} /> {t.back}
+          </button>
+        </div>
+        <div className="rounded-2xl p-6 text-center" style={{ background: C.surface, border: `1px solid ${C.surfaceBorder}` }}>
+          <Lock size={26} color={C.amber} className="mx-auto mb-3" />
+          <p className="text-[13.5px]" style={{ color: C.textPrimary }}>{t.pendingNotice}</p>
+        </div>
+      </div>
+    );
+  }
 
   // ---- Restricted privacy view for reunited cases (non-admin) ----
   if (!missing && !isAdmin) {
@@ -1745,9 +1859,10 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
         </button>
         <div className="flex items-center gap-2">
           {missing && (
-            <button onClick={handleShare} className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-full transition-colors"
-              style={{ background: "rgba(255,255,255,0.06)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }}>
-              <Share2 size={13} /> {t.shareCase}
+            <button onClick={handleShare} aria-label={t.shareCase} className="flex items-center gap-1 px-2.5 py-1.5 rounded-full transition-colors"
+              style={{ background: "rgba(37,211,102,0.14)", border: `1px solid ${C.surfaceBorder}` }}>
+              <WhatsAppIcon size={14} color="#25D366" />
+              <Share2 size={11} color="#25D366" />
             </button>
           )}
           {missing && (
@@ -1769,8 +1884,8 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
         <div className="relative aspect-[16/10] w-full" style={{ background: "linear-gradient(160deg,#241a3d,#150f24)" }}>
           {photos[heroIdx] ? <img src={photos[heroIdx]} alt={report.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><User size={40} color={C.textFaint} /></div>}
           <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(13,8,24,0) 45%, rgba(13,8,24,0.95) 100%)" }} />
-          <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10.5px] font-bold uppercase tracking-wide" style={{ background: missing ? "rgba(255,84,112,0.2)" : "rgba(0,200,150,0.2)", color: missing ? C.rose : C.emerald, backdropFilter: "blur(6px)" }}>
-            {missing ? t.statusMissing : t.statusFound}
+          <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10.5px] font-bold uppercase tracking-wide" style={{ background: pending ? "rgba(255,182,39,0.2)" : missing ? "rgba(255,84,112,0.2)" : "rgba(0,200,150,0.2)", color: pending ? C.amber : missing ? C.rose : C.emerald, backdropFilter: "blur(6px)" }}>
+            {pending ? t.statusPending : missing ? t.statusMissing : t.statusFound}
           </div>
           {report.verified && (
             <div className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold" style={{ background: "rgba(0,200,150,0.22)", color: C.emerald, backdropFilter: "blur(6px)" }}>
@@ -1893,7 +2008,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
       {isAdmin && (
         <div className="flex gap-3 mb-3 -mt-3">
           {missing && (
-            <button onClick={() => onMarkFound(report)} className="flex-1 py-2.5 rounded-xl font-semibold text-[12.5px] flex items-center justify-center gap-1.5" style={{ background: "rgba(0,200,150,0.14)", color: C.emerald, border: `1px solid ${C.surfaceBorder}` }}>
+            <button onClick={() => setShowFoundLocationPrompt(true)} className="flex-1 py-2.5 rounded-xl font-semibold text-[12.5px] flex items-center justify-center gap-1.5" style={{ background: "rgba(0,200,150,0.14)", color: C.emerald, border: `1px solid ${C.surfaceBorder}` }}>
               <ShieldAlert size={13} /> {t.adminMarkFound}
             </button>
           )}
@@ -1925,21 +2040,37 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
         <VerifyReunitedModal
           report={report}
           t={t}
-          title={verifyMode === "edit" ? t.verifyEditTitle : undefined}
-          sub={verifyMode === "edit" ? t.verifyEditSub : undefined}
+          title={verifyMode === "edit" ? t.verifyEditTitle : verifyMode === "viewFiler" ? t.verifyFilerTitle : undefined}
+          sub={verifyMode === "edit" ? t.verifyEditSub : verifyMode === "viewFiler" ? t.verifyFilerSub : undefined}
           onClose={() => setVerifyMode(null)}
           onConfirmed={() => {
             const mode = verifyMode;
             setVerifyMode(null);
-            if (mode === "markFound") onMarkFound(report);
-            else onEditReport(report);
+            if (mode === "markFound") setShowFoundLocationPrompt(true);
+            else if (mode === "edit") onEditReport(report);
+            else if (mode === "viewFiler") setFilerVerified(true);
           }}
         />
       )}
 
-      <h3 className="text-[14px] font-semibold mb-3 flex items-center gap-1.5" style={{ color: C.textPrimary }}>
-        <Radio size={14} /> {t.timelineHeading} ({mySightings.length})
-      </h3>
+      {showFoundLocationPrompt && (
+        <FoundLocationModal
+          t={t}
+          onSkip={() => { setShowFoundLocationPrompt(false); onMarkFound(report, { skipLocation: true }); }}
+          onShare={() => { setShowFoundLocationPrompt(false); onMarkFound(report, { skipLocation: false }); }}
+        />
+      )}
+
+      <div className="flex items-center justify-between mb-3 gap-2">
+        <h3 className="text-[14px] font-semibold flex items-center gap-1.5" style={{ color: C.textPrimary }}>
+          <Radio size={14} /> {t.timelineHeading} ({mySightings.length})
+        </h3>
+        {missing && !isAdmin && !filerVerified && mySightings.length > 0 && (
+          <button onClick={() => setVerifyMode("viewFiler")} className="flex items-center gap-1 text-[10.5px] font-medium shrink-0" style={{ color: C.amber }}>
+            <Lock size={10} /> {t.viewReporterInfo}
+          </button>
+        )}
+      </div>
       <div className="relative pl-5">
           <div className="absolute left-[7px] top-1.5 bottom-1.5 w-[1.5px]" style={{ background: C.surfaceBorder }} />
           {mySightings.length === 0 && <p className="text-[13.5px] mb-4" style={{ color: C.textFaint }}>{t.noSightings}</p>}
@@ -1952,6 +2083,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
             })
             .map((s) => {
               const canEdit = myIds.includes(s.id) && !s.edited;
+              const canSeeReporter = isAdmin || filerVerified;
               return (
               <div key={s.id} className="relative mb-4 last:mb-0">
                 <span className="absolute -left-5 top-1 w-3 h-3 rounded-full border-2" style={{ background: C.amber, borderColor: C.bgTo }} />
@@ -1965,9 +2097,15 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
                     <span>{s.location}{s.city && `, ${s.city}`}</span>
                   </div>
                   {s.notes && <p className="text-[13.5px] mb-1" style={{ color: C.textPrimary }}>{s.notes}</p>}
-                  {(s.yourName || s.contactInfo) && (
-                    <p className="text-[11.5px]" style={{ color: C.textFaint }}>
-                      {s.yourName && s.yourName} {s.contactInfo && `· ${t.contact}: ${s.contactInfo}`}
+                  {canSeeReporter ? (
+                    (s.yourName || s.contactInfo) && (
+                      <p className="text-[11.5px]" style={{ color: C.textFaint }}>
+                        {s.yourName && s.yourName} {s.contactInfo && `· ${t.contact}: ${s.contactInfo}`}
+                      </p>
+                    )
+                  ) : (
+                    <p className="flex items-center gap-1 text-[11px]" style={{ color: C.textFaint }}>
+                      <Lock size={9} /> {t.reporterInfoLocked}
                     </p>
                   )}
                   {s.lat != null && s.lng != null && (
@@ -1987,7 +2125,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
                     </a>
                   )}
                   <div className="flex items-center gap-2 mt-2.5">
-                    {s.contactInfo && <CallButton number={s.contactInfo} label={t.callReporter} tone="amber" />}
+                    {canSeeReporter && s.contactInfo && <CallButton number={s.contactInfo} label={t.callReporter} tone="amber" />}
                     {canEdit && (
                       <button
                         onClick={() => onEditSighting(s)}
@@ -2118,7 +2256,7 @@ export default function App() {
     await saveList("khoj-reports", null, report);
     setReports((prev) => [report, ...prev]);
     setView("board"); setFilter("missing");
-    showToast(t.reportPosted);
+    showToast(report.status === "pending" ? t.pendingBanner : t.reportPosted);
     pushNotification(`${t.eventNewCase} ${report.name}`, report.id, "new");
   };
   const handleSubmitSighting = async (sighting) => {
@@ -2131,8 +2269,8 @@ export default function App() {
     const report = reports.find((r) => r.id === sighting.reportId);
     pushNotification(`${t.eventSighting} ${report?.name || ""}`, sighting.reportId, "sighting");
   };
-  const handleMarkFound = async (report) => {
-    const foundLoc = await captureFilingLocation();
+  const handleMarkFound = async (report, options = {}) => {
+    const foundLoc = options.skipLocation ? null : await captureFilingLocation();
     const updatedReport = {
       ...report, status: "found", foundAt: new Date().toISOString(),
       foundLat: foundLoc?.lat ?? null, foundLng: foundLoc?.lng ?? null,
@@ -2159,7 +2297,12 @@ export default function App() {
     showToast(t.editSaved);
   };
   const handleToggleVerified = async (report) => {
-    const updated = { ...report, verified: !report.verified };
+    const turningOn = !report.verified;
+    const updated = {
+      ...report,
+      verified: turningOn,
+      status: turningOn && report.status === "pending" ? "missing" : report.status,
+    };
     await saveList("khoj-reports", null, updated);
     setReports((prev) => prev.map((r) => (r.id === report.id ? updated : r)));
     setActiveReport(updated);
@@ -2189,7 +2332,9 @@ export default function App() {
   };
 
   const filtered = reports.filter((r) => {
-    if (filter !== "all" && r.status !== filter) return false;
+    if (r.status === "pending" && !(isAdmin && filter === "pending")) return false;
+    if (filter !== "all" && filter !== "pending" && r.status !== filter) return false;
+    if (filter === "pending" && r.status !== "pending") return false;
     if (cityFilter !== "all" && (r.city || "").trim().toLowerCase() !== cityFilter.toLowerCase()) return false;
     if (genderFilter !== "all" && r.gender !== genderFilter) return false;
     return true;
@@ -2197,6 +2342,7 @@ export default function App() {
   const sightingCountFor = (id) => sightings.filter((s) => s.reportId === id).length;
   const activeCount = reports.filter((r) => r.status === "missing").length;
   const foundCount = reports.filter((r) => r.status === "found").length;
+  const pendingCount = reports.filter((r) => r.status === "pending").length;
 
   return (
     <div dir={isUrduScript ? "rtl" : "ltr"} className={"min-h-screen w-full " + (isUrduScript ? "khoj-nastaliq" : "")} style={{ background: `radial-gradient(1100px 500px at 50% -8%, ${C.bgFrom} 0%, ${C.bgTo} 60%)`, fontFamily: isUrduScript ? undefined : "'Inter', sans-serif" }}>
@@ -2215,7 +2361,17 @@ export default function App() {
                 <Bell size={15} color={C.textPrimary} />
                 {notifications.length > 0 && <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full" style={{ background: C.rose, border: "2px solid #0D0818" }} />}
               </button>
-              {notifOpen && <NotifPanel notifications={notifications} t={t} onClose={() => setNotifOpen(false)} />}
+              {notifOpen && (
+                <NotifPanel
+                  notifications={notifications}
+                  t={t}
+                  onClose={() => setNotifOpen(false)}
+                  onOpenReport={(reportId) => {
+                    const r = reports.find((x) => x.id === reportId);
+                    if (r) { setActiveReport(r); setView("detail"); setNotifOpen(false); }
+                  }}
+                />
+              )}
             </div>
             <LangPicker lang={lang} setLang={setLang} />
           </div>
@@ -2308,6 +2464,11 @@ export default function App() {
             <Pill active={filter === "missing"} onClick={() => setFilter("missing")} activeColor={C.rose}>{t.tabMissing}</Pill>
             <Pill active={filter === "found"} onClick={() => setFilter("found")} activeColor={C.emerald}>{t.tabFound}</Pill>
             <Pill active={filter === "all"} onClick={() => setFilter("all")} activeColor={C.amber}>{t.tabAll}</Pill>
+            {isAdmin && (
+              <Pill active={filter === "pending"} onClick={() => setFilter("pending")} activeColor={C.amber}>
+                {t.tabPending}{pendingCount > 0 ? ` (${pendingCount})` : ""}
+              </Pill>
+            )}
           </div>
 
           <div className="relative z-10"><LegalWarningBanner t={t} /></div>
