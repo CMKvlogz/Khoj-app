@@ -29,6 +29,7 @@ import {
   X,
   Pencil,
   Share2,
+  Search,
 } from "lucide-react";
 
 // ============================== Fonts ==============================
@@ -155,7 +156,7 @@ const EN = {
   eventSighting: "New sighting reported for",
   eventFound: "has been reported Reunited!",
   photoRequired: "A photo of the missing person is required.",
-  pinLocation: "Missing person's location (optional)",
+  pinLocation: "Missing person's last location (optional)",
   shareLocation: "Pin this location",
   locationShared: "Location attached",
   locationFailed: "Could not get location",
@@ -246,6 +247,14 @@ const EN = {
   tabPending: "Pending",
   pendingNotice: "This report is awaiting review by the Khoj team before it goes live.",
   pendingBanner: "Submitted! Your report will go live once our team reviews it — usually within a few hours.",
+  searchLocationPh: "Search a place or address...",
+  confirmBtn: "Confirm",
+  editConfirmBtn: "Confirm & Edit",
+  searchByName: "Search by name...",
+  myPendingRequests: "My Pending Requests",
+  myPendingEmpty: "You haven't filed any reports awaiting review.",
+  adminMarkFoundLocation: "Here is the filer's location at the time of marking as reunited",
+  foundLocationMapTitle: "Where was the person found? (optional)",
 };
 
 const UR = {
@@ -409,7 +418,7 @@ const ROMAN = {
   follow: "Is case ki updates hasil karein",
   following: "Updates mil rahi hain",
   photoRequired: "Laapta shaks ki tasveer lagana zaroori hai.",
-  pinLocation: "Laapta shaks ki location (optional)",
+  pinLocation: "Laapta shaks ki last location (optional)",
   shareLocation: "Ye location pin karein",
   locationShared: "Location attach ho gayi",
   locationFailed: "Location nahi mil saki",
@@ -498,6 +507,14 @@ const ROMAN = {
   tabPending: "Pending",
   pendingNotice: "Ye report abhi Khoj team ke review ka intezar kar rahi hai, live hone se pehle.",
   pendingBanner: "Submit ho gayi! Aapki report team ke review ke baad live hogi — usually kuch ghanton mein.",
+  searchLocationPh: "Koi jagah ya address search karein...",
+  confirmBtn: "Confirm",
+  editConfirmBtn: "Confirm & Edit",
+  searchByName: "Naam se search karein...",
+  myPendingRequests: "Meri Pending Requests",
+  myPendingEmpty: "Aapne koi report file nahi ki jo review ka intezar kar rahi ho.",
+  adminMarkFoundLocation: "Filer ki location, jab reunited mark kiya",
+  foundLocationMapTitle: "Shaks kahan mila? (optional)",
 };
 
 const PA = {
@@ -870,6 +887,16 @@ function addReportedCaseId(id) {
     if (!ids.includes(id)) { ids.push(id); localStorage.setItem(REPORTED_CASES_KEY, JSON.stringify(ids)); }
   } catch {}
 }
+const MY_REPORTS_KEY = "khoj_my_report_ids";
+function getMyReportIds() {
+  try { return JSON.parse(localStorage.getItem(MY_REPORTS_KEY) || "[]"); } catch { return []; }
+}
+function addMyReportId(id) {
+  try {
+    const ids = getMyReportIds();
+    if (!ids.includes(id)) { ids.push(id); localStorage.setItem(MY_REPORTS_KEY, JSON.stringify(ids)); }
+  } catch {}
+}
 function genId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
@@ -1138,7 +1165,7 @@ function ModalShell({ onClose, children }) {
 }
 
 // ============================== Verify-reunited modal ==============================
-function VerifyReunitedModal({ report, onClose, onConfirmed, t, title, sub }) {
+function VerifyReunitedModal({ report, onClose, onConfirmed, t, title, sub, continueLabel }) {
   const [value, setValue] = useState("");
   const [wrong, setWrong] = useState(false);
   const submit = (e) => {
@@ -1160,7 +1187,7 @@ function VerifyReunitedModal({ report, onClose, onConfirmed, t, title, sub }) {
         <Input value={value} onChange={(e) => { setValue(e.target.value.replace(/[^0-9]/g, "").slice(0, 6)); setWrong(false); }} placeholder={t.verifyContactPh} inputMode="numeric" type="password" />
         {wrong && <p className="text-[12.5px] mt-2" style={{ color: C.rose }}>{t.verifyWrong}</p>}
         <button type="submit" className="w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px]" style={{ background: `linear-gradient(135deg, ${C.emerald}, #00E0A8)`, color: "#0D1F1A" }}>
-          {t.verifyContinue}
+          {continueLabel || t.verifyContinue}
         </button>
       </form>
     </ModalShell>
@@ -1168,13 +1195,17 @@ function VerifyReunitedModal({ report, onClose, onConfirmed, t, title, sub }) {
 }
 
 // ============================== Map picker (Leaflet loaded on demand) ==============================
-function MapPickerModal({ initial, onClose, onConfirm, t }) {
+function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, titleOverride }) {
   const ready = useLeaflet();
   const mapDivRef = useRef(null);
   const mapRef = useRef(null);
   const markerRef = useRef(null);
   const [coords, setCoords] = useState(initial || null);
   const [locating, setLocating] = useState(false);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [searching, setSearching] = useState(false);
+  const searchTimer = useRef(null);
 
   useEffect(() => {
     if (!ready || !mapDivRef.current || mapRef.current || !window.L) return;
@@ -1218,16 +1249,77 @@ function MapPickerModal({ initial, onClose, onConfirm, t }) {
     );
   };
 
+  const handleSearchChange = (val) => {
+    setQuery(val);
+    if (searchTimer.current) clearTimeout(searchTimer.current);
+    if (!val.trim() || val.trim().length < 3) { setResults([]); return; }
+    searchTimer.current = setTimeout(async () => {
+      setSearching(true);
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&countrycodes=pk&limit=5&q=${encodeURIComponent(val)}`
+        );
+        const data = await res.json();
+        setResults(Array.isArray(data) ? data : []);
+      } catch {
+        setResults([]);
+      } finally {
+        setSearching(false);
+      }
+    }, 500);
+  };
+
+  const pickResult = (r) => {
+    const p = { lat: parseFloat(r.lat), lng: parseFloat(r.lon) };
+    setCoords(p);
+    setResults([]);
+    setQuery(r.display_name);
+    if (mapRef.current && markerRef.current) {
+      mapRef.current.setView([p.lat, p.lng], 16);
+      markerRef.current.setLatLng([p.lat, p.lng]);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[60] flex flex-col" style={{ background: "#100a1e" }}>
       <div className="flex items-center justify-between px-4 py-3 shrink-0" style={{ borderBottom: `1px solid ${C.surfaceBorder}` }}>
         <span className="text-[13px] font-semibold flex items-center gap-1.5" style={{ color: C.textPrimary }}>
-          <Navigation size={13} color={C.amber} /> {t.tapToPin}
+          <Navigation size={13} color={C.amber} /> {titleOverride || t.tapToPin}
         </span>
         <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(255,255,255,0.06)" }}>
           <X size={16} color={C.textMuted} />
         </button>
       </div>
+
+      <div className="px-4 py-2.5 shrink-0 relative" style={{ borderBottom: `1px solid ${C.surfaceBorder}` }}>
+        <div className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: "rgba(255,255,255,0.05)", border: `1px solid ${C.surfaceBorder}` }}>
+          <Search size={14} color={C.textFaint} className="shrink-0" />
+          <input
+            value={query}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            placeholder={t.searchLocationPh}
+            className="flex-1 bg-transparent outline-none text-[13px]"
+            style={{ color: C.textPrimary }}
+          />
+          {searching && <Loader2 size={13} className="animate-spin shrink-0" color={C.textFaint} />}
+        </div>
+        {results.length > 0 && (
+          <div className="absolute left-4 right-4 mt-1 rounded-xl overflow-hidden z-10" style={{ background: "#1C1330", border: `1px solid ${C.surfaceBorder}` }}>
+            {results.map((r, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => pickResult(r)}
+                className="w-full text-left px-3 py-2.5 text-[12px] transition-colors hover:bg-white/5"
+                style={{ color: C.textMuted, borderBottom: i < results.length - 1 ? `1px solid ${C.surfaceBorder}` : "none" }}
+              >
+                {r.display_name}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
       <div className="flex-1 relative">
         {!ready && (
           <div className="absolute inset-0 flex items-center justify-center" style={{ background: "#151022" }}>
@@ -1236,24 +1328,31 @@ function MapPickerModal({ initial, onClose, onConfirm, t }) {
         )}
         <div ref={mapDivRef} style={{ height: "100%", width: "100%" }} />
       </div>
-      <div className="p-4 flex gap-3 shrink-0" style={{ borderTop: `1px solid ${C.surfaceBorder}`, background: C.bgTo }}>
-        <button
-          type="button"
-          onClick={handleUseMyLocation}
-          className="flex-1 py-3 rounded-xl font-medium text-[12.5px] flex items-center justify-center gap-2"
-          style={{ border: `1px solid ${C.surfaceBorder}`, color: C.textMuted }}
-        >
-          {locating ? <Loader2 size={13} className="animate-spin" /> : <Navigation size={13} />} {t.useMyLocation}
-        </button>
-        <button
-          type="button"
-          disabled={!coords}
-          onClick={() => coords && onConfirm(coords)}
-          className="flex-1 py-3 rounded-xl font-semibold text-[12.5px] disabled:opacity-40"
-          style={{ background: `linear-gradient(135deg, ${C.emerald}, #00E0A8)`, color: "#0D1F1A" }}
-        >
-          {t.confirmPin}
-        </button>
+      <div className="p-4 flex flex-col gap-2.5 shrink-0" style={{ borderTop: `1px solid ${C.surfaceBorder}`, background: C.bgTo }}>
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={handleUseMyLocation}
+            className="flex-1 py-3 rounded-xl font-medium text-[12.5px] flex items-center justify-center gap-2"
+            style={{ border: `1px solid ${C.surfaceBorder}`, color: C.textMuted }}
+          >
+            {locating ? <Loader2 size={13} className="animate-spin" /> : <Navigation size={13} />} {t.useMyLocation}
+          </button>
+          <button
+            type="button"
+            disabled={!coords}
+            onClick={() => coords && onConfirm(coords)}
+            className="flex-1 py-3 rounded-xl font-semibold text-[12.5px] disabled:opacity-40"
+            style={{ background: `linear-gradient(135deg, ${C.emerald}, #00E0A8)`, color: "#0D1F1A" }}
+          >
+            {t.confirmPin}
+          </button>
+        </div>
+        {allowSkip && (
+          <button type="button" onClick={onSkip} className="text-[12px] font-medium py-1" style={{ color: C.textFaint }}>
+            {t.skipBtn}
+          </button>
+        )}
       </div>
     </div>
   );
@@ -1378,27 +1477,6 @@ function LegalWarningBanner({ t }) {
   );
 }
 
-// ============================== Found-location modal (optional) ==============================
-function FoundLocationModal({ onSkip, onShare, t }) {
-  return (
-    <ModalShell onClose={onSkip}>
-      <div className="flex items-center gap-2 mb-1.5">
-        <Navigation size={18} color={C.emerald} />
-        <h3 style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }} className="text-[17px]">{t.foundLocationTitle}</h3>
-      </div>
-      <p className="text-[13px] mb-4" style={{ color: C.textMuted }}>{t.foundLocationBody}</p>
-      <div className="flex gap-2.5">
-        <button type="button" onClick={onSkip} className="flex-1 py-3 rounded-xl font-medium text-[12.5px]" style={{ border: `1px solid ${C.surfaceBorder}`, color: C.textMuted }}>
-          {t.skipBtn}
-        </button>
-        <button type="button" onClick={onShare} className="flex-1 py-3 rounded-xl font-semibold text-[12.5px]" style={{ background: `linear-gradient(135deg, ${C.emerald}, #00E0A8)`, color: "#0D1F1A" }}>
-          {t.shareLocationBtn}
-        </button>
-      </div>
-    </ModalShell>
-  );
-}
-
 // ============================== WhatsApp icon (inline SVG, no extra dependency) ==============================
 function WhatsAppIcon({ size = 13, color = "currentColor" }) {
   return (
@@ -1488,7 +1566,11 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
   const [homeCoords, setHomeCoords] = useState(
     initialData?.homeLat != null ? { lat: initialData.homeLat, lng: initialData.homeLng } : null
   );
+  const [lastSeenCoords, setLastSeenCoords] = useState(
+    initialData?.lastSeenLat != null ? { lat: initialData.lastSeenLat, lng: initialData.lastSeenLng } : null
+  );
   const [showMapPicker, setShowMapPicker] = useState(false);
+  const [showLastSeenMapPicker, setShowLastSeenMapPicker] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const fileRef = useRef(null);
@@ -1542,6 +1624,7 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
         homeAddress: homeAddress.trim(), description: description.trim(), contactInfo: contactInfo.trim(),
         reunionPin: (initialData?.reunionPin || reunionPin).trim(),
         homeLat: homeCoords?.lat ?? null, homeLng: homeCoords?.lng ?? null,
+        lastSeenLat: lastSeenCoords?.lat ?? null, lastSeenLng: lastSeenCoords?.lng ?? null,
         status: initialData?.status || "pending",
         createdAt: initialData?.createdAt || new Date().toISOString(),
         foundAt: initialData?.foundAt || null,
@@ -1594,6 +1677,22 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
       <Field label={t.city} required icon={MapPin}><Input value={city} onChange={(e) => setCity(e.target.value)} placeholder={t.cityPh} /></Field>
       <Field label={t.lastSeenLocation} required icon={MapPin}><Input value={lastSeenLocation} onChange={(e) => setLastSeenLocation(e.target.value)} placeholder={t.lastSeenLocationPh} /></Field>
 
+      <Field label={t.pinLocation} icon={Navigation}>
+        <button
+          type="button"
+          onClick={() => setShowLastSeenMapPicker(true)}
+          className="w-full flex items-center justify-center gap-2 text-[13.5px] font-medium py-3 rounded-xl transition-colors"
+          style={
+            lastSeenCoords
+              ? { background: "rgba(0,200,150,0.14)", color: C.emerald, border: `1px solid ${C.surfaceBorder}` }
+              : { background: "rgba(255,255,255,0.045)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }
+          }
+        >
+          {lastSeenCoords ? <CheckCircle2 size={14} /> : <Navigation size={14} />}
+          {lastSeenCoords ? t.locationShared : t.shareLocation}
+        </button>
+      </Field>
+
       <div className="grid grid-cols-2 gap-3">
         <Field label={t.lastSeenDate} required icon={Calendar}><Input type="date" value={lastSeenDate} onChange={(e) => setLastSeenDate(e.target.value)} /></Field>
         <Field label={t.lastSeenTime} required icon={Clock}><Input type="time" value={lastSeenTime} onChange={(e) => setLastSeenTime(e.target.value)} /></Field>
@@ -1643,6 +1742,14 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
           initial={homeCoords}
           onClose={() => setShowMapPicker(false)}
           onConfirm={(c) => { setHomeCoords(c); setShowMapPicker(false); }}
+        />
+      )}
+      {showLastSeenMapPicker && (
+        <MapPickerModal
+          t={t}
+          initial={lastSeenCoords}
+          onClose={() => setShowLastSeenMapPicker(false)}
+          onConfirm={(c) => { setLastSeenCoords(c); setShowLastSeenMapPicker(false); }}
         />
       )}
     </form>
@@ -1771,9 +1878,10 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
   const [reportedCaseIds, setReportedCaseIds] = useState([]);
   useEffect(() => { setMyIds(getMySightingIds()); setReportedCaseIds(getReportedCaseIds()); }, []);
   const hasContactAccess = isAdmin || reportedCaseIds.includes(report.id);
+  const isMyOwnReport = getMyReportIds().includes(report.id);
 
-  // ---- Pending review — hidden from everyone except admin ----
-  if (pending && !isAdmin) {
+  // ---- Pending review — hidden from everyone except admin and the case filer themselves ----
+  if (pending && !isAdmin && !isMyOwnReport) {
     return (
       <div className="max-w-lg mx-auto px-5 pb-20">
         <div className="flex items-center mt-3 mb-4">
@@ -1846,7 +1954,8 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
   }
 
   const handleShare = () => {
-    const url = typeof window !== "undefined" ? window.location.origin : "";
+    const base = typeof window !== "undefined" ? `${window.location.origin}${window.location.pathname}` : "";
+    const url = `${base}?case=${report.id}`;
     const msg = `${t.shareHelp}\n\n${t.shareText} ${report.name} (${report.age || "?"}y)\n${report.city || ""}${report.city && report.lastSeenLocation ? " — " : ""}${report.lastSeenLocation || ""}\n\n${url}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
   };
@@ -1858,7 +1967,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
           <ArrowLeft size={15} /> {t.back}
         </button>
         <div className="flex items-center gap-2">
-          {missing && (
+          {missing && report.verified && (
             <button onClick={handleShare} aria-label={t.shareCase} className="flex items-center gap-1 px-2.5 py-1.5 rounded-full transition-colors"
               style={{ background: "rgba(37,211,102,0.14)", border: `1px solid ${C.surfaceBorder}` }}>
               <WhatsAppIcon size={14} color="#25D366" />
@@ -1877,6 +1986,12 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
       {!missing && isAdmin && (
         <div className="mb-4 rounded-xl p-3 flex items-center gap-2 text-[11.5px]" style={{ background: "rgba(255,182,39,0.1)", color: C.amber, border: `1px solid ${C.surfaceBorder}` }}>
           <Lock size={12} /> Admin view — full details visible (hidden from public since this case is Reunited).
+        </div>
+      )}
+
+      {pending && (isAdmin || isMyOwnReport) && (
+        <div className="mb-4 rounded-xl p-3 flex items-center gap-2 text-[11.5px]" style={{ background: "rgba(255,182,39,0.1)", color: C.amber, border: `1px solid ${C.surfaceBorder}` }}>
+          <Clock size={12} className="shrink-0" /> {t.pendingNotice}
         </div>
       )}
 
@@ -1912,7 +2027,14 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
       {photos.length <= 1 && <div className="mb-5" />}
 
       <div className="space-y-2.5 text-[14px] mb-5 rounded-2xl p-4" style={{ background: C.surface, border: `1px solid ${C.surfaceBorder}`, color: C.textPrimary }}>
-        <div className="flex gap-2.5"><MapPin size={15} className="mt-0.5 shrink-0" color={C.textMuted} /><span>{report.city ? `${report.city} — ` : ""}{report.lastSeenLocation}</span></div>
+        <div className="flex items-start justify-between gap-2.5">
+          <div className="flex gap-2.5"><MapPin size={15} className="mt-0.5 shrink-0" color={C.textMuted} /><span>{report.city ? `${report.city} — ` : ""}{report.lastSeenLocation}</span></div>
+          {report.lastSeenLat != null && report.lastSeenLng != null && (
+            <a href={`https://www.google.com/maps?q=${report.lastSeenLat},${report.lastSeenLng}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[11.5px] font-medium shrink-0" style={{ color: C.amber }}>
+              <MapPin size={11} /> {t.viewOnMap}
+            </a>
+          )}
+        </div>
         {(report.lastSeenDate || report.lastSeenTime) && (
           <div className="flex gap-2.5"><Calendar size={15} className="mt-0.5 shrink-0" color={C.textMuted} /><span>{t.lastSeenOn} {fmtDate(report.lastSeenDate) || "—"}{report.lastSeenTime && `, ${fmtTime(report.lastSeenTime)}`}</span></div>
         )}
@@ -1971,18 +2093,29 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
         )}
       </div>
 
-      {isAdmin && (report.filingLat != null || mySightings.some((s) => s.filingLat != null)) && (
-        <div className="mb-5 rounded-xl p-3.5" style={{ background: "rgba(255,182,39,0.08)", border: `1px dashed ${C.amber}55` }}>
-          <div className="flex items-center gap-1.5 mb-2 text-[12px] font-semibold" style={{ color: C.amber }}><Lock size={11} /> Admin only</div>
+      {isAdmin && (report.filingLat != null || report.markFoundLat != null || mySightings.some((s) => s.filingLat != null)) && (
+        <div className="mb-5 rounded-xl p-3.5 space-y-2" style={{ background: "rgba(255,182,39,0.08)", border: `1px dashed ${C.amber}55` }}>
+          <div className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: C.amber }}><Lock size={11} /> Admin only</div>
           {report.filingLat != null && (
             <a
               href={`https://www.google.com/maps?q=${report.filingLat},${report.filingLng}`}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
+              className="flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
               style={{ background: "rgba(255,182,39,0.14)", color: C.amber }}
             >
-              <MapPin size={12} /> {t.adminFilerLocation}
+              <MapPin size={12} className="shrink-0" /> {t.adminFilerLocation}
+            </a>
+          )}
+          {report.markFoundLat != null && (
+            <a
+              href={`https://www.google.com/maps?q=${report.markFoundLat},${report.markFoundLng}`}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
+              style={{ background: "rgba(255,182,39,0.14)", color: C.amber }}
+            >
+              <MapPin size={12} className="shrink-0" /> {t.adminMarkFoundLocation}
             </a>
           )}
         </div>
@@ -1993,25 +2126,28 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
           <button onClick={() => onReportSighting(report)} className="flex-1 py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2" style={{ background: `linear-gradient(135deg, ${C.amber}, #FFD166)`, color: "#1B1032" }}>
             <Eye size={16} /> {seeLabel}
           </button>
-          <button onClick={() => setVerifyMode("markFound")} className="py-3.5 px-4 rounded-xl font-medium transition-colors flex items-center gap-2" style={{ border: `1px solid ${C.surfaceBorder}`, color: C.textMuted }}>
+          <button
+            onClick={() => (isAdmin ? setShowFoundLocationPrompt(true) : setVerifyMode("markFound"))}
+            className="py-3.5 px-4 rounded-xl font-medium transition-colors flex items-center gap-2"
+            style={{ border: `1px solid ${C.surfaceBorder}`, color: C.textMuted }}
+          >
             <CheckCircle2 size={16} /> {t.markFound}
           </button>
         </div>
       )}
 
-      {missing && (
-        <button onClick={() => setVerifyMode("edit")} className="w-full mb-6 py-2.5 rounded-xl font-medium text-[12.5px] flex items-center justify-center gap-1.5" style={{ border: `1px solid ${C.surfaceBorder}`, color: C.textMuted }}>
+      {(missing || isAdmin) && (
+        <button
+          onClick={() => (isAdmin ? onEditReport(report) : setVerifyMode("edit"))}
+          className="w-full mb-6 py-2.5 rounded-xl font-medium text-[12.5px] flex items-center justify-center gap-1.5"
+          style={{ border: `1px solid ${C.surfaceBorder}`, color: C.textMuted }}
+        >
           <Pencil size={12} /> {t.editCase}
         </button>
       )}
 
       {isAdmin && (
         <div className="flex gap-3 mb-3 -mt-3">
-          {missing && (
-            <button onClick={() => setShowFoundLocationPrompt(true)} className="flex-1 py-2.5 rounded-xl font-semibold text-[12.5px] flex items-center justify-center gap-1.5" style={{ background: "rgba(0,200,150,0.14)", color: C.emerald, border: `1px solid ${C.surfaceBorder}` }}>
-              <ShieldAlert size={13} /> {t.adminMarkFound}
-            </button>
-          )}
           <button
             onClick={() => { if (window.confirm(t.confirmDeleteCase)) onDeleteCase(report); }}
             className="flex-1 py-2.5 rounded-xl font-semibold text-[12.5px] flex items-center justify-center gap-1.5"
@@ -2042,6 +2178,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
           t={t}
           title={verifyMode === "edit" ? t.verifyEditTitle : verifyMode === "viewFiler" ? t.verifyFilerTitle : undefined}
           sub={verifyMode === "edit" ? t.verifyEditSub : verifyMode === "viewFiler" ? t.verifyFilerSub : undefined}
+          continueLabel={verifyMode === "edit" ? t.editConfirmBtn : verifyMode === "viewFiler" ? t.confirmBtn : undefined}
           onClose={() => setVerifyMode(null)}
           onConfirmed={() => {
             const mode = verifyMode;
@@ -2054,10 +2191,14 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
       )}
 
       {showFoundLocationPrompt && (
-        <FoundLocationModal
+        <MapPickerModal
           t={t}
-          onSkip={() => { setShowFoundLocationPrompt(false); onMarkFound(report, { skipLocation: true }); }}
-          onShare={() => { setShowFoundLocationPrompt(false); onMarkFound(report, { skipLocation: false }); }}
+          initial={null}
+          allowSkip
+          titleOverride={t.foundLocationMapTitle}
+          onClose={() => setShowFoundLocationPrompt(false)}
+          onSkip={() => { setShowFoundLocationPrompt(false); onMarkFound(report, { foundCoords: null }); }}
+          onConfirm={(coords) => { setShowFoundLocationPrompt(false); onMarkFound(report, { foundCoords: coords }); }}
         />
       )}
 
@@ -2177,6 +2318,9 @@ export default function App() {
   const [view, setView] = useState("board");
   const [activeReport, setActiveReport] = useState(null);
   const [filter, setFilter] = useState("missing");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [myReportIds, setMyReportIds] = useState([]);
+  useEffect(() => { setMyReportIds(getMyReportIds()); }, []);
   const [cityFilter, setCityFilter] = useState("all");
   const [genderFilter, setGenderFilter] = useState("all");
   const [toast, setToast] = useState("");
@@ -2202,6 +2346,14 @@ export default function App() {
     r.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     n.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     setReports(r); setSightings(s); setNotifications(n); setLoading(false);
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const caseId = params.get("case");
+      if (caseId) {
+        const match = r.find((rep) => rep.id === caseId);
+        if (match) { setActiveReport(match); setView("detail"); }
+      }
+    } catch {}
   }, []);
 
   useEffect(() => { refresh(); }, [refresh]);
@@ -2255,6 +2407,8 @@ export default function App() {
   const handleSubmitReport = async (report) => {
     await saveList("khoj-reports", null, report);
     setReports((prev) => [report, ...prev]);
+    addMyReportId(report.id);
+    setMyReportIds((prev) => (prev.includes(report.id) ? prev : [...prev, report.id]));
     setView("board"); setFilter("missing");
     showToast(report.status === "pending" ? t.pendingBanner : t.reportPosted);
     pushNotification(`${t.eventNewCase} ${report.name}`, report.id, "new");
@@ -2270,10 +2424,14 @@ export default function App() {
     pushNotification(`${t.eventSighting} ${report?.name || ""}`, sighting.reportId, "sighting");
   };
   const handleMarkFound = async (report, options = {}) => {
-    const foundLoc = options.skipLocation ? null : await captureFilingLocation();
+    // Silently capture the marker's own location (admin-only, always attempted).
+    const markerLoc = await captureFilingLocation();
+    // The optional, manually-picked location of where the missing person was found (shown publicly).
+    const foundLoc = options.foundCoords || null;
     const updatedReport = {
       ...report, status: "found", foundAt: new Date().toISOString(),
       foundLat: foundLoc?.lat ?? null, foundLng: foundLoc?.lng ?? null,
+      markFoundLat: markerLoc?.lat ?? null, markFoundLng: markerLoc?.lng ?? null,
     };
     await saveList("khoj-reports", null, updatedReport);
     setReports((prev) => prev.map((r) => (r.id === report.id ? updatedReport : r)));
@@ -2301,7 +2459,7 @@ export default function App() {
     const updated = {
       ...report,
       verified: turningOn,
-      status: turningOn && report.status === "pending" ? "missing" : report.status,
+      status: turningOn ? (report.status === "pending" ? "missing" : report.status) : "pending",
     };
     await saveList("khoj-reports", null, updated);
     setReports((prev) => prev.map((r) => (r.id === report.id ? updated : r)));
@@ -2337,6 +2495,7 @@ export default function App() {
     if (filter === "pending" && r.status !== "pending") return false;
     if (cityFilter !== "all" && (r.city || "").trim().toLowerCase() !== cityFilter.toLowerCase()) return false;
     if (genderFilter !== "all" && r.gender !== genderFilter) return false;
+    if (searchQuery.trim() && !r.name.toLowerCase().includes(searchQuery.trim().toLowerCase())) return false;
     return true;
   });
   const sightingCountFor = (id) => sightings.filter((s) => s.reportId === id).length;
@@ -2356,6 +2515,16 @@ export default function App() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {myReportIds.length > 0 && (
+              <button
+                onClick={() => setView("myPending")}
+                className="relative w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+                style={{ background: "rgba(255,255,255,0.06)", border: `1px solid ${C.surfaceBorder}` }}
+                aria-label={t.myPendingRequests}
+              >
+                <Clock size={15} color={C.textPrimary} />
+              </button>
+            )}
             <div className="relative" ref={notifRef}>
               <button onClick={() => setNotifOpen((v) => !v)} className="relative w-8 h-8 rounded-full flex items-center justify-center transition-colors" style={{ background: "rgba(255,255,255,0.06)", border: `1px solid ${C.surfaceBorder}` }}>
                 <Bell size={15} color={C.textPrimary} />
@@ -2439,6 +2608,26 @@ export default function App() {
           initialData={editingSighting}
           isEdit
         />
+      ) : view === "myPending" ? (
+        <div className="max-w-lg mx-auto px-5 pt-5 pb-20">
+          <button onClick={() => setView("board")} className="flex items-center gap-1.5 text-[13px] mb-4" style={{ color: C.textMuted }}>
+            <ArrowLeft size={15} /> {t.back}
+          </button>
+          <h2 style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }} className="text-2xl mb-4 flex items-center gap-2">
+            <Clock size={20} color={C.amber} /> {t.myPendingRequests}
+          </h2>
+          {(() => {
+            const myPending = reports.filter((r) => myReportIds.includes(r.id) && r.status === "pending");
+            if (myPending.length === 0) {
+              return <p className="text-[13.5px]" style={{ color: C.textFaint }}>{t.myPendingEmpty}</p>;
+            }
+            return (
+              <div className="grid grid-cols-2 gap-3.5">
+                {myPending.map((r, i) => <NoticeCard key={r.id} report={r} sightingCount={sightingCountFor(r.id)} onOpen={(rep) => { setActiveReport(rep); setView("detail"); }} t={t} index={i} />)}
+              </div>
+            );
+          })()}
+        </div>
       ) : view === "detail" && activeReport ? (
         <DetailView
           report={reports.find((r) => r.id === activeReport.id) || activeReport}
@@ -2460,15 +2649,27 @@ export default function App() {
       ) : (
         <div className="max-w-lg mx-auto px-5 pt-5 relative">
           <BoardBackground reports={reports} filter={filter} />
-          <div className="flex gap-2 mb-3 overflow-x-auto relative z-10">
-            <Pill active={filter === "missing"} onClick={() => setFilter("missing")} activeColor={C.rose}>{t.tabMissing}</Pill>
-            <Pill active={filter === "found"} onClick={() => setFilter("found")} activeColor={C.emerald}>{t.tabFound}</Pill>
-            <Pill active={filter === "all"} onClick={() => setFilter("all")} activeColor={C.amber}>{t.tabAll}</Pill>
-            {isAdmin && (
-              <Pill active={filter === "pending"} onClick={() => setFilter("pending")} activeColor={C.amber}>
-                {t.tabPending}{pendingCount > 0 ? ` (${pendingCount})` : ""}
-              </Pill>
-            )}
+          <div className="flex items-center gap-2 mb-3 relative z-10">
+            <div className="flex gap-2 overflow-x-auto">
+              <Pill active={filter === "missing"} onClick={() => setFilter("missing")} activeColor={C.rose}>{t.tabMissing}</Pill>
+              <Pill active={filter === "found"} onClick={() => setFilter("found")} activeColor={C.emerald}>{t.tabFound}</Pill>
+              <Pill active={filter === "all"} onClick={() => setFilter("all")} activeColor={C.amber}>{t.tabAll}</Pill>
+              {isAdmin && (
+                <Pill active={filter === "pending"} onClick={() => setFilter("pending")} activeColor={C.amber}>
+                  {t.tabPending}{pendingCount > 0 ? ` (${pendingCount})` : ""}
+                </Pill>
+              )}
+            </div>
+            <div className="flex items-center gap-1.5 rounded-full px-3 py-1.5 shrink-0 ml-auto" style={{ background: C.surface, border: `1px solid ${C.surfaceBorder}` }}>
+              <Search size={12} color={C.textFaint} className="shrink-0" />
+              <input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={t.searchByName}
+                className="bg-transparent outline-none text-[12px] w-20 focus:w-28 transition-all"
+                style={{ color: C.textPrimary }}
+              />
+            </div>
           </div>
 
           <div className="relative z-10"><LegalWarningBanner t={t} /></div>
