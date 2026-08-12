@@ -155,6 +155,7 @@ const EN = {
   eventNewCase: "New case reported:",
   eventSighting: "New sighting reported for",
   eventFound: "has been reported Reunited!",
+  eventVerified: "has been verified and is now live on the board.",
   photoRequired: "A photo of the missing person is required.",
   pinLocation: "Missing person's last location (optional)",
   shareLocation: "Pin this location",
@@ -255,6 +256,8 @@ const EN = {
   myPendingEmpty: "You haven't filed any reports awaiting review.",
   adminMarkFoundLocation: "Here is the filer's location at the time of marking as reunited",
   foundLocationMapTitle: "Where was the person found? (optional)",
+  adminLocSection1: "Filer & reporter locations",
+  adminLocSection2: "Missing person's pin locations",
 };
 
 const UR = {
@@ -515,6 +518,8 @@ const ROMAN = {
   myPendingEmpty: "Aapne koi report file nahi ki jo review ka intezar kar rahi ho.",
   adminMarkFoundLocation: "Filer ki location, jab reunited mark kiya",
   foundLocationMapTitle: "Shaks kahan mila? (optional)",
+  adminLocSection1: "Filer aur reporter ki locations",
+  adminLocSection2: "Laapta shaks ki pin locations",
 };
 
 const PA = {
@@ -832,7 +837,7 @@ function captureFilingLocation() {
 // ============================== Basic spam deterrent ==============================
 // A simple client-side cooldown between new submissions from the same device.
 // Not a substitute for real server-side rate limiting, but a reasonable first line of defence.
-const SUBMIT_COOLDOWN_KEY = "khoj_last_submit_ts";
+const SUBMIT_COOLDOWN_KEY = "khoj_last_report_submit_ts"; // applies only to filing a new missing-person case
 const SUBMIT_COOLDOWN_MS = 2 * 60 * 60 * 1000; // 2 hours
 function canSubmitNow() {
   try {
@@ -1137,7 +1142,7 @@ function NotifPanel({ notifications, t, onClose, onOpenReport }) {
               className="w-full text-left px-4 py-3 flex gap-2.5 transition-colors hover:bg-white/5"
               style={{ borderBottom: `1px solid ${C.surfaceBorder}` }}
             >
-              <div className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: n.type === "found" ? C.emerald : n.type === "sighting" ? C.amber : C.rose }} />
+              <div className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: n.type === "found" || n.type === "verified" ? C.emerald : n.type === "sighting" ? C.amber : C.rose }} />
               <div className="min-w-0">
                 <p className="text-[12.5px] leading-snug" style={{ color: C.textPrimary }}>{n.message}</p>
                 <p className="text-[10.5px] mt-0.5" style={{ color: C.textFaint }}>{timeAgo(n.createdAt)}</p>
@@ -1778,10 +1783,6 @@ function SightingForm({ report, onCancel, onSubmit, t, initialData, isEdit }) {
       setError(t.errRequired);
       return;
     }
-    if (!isEdit && !canSubmitNow()) {
-      setError(t.cooldownMsg);
-      return;
-    }
     setSubmitting(true);
     setError("");
     try {
@@ -1795,7 +1796,6 @@ function SightingForm({ report, onCancel, onSubmit, t, initialData, isEdit }) {
       };
       if (!isEdit && filingLoc) { payload.filingLat = filingLoc.lat; payload.filingLng = filingLoc.lng; }
       else if (isEdit) { payload.filingLat = initialData?.filingLat ?? null; payload.filingLng = initialData?.filingLng ?? null; }
-      if (!isEdit) markSubmitted();
       await onSubmit(payload);
     } catch { setError(t.errSave); setSubmitting(false); }
   };
@@ -2094,8 +2094,8 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
       </div>
 
       {isAdmin && (report.filingLat != null || report.markFoundLat != null || mySightings.some((s) => s.filingLat != null)) && (
-        <div className="mb-5 rounded-xl p-3.5 space-y-2" style={{ background: "rgba(255,182,39,0.08)", border: `1px dashed ${C.amber}55` }}>
-          <div className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: C.amber }}><Lock size={11} /> Admin only</div>
+        <div className="mb-3 rounded-xl p-3.5 space-y-2" style={{ background: "rgba(255,182,39,0.08)", border: `1px dashed ${C.amber}55` }}>
+          <div className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: C.amber }}><Lock size={11} /> {t.adminLocSection1}</div>
           {report.filingLat != null && (
             <a
               href={`https://www.google.com/maps?q=${report.filingLat},${report.filingLng}`}
@@ -2107,6 +2107,18 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
               <MapPin size={12} className="shrink-0" /> {t.adminFilerLocation}
             </a>
           )}
+          {mySightings.filter((s) => s.filingLat != null).map((s) => (
+            <a
+              key={s.id}
+              href={`https://www.google.com/maps?q=${s.filingLat},${s.filingLng}`}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
+              style={{ background: "rgba(255,182,39,0.14)", color: C.amber }}
+            >
+              <MapPin size={12} className="shrink-0" /> {t.adminSightingLocation} — {s.yourName || t.contact}
+            </a>
+          ))}
           {report.markFoundLat != null && (
             <a
               href={`https://www.google.com/maps?q=${report.markFoundLat},${report.markFoundLng}`}
@@ -2116,6 +2128,45 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
               style={{ background: "rgba(255,182,39,0.14)", color: C.amber }}
             >
               <MapPin size={12} className="shrink-0" /> {t.adminMarkFoundLocation}
+            </a>
+          )}
+        </div>
+      )}
+
+      {isAdmin && (report.homeLat != null || report.lastSeenLat != null || report.foundLat != null) && (
+        <div className="mb-5 rounded-xl p-3.5 space-y-2" style={{ background: "rgba(255,182,39,0.08)", border: `1px dashed ${C.amber}55` }}>
+          <div className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: C.amber }}><MapPin size={11} /> {t.adminLocSection2}</div>
+          {report.lastSeenLat != null && (
+            <a
+              href={`https://www.google.com/maps?q=${report.lastSeenLat},${report.lastSeenLng}`}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
+              style={{ background: "rgba(255,182,39,0.14)", color: C.amber }}
+            >
+              <MapPin size={12} className="shrink-0" /> {t.pinLocation}
+            </a>
+          )}
+          {report.homeLat != null && (
+            <a
+              href={`https://www.google.com/maps?q=${report.homeLat},${report.homeLng}`}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
+              style={{ background: "rgba(255,182,39,0.14)", color: C.amber }}
+            >
+              <MapPin size={12} className="shrink-0" /> {t.homePinLocation}
+            </a>
+          )}
+          {report.foundLat != null && (
+            <a
+              href={`https://www.google.com/maps?q=${report.foundLat},${report.foundLng}`}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
+              style={{ background: "rgba(255,182,39,0.14)", color: C.amber }}
+            >
+              <MapPin size={12} className="shrink-0" /> {t.reunitedLocation}
             </a>
           )}
         </div>
@@ -2456,14 +2507,18 @@ export default function App() {
   };
   const handleToggleVerified = async (report) => {
     const turningOn = !report.verified;
+    const wasPending = report.status === "pending";
     const updated = {
       ...report,
       verified: turningOn,
-      status: turningOn ? (report.status === "pending" ? "missing" : report.status) : "pending",
+      status: turningOn ? (wasPending ? "missing" : report.status) : "pending",
     };
     await saveList("khoj-reports", null, updated);
     setReports((prev) => prev.map((r) => (r.id === report.id ? updated : r)));
     setActiveReport(updated);
+    if (turningOn && wasPending) {
+      pushNotification(`${report.name} ${t.eventVerified}`, report.id, "verified");
+    }
   };
   const handleFollow = (report) => {
     setFollowed((f) => ({ ...f, [report.id]: !f[report.id] }));
@@ -2515,16 +2570,17 @@ export default function App() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {myReportIds.length > 0 && (
-              <button
-                onClick={() => setView("myPending")}
-                className="relative w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-                style={{ background: "rgba(255,255,255,0.06)", border: `1px solid ${C.surfaceBorder}` }}
-                aria-label={t.myPendingRequests}
-              >
-                <Clock size={15} color={C.textPrimary} />
-              </button>
-            )}
+            <button
+              onClick={() => setView("myPending")}
+              className="relative flex items-center gap-1.5 text-[11.5px] font-semibold px-3 h-8 rounded-full transition-colors"
+              style={{ background: "rgba(255,255,255,0.06)", border: `1px solid ${C.surfaceBorder}`, color: C.textPrimary }}
+            >
+              <Clock size={13} />
+              <span className="hidden xs:inline">{t.myPendingRequests}</span>
+              {reports.some((r) => myReportIds.includes(r.id) && r.status === "pending") && (
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: C.amber }} />
+              )}
+            </button>
             <div className="relative" ref={notifRef}>
               <button onClick={() => setNotifOpen((v) => !v)} className="relative w-8 h-8 rounded-full flex items-center justify-center transition-colors" style={{ background: "rgba(255,255,255,0.06)", border: `1px solid ${C.surfaceBorder}` }}>
                 <Bell size={15} color={C.textPrimary} />
@@ -2649,27 +2705,25 @@ export default function App() {
       ) : (
         <div className="max-w-lg mx-auto px-5 pt-5 relative">
           <BoardBackground reports={reports} filter={filter} />
-          <div className="flex items-center gap-2 mb-3 relative z-10">
-            <div className="flex gap-2 overflow-x-auto">
-              <Pill active={filter === "missing"} onClick={() => setFilter("missing")} activeColor={C.rose}>{t.tabMissing}</Pill>
-              <Pill active={filter === "found"} onClick={() => setFilter("found")} activeColor={C.emerald}>{t.tabFound}</Pill>
-              <Pill active={filter === "all"} onClick={() => setFilter("all")} activeColor={C.amber}>{t.tabAll}</Pill>
-              {isAdmin && (
-                <Pill active={filter === "pending"} onClick={() => setFilter("pending")} activeColor={C.amber}>
-                  {t.tabPending}{pendingCount > 0 ? ` (${pendingCount})` : ""}
-                </Pill>
-              )}
-            </div>
-            <div className="flex items-center gap-1.5 rounded-full px-3 py-1.5 shrink-0 ml-auto" style={{ background: C.surface, border: `1px solid ${C.surfaceBorder}` }}>
-              <Search size={12} color={C.textFaint} className="shrink-0" />
-              <input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t.searchByName}
-                className="bg-transparent outline-none text-[12px] w-20 focus:w-28 transition-all"
-                style={{ color: C.textPrimary }}
-              />
-            </div>
+          <div className="flex gap-2 mb-2.5 overflow-x-auto relative z-10">
+            <Pill active={filter === "missing"} onClick={() => setFilter("missing")} activeColor={C.rose}>{t.tabMissing}</Pill>
+            <Pill active={filter === "found"} onClick={() => setFilter("found")} activeColor={C.emerald}>{t.tabFound}</Pill>
+            <Pill active={filter === "all"} onClick={() => setFilter("all")} activeColor={C.amber}>{t.tabAll}</Pill>
+            {isAdmin && (
+              <Pill active={filter === "pending"} onClick={() => setFilter("pending")} activeColor={C.amber}>
+                {t.tabPending}{pendingCount > 0 ? ` (${pendingCount})` : ""}
+              </Pill>
+            )}
+          </div>
+          <div className="flex items-center gap-2 mb-3 px-3.5 py-[7px] rounded-full relative z-10" style={{ background: "rgba(255,255,255,0.06)", border: `1px solid ${C.surfaceBorder}` }}>
+            <Search size={13} color={C.textFaint} className="shrink-0" />
+            <input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={t.searchByName}
+              className="bg-transparent outline-none text-[13px] w-full"
+              style={{ color: C.textPrimary }}
+            />
           </div>
 
           <div className="relative z-10"><LegalWarningBanner t={t} /></div>
