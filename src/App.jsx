@@ -258,6 +258,12 @@ const EN = {
   foundLocationMapTitle: "Where was the person found? (optional)",
   adminLocSection1: "Filer & reporter locations",
   adminLocSection2: "Missing person's pin locations",
+  futureDateError: "The date cannot be in the future.",
+  lastLocationByFiler: "Missing person's last location — by case filer",
+  myPendingEmptyNew: "You haven't submitted any reports for review.",
+  editLockedAfterVerify: "This report can no longer be edited — it has already been verified by the Khoj team.",
+  editUntilVerified: "You can edit this report as many times as you like until it's verified by the Khoj team. Once verified, editing will be locked.",
+  pendingReviewFriendly: "The Khoj team is reviewing your request. Once the review is complete, your case will be published live on the board.",
 };
 
 const UR = {
@@ -520,6 +526,12 @@ const ROMAN = {
   foundLocationMapTitle: "Shaks kahan mila? (optional)",
   adminLocSection1: "Filer aur reporter ki locations",
   adminLocSection2: "Laapta shaks ki pin locations",
+  futureDateError: "Date future mein nahi ho sakti.",
+  lastLocationByFiler: "Missing person's last location — case filer ki taraf se",
+  myPendingEmptyNew: "Aapne review ke liye koi report submit nahi ki.",
+  editLockedAfterVerify: "Ye report ab edit nahi ho sakti — Khoj team pehle hi ise verify kar chuki hai.",
+  editUntilVerified: "Jab tak Khoj team verify nahi karti, aap ye report jitni baar chahen edit kar sakte hain. Verify hone ke baad editing lock ho jayegi.",
+  pendingReviewFriendly: "Khoj team aapki request review kar rahi hai. Review mukammal hote hi aapka case board par live kar diya jayega.",
 };
 
 const PA = {
@@ -902,6 +914,12 @@ function addMyReportId(id) {
     if (!ids.includes(id)) { ids.push(id); localStorage.setItem(MY_REPORTS_KEY, JSON.stringify(ids)); }
   } catch {}
 }
+function todayStr() {
+  const d = new Date();
+  const off = d.getTimezoneOffset();
+  const local = new Date(d.getTime() - off * 60000);
+  return local.toISOString().slice(0, 10);
+}
 function genId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
@@ -1260,25 +1278,45 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
     if (!val.trim() || val.trim().length < 3) { setResults([]); return; }
     searchTimer.current = setTimeout(async () => {
       setSearching(true);
+      let normalized = [];
       try {
+        // Primary: Photon (OSM-based, built for search-as-you-type, reliable CORS).
         const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&countrycodes=pk&limit=5&q=${encodeURIComponent(val)}`
+          `https://photon.komoot.io/api/?q=${encodeURIComponent(val)}&limit=6&lang=en&bbox=60.8,23.5,77.5,37.2`
         );
         const data = await res.json();
-        setResults(Array.isArray(data) ? data : []);
+        normalized = (data?.features || []).map((f) => {
+          const p = f.properties || {};
+          const label = [p.name, p.city || p.county, p.state, p.country].filter(Boolean).join(", ");
+          return { label: label || p.name || val, lat: f.geometry.coordinates[1], lng: f.geometry.coordinates[0] };
+        });
       } catch {
-        setResults([]);
-      } finally {
-        setSearching(false);
+        normalized = [];
       }
+      if (normalized.length === 0) {
+        // Fallback: Nominatim.
+        try {
+          const res2 = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&countrycodes=pk&limit=6&q=${encodeURIComponent(val)}`
+          );
+          const data2 = await res2.json();
+          normalized = (Array.isArray(data2) ? data2 : []).map((r) => ({
+            label: r.display_name, lat: parseFloat(r.lat), lng: parseFloat(r.lon),
+          }));
+        } catch {
+          normalized = [];
+        }
+      }
+      setResults(normalized);
+      setSearching(false);
     }, 500);
   };
 
   const pickResult = (r) => {
-    const p = { lat: parseFloat(r.lat), lng: parseFloat(r.lon) };
+    const p = { lat: r.lat, lng: r.lng };
     setCoords(p);
     setResults([]);
-    setQuery(r.display_name);
+    setQuery(r.label);
     if (mapRef.current && markerRef.current) {
       mapRef.current.setView([p.lat, p.lng], 16);
       markerRef.current.setLatLng([p.lat, p.lng]);
@@ -1318,7 +1356,7 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
                 className="w-full text-left px-3 py-2.5 text-[12px] transition-colors hover:bg-white/5"
                 style={{ color: C.textMuted, borderBottom: i < results.length - 1 ? `1px solid ${C.surfaceBorder}` : "none" }}
               >
-                {r.display_name}
+                {r.label}
               </button>
             ))}
           </div>
@@ -1610,6 +1648,10 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
       setError(t.errRequired);
       return;
     }
+    if (lastSeenDate > todayStr()) {
+      setError(t.futureDateError);
+      return;
+    }
     if (!isEdit && !/^[0-9]{4,6}$/.test(reunionPin.trim())) {
       setError(t.reunionPin + " — 4-6 digits.");
       return;
@@ -1699,7 +1741,7 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
       </Field>
 
       <div className="grid grid-cols-2 gap-3">
-        <Field label={t.lastSeenDate} required icon={Calendar}><Input type="date" value={lastSeenDate} onChange={(e) => setLastSeenDate(e.target.value)} /></Field>
+        <Field label={t.lastSeenDate} required icon={Calendar}><Input type="date" value={lastSeenDate} max={todayStr()} onChange={(e) => setLastSeenDate(e.target.value)} /></Field>
         <Field label={t.lastSeenTime} required icon={Clock}><Input type="time" value={lastSeenTime} onChange={(e) => setLastSeenTime(e.target.value)} /></Field>
       </div>
 
@@ -1783,6 +1825,10 @@ function SightingForm({ report, onCancel, onSubmit, t, initialData, isEdit }) {
       setError(t.errRequired);
       return;
     }
+    if (date > todayStr()) {
+      setError(t.futureDateError);
+      return;
+    }
     setSubmitting(true);
     setError("");
     try {
@@ -1815,7 +1861,7 @@ function SightingForm({ report, onCancel, onSubmit, t, initialData, isEdit }) {
       <Field label={t.seenCity} required icon={MapPin}><Input value={seenCity} onChange={(e) => setSeenCity(e.target.value)} placeholder={t.cityPh} /></Field>
 
       <div className="grid grid-cols-2 gap-3">
-        <Field label={t.seenDate} required icon={Calendar}><Input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></Field>
+        <Field label={t.seenDate} required icon={Calendar}><Input type="date" value={date} max={todayStr()} onChange={(e) => setDate(e.target.value)} /></Field>
         <Field label={t.seenTime} required icon={Clock}><Input type="time" value={time} onChange={(e) => setTime(e.target.value)} /></Field>
       </div>
 
@@ -1990,8 +2036,18 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
       )}
 
       {pending && (isAdmin || isMyOwnReport) && (
-        <div className="mb-4 rounded-xl p-3 flex items-center gap-2 text-[11.5px]" style={{ background: "rgba(255,182,39,0.1)", color: C.amber, border: `1px solid ${C.surfaceBorder}` }}>
-          <Clock size={12} className="shrink-0" /> {t.pendingNotice}
+        <div className="mb-4 rounded-xl p-3 flex items-start gap-2 text-[11.5px]" style={{ background: "rgba(255,182,39,0.1)", color: C.amber, border: `1px solid ${C.surfaceBorder}` }}>
+          <Clock size={12} className="shrink-0 mt-0.5" />
+          <div>
+            <p>{t.pendingReviewFriendly}</p>
+            {isMyOwnReport && !isAdmin && <p className="mt-1" style={{ color: C.textFaint }}>{t.editUntilVerified}</p>}
+          </div>
+        </div>
+      )}
+
+      {report.verified && isMyOwnReport && !isAdmin && (
+        <div className="mb-4 rounded-xl p-3 flex items-center gap-2 text-[11.5px]" style={{ background: "rgba(0,200,150,0.1)", color: C.emerald, border: `1px solid ${C.surfaceBorder}` }}>
+          <Lock size={12} className="shrink-0" /> {t.editLockedAfterVerify}
         </div>
       )}
 
@@ -2144,7 +2200,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
               className="flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
               style={{ background: "rgba(255,182,39,0.14)", color: C.amber }}
             >
-              <MapPin size={12} className="shrink-0" /> {t.pinLocation}
+              <MapPin size={12} className="shrink-0" /> {t.lastLocationByFiler}
             </a>
           )}
           {report.homeLat != null && (
@@ -2187,7 +2243,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
         </div>
       )}
 
-      {(missing || isAdmin) && (
+      {(isAdmin || (pending && isMyOwnReport && !report.verified) || (missing && !report.verified)) && (
         <button
           onClick={() => (isAdmin ? onEditReport(report) : setVerifyMode("edit"))}
           className="w-full mb-6 py-2.5 rounded-xl font-medium text-[12.5px] flex items-center justify-center gap-1.5"
@@ -2310,10 +2366,10 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
                       href={`https://www.google.com/maps?q=${s.filingLat},${s.filingLng}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 text-[11px] font-medium mt-2 px-2.5 py-1.5 rounded-lg"
+                      className="flex items-center gap-1.5 text-[11px] font-medium mt-2 px-2.5 py-1.5 rounded-lg"
                       style={{ background: "rgba(255,182,39,0.14)", color: C.amber }}
                     >
-                      <Lock size={10} /> {t.adminSightingLocation}
+                      <Lock size={10} className="shrink-0" /> {t.adminSightingLocation}
                     </a>
                   )}
                   <div className="flex items-center gap-2 mt-2.5">
@@ -2675,7 +2731,7 @@ export default function App() {
           {(() => {
             const myPending = reports.filter((r) => myReportIds.includes(r.id) && r.status === "pending");
             if (myPending.length === 0) {
-              return <p className="text-[13.5px]" style={{ color: C.textFaint }}>{t.myPendingEmpty}</p>;
+              return <p className="text-[13.5px]" style={{ color: C.textFaint }}>{t.myPendingEmptyNew}</p>;
             }
             return (
               <div className="grid grid-cols-2 gap-3.5">
