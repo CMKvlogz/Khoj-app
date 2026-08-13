@@ -1953,7 +1953,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
   }
 
   // ---- Restricted privacy view for reunited cases (non-admin) ----
-  if (!missing && !isAdmin) {
+  if (report.status === "found" && !isAdmin) {
     return (
       <div className="max-w-lg mx-auto px-5 pb-20">
         <div className="flex items-center mt-3 mb-4">
@@ -2569,7 +2569,9 @@ export default function App() {
     const updated = {
       ...report,
       verified: turningOn,
-      status: turningOn ? (wasPending ? "missing" : report.status) : "pending",
+      // Un-verifying only un-publishes a live "missing" case back to pending review.
+      // A "found"/reunited case keeps its status either way — it just loses the badge.
+      status: turningOn ? (wasPending ? "missing" : report.status) : (report.status === "missing" ? "pending" : report.status),
     };
     await saveList("khoj-reports", null, updated);
     setReports((prev) => prev.map((r) => (r.id === report.id ? updated : r)));
