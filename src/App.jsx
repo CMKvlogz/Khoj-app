@@ -254,16 +254,18 @@ const EN = {
   searchByName: "Search by name...",
   myPendingRequests: "My Pending Requests",
   myPendingEmpty: "You haven't filed any reports awaiting review.",
-  adminMarkFoundLocation: "Here is the filer's location at the time of marking as reunited",
   foundLocationMapTitle: "Where was the person found? (optional)",
-  adminLocSection1: "Filer & reporter locations",
+  adminLocSection1: "Filer's locations",
   adminLocSection2: "Missing person's pin locations",
+  adminMarkFoundLocation: "Here is the filer's location at the time this case was marked as reunited",
+  markedFoundByAdminNote: "This case was marked as reunited by an admin, so the filer's own location wasn't captured.",
   futureDateError: "The date cannot be in the future.",
   lastLocationByFiler: "Missing person's last location — by case filer",
   myPendingEmptyNew: "You haven't submitted any reports for review.",
   editLockedAfterVerify: "This report can no longer be edited — it has already been verified by the Khoj team.",
   editUntilVerified: "You can edit this report as many times as you like until it's verified by the Khoj team. Once verified, editing will be locked.",
   pendingReviewFriendly: "The Khoj team is reviewing your request. Once the review is complete, your case will be published live on the board.",
+  searchUnavailable: "Search isn't available right now — try 'Use my current location' or tap directly on the map instead.",
 };
 
 const UR = {
@@ -522,16 +524,18 @@ const ROMAN = {
   searchByName: "Naam se search karein...",
   myPendingRequests: "Meri Pending Requests",
   myPendingEmpty: "Aapne koi report file nahi ki jo review ka intezar kar rahi ho.",
-  adminMarkFoundLocation: "Filer ki location, jab reunited mark kiya",
+  adminMarkFoundLocation: "Filer ki location, jab case reunited mark hua",
   foundLocationMapTitle: "Shaks kahan mila? (optional)",
-  adminLocSection1: "Filer aur reporter ki locations",
+  adminLocSection1: "Filer ki locations",
   adminLocSection2: "Laapta shaks ki pin locations",
+  markedFoundByAdminNote: "Ye case admin ne reunited mark kiya tha, is liye filer ki apni location capture nahi hui.",
   futureDateError: "Date future mein nahi ho sakti.",
   lastLocationByFiler: "Missing person's last location — case filer ki taraf se",
   myPendingEmptyNew: "Aapne review ke liye koi report submit nahi ki.",
   editLockedAfterVerify: "Ye report ab edit nahi ho sakti — Khoj team pehle hi ise verify kar chuki hai.",
   editUntilVerified: "Jab tak Khoj team verify nahi karti, aap ye report jitni baar chahen edit kar sakte hain. Verify hone ke baad editing lock ho jayegi.",
   pendingReviewFriendly: "Khoj team aapki request review kar rahi hai. Review mukammal hote hi aapka case board par live kar diya jayega.",
+  searchUnavailable: "Search abhi available nahi hai — 'Use my current location' try karein ya seedha map par tap karein.",
 };
 
 const PA = {
@@ -1272,8 +1276,11 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
     );
   };
 
+  const [searchError, setSearchError] = useState("");
+
   const handleSearchChange = (val) => {
     setQuery(val);
+    setSearchError("");
     if (searchTimer.current) clearTimeout(searchTimer.current);
     if (!val.trim() || val.trim().length < 3) { setResults([]); return; }
     searchTimer.current = setTimeout(async () => {
@@ -1281,9 +1288,7 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
       let normalized = [];
       try {
         // Primary: Photon (OSM-based, built for search-as-you-type, reliable CORS).
-        const res = await fetch(
-          `https://photon.komoot.io/api/?q=${encodeURIComponent(val)}&limit=6&lang=en&bbox=60.8,23.5,77.5,37.2`
-        );
+        const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(val)}&limit=6&lang=en`);
         const data = await res.json();
         normalized = (data?.features || []).map((f) => {
           const p = f.properties || {};
@@ -1297,7 +1302,7 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
         // Fallback: Nominatim.
         try {
           const res2 = await fetch(
-            `https://nominatim.openstreetmap.org/search?format=json&countrycodes=pk&limit=6&q=${encodeURIComponent(val)}`
+            `https://nominatim.openstreetmap.org/search?format=json&limit=6&q=${encodeURIComponent(val)}`
           );
           const data2 = await res2.json();
           normalized = (Array.isArray(data2) ? data2 : []).map((r) => ({
@@ -1307,6 +1312,7 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
           normalized = [];
         }
       }
+      if (normalized.length === 0) setSearchError(t.searchUnavailable);
       setResults(normalized);
       setSearching(false);
     }, 500);
@@ -1346,6 +1352,9 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
           />
           {searching && <Loader2 size={13} className="animate-spin shrink-0" color={C.textFaint} />}
         </div>
+        {searchError && !searching && (
+          <p className="text-[11px] mt-1.5 px-1" style={{ color: C.textFaint }}>{searchError}</p>
+        )}
         {results.length > 0 && (
           <div className="absolute left-4 right-4 mt-1 rounded-xl overflow-hidden z-10" style={{ background: "#1C1330", border: `1px solid ${C.surfaceBorder}` }}>
             {results.map((r, i) => (
@@ -2149,7 +2158,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
         )}
       </div>
 
-      {isAdmin && (report.filingLat != null || report.markFoundLat != null || mySightings.some((s) => s.filingLat != null)) && (
+      {isAdmin && (report.filingLat != null || report.markFoundLat != null || report.markFoundByAdmin) && (
         <div className="mb-3 rounded-xl p-3.5 space-y-2" style={{ background: "rgba(255,182,39,0.08)", border: `1px dashed ${C.amber}55` }}>
           <div className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: C.amber }}><Lock size={11} /> {t.adminLocSection1}</div>
           {report.filingLat != null && (
@@ -2163,19 +2172,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
               <MapPin size={12} className="shrink-0" /> {t.adminFilerLocation}
             </a>
           )}
-          {mySightings.filter((s) => s.filingLat != null).map((s) => (
-            <a
-              key={s.id}
-              href={`https://www.google.com/maps?q=${s.filingLat},${s.filingLng}`}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
-              style={{ background: "rgba(255,182,39,0.14)", color: C.amber }}
-            >
-              <MapPin size={12} className="shrink-0" /> {t.adminSightingLocation} — {s.yourName || t.contact}
-            </a>
-          ))}
-          {report.markFoundLat != null && (
+          {report.markFoundLat != null && !report.markFoundByAdmin && (
             <a
               href={`https://www.google.com/maps?q=${report.markFoundLat},${report.markFoundLng}`}
               target="_blank"
@@ -2185,6 +2182,9 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
             >
               <MapPin size={12} className="shrink-0" /> {t.adminMarkFoundLocation}
             </a>
+          )}
+          {report.markFoundByAdmin && (
+            <p className="text-[11px] px-1" style={{ color: C.textFaint }}>{t.markedFoundByAdminNote}</p>
           )}
         </div>
       )}
@@ -2304,8 +2304,8 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
           allowSkip
           titleOverride={t.foundLocationMapTitle}
           onClose={() => setShowFoundLocationPrompt(false)}
-          onSkip={() => { setShowFoundLocationPrompt(false); onMarkFound(report, { foundCoords: null }); }}
-          onConfirm={(coords) => { setShowFoundLocationPrompt(false); onMarkFound(report, { foundCoords: coords }); }}
+          onSkip={() => { setShowFoundLocationPrompt(false); onMarkFound(report, { foundCoords: null, byAdmin: isAdmin }); }}
+          onConfirm={(coords) => { setShowFoundLocationPrompt(false); onMarkFound(report, { foundCoords: coords, byAdmin: isAdmin }); }}
         />
       )}
 
@@ -2531,14 +2531,16 @@ export default function App() {
     pushNotification(`${t.eventSighting} ${report?.name || ""}`, sighting.reportId, "sighting");
   };
   const handleMarkFound = async (report, options = {}) => {
-    // Silently capture the marker's own location (admin-only, always attempted).
-    const markerLoc = await captureFilingLocation();
+    // Silently capture the marker's own location — only meaningful when the
+    // case filer themselves is the one marking it found (via PIN), not admin.
+    const markerLoc = options.byAdmin ? null : await captureFilingLocation();
     // The optional, manually-picked location of where the missing person was found (shown publicly).
     const foundLoc = options.foundCoords || null;
     const updatedReport = {
       ...report, status: "found", foundAt: new Date().toISOString(),
       foundLat: foundLoc?.lat ?? null, foundLng: foundLoc?.lng ?? null,
       markFoundLat: markerLoc?.lat ?? null, markFoundLng: markerLoc?.lng ?? null,
+      markFoundByAdmin: !!options.byAdmin,
     };
     await saveList("khoj-reports", null, updatedReport);
     setReports((prev) => prev.map((r) => (r.id === report.id ? updatedReport : r)));
