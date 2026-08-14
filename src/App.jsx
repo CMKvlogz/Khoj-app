@@ -30,6 +30,7 @@ import {
   Pencil,
   Share2,
   Search,
+  Heart,
 } from "lucide-react";
 
 // ============================== Fonts ==============================
@@ -41,7 +42,7 @@ function useFonts() {
     const l2 = document.createElement("link");
     l2.rel = "stylesheet";
     l2.href =
-      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap";
+      "https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Nastaliq+Urdu:wght@500;700&display=swap";
     document.head.appendChild(l1);
     document.head.appendChild(l2);
     const style = document.createElement("style");
@@ -82,7 +83,7 @@ const EN = {
   tabFound: "History",
   tabAll: "All",
   emptyTitle: "No records in this view yet.",
-  emptySub: "If someone is missing, be the first to post a report.",
+  emptySub: "Every report here could be the one that brings someone home. Be the first to post.",
   loading: "Loading the board...",
   back: "Back to board",
   noSightings: "No sightings reported yet.",
@@ -98,7 +99,7 @@ const EN = {
   statusMissing: "Missing",
   statusFound: "Reunited",
   reportFormTitle: "Report a Missing Person",
-  reportFormSub: "Accurate details help the community respond faster.",
+  reportFormSub: "Every detail you share brings them one step closer to home.",
   photo: "Photo",
   choosePhoto: "Choose photo",
   photoHint: "Required — a clear, recent photo helps identification.",
@@ -266,6 +267,16 @@ const EN = {
   editUntilVerified: "You can edit this report as many times as you like until it's verified by the Khoj team. Once verified, editing will be locked.",
   pendingReviewFriendly: "The Khoj team is reviewing your request. Once the review is complete, your case will be published live on the board.",
   searchUnavailable: "Search isn't available right now — try 'Use my current location' or tap directly on the map instead.",
+  shareToHelpHer: "Share to help find her",
+  shareToHelpHim: "Share to help find him",
+  shareToHelpThem: "Share to help find them",
+  today: "today",
+  daysAbbrev: "d",
+  heroHeadline: "Every hour matters.",
+  heroSubline: "Help bring someone home.",
+  heroSearching: "people are searching alongside you right now.",
+  reunitedHighlight: "was found safe",
+  reunitedHighlightSub: "Reunited through this registry.",
 };
 
 const UR = {
@@ -359,7 +370,7 @@ const ROMAN = {
   tabFound: "Tareekh",
   tabAll: "Sab",
   emptyTitle: "Is list mein abhi koi record nahi.",
-  emptySub: "Agar kisi ki khabar nahi mil rahi, sabse pehli report post karein.",
+  emptySub: "Yahan har report kisi ko ghar wapas la sakti hai. Sabse pehli report post karein.",
   loading: "Board load ho raha hai...",
   back: "Board par wapis",
   noSightings: "Abhi tak koi sighting report nahi hui.",
@@ -375,7 +386,7 @@ const ROMAN = {
   statusMissing: "Laapta",
   statusFound: "Mil Gaya",
   reportFormTitle: "Missing Person Report",
-  reportFormSub: "Sahi maloomat community ko jaldi madad karne mein madad deti hain.",
+  reportFormSub: "Aapki di hui har detail unhein ghar ke ek qadam aur qareeb le jati hai.",
   photo: "Tasveer",
   choosePhoto: "Tasveer chunein",
   photoHint: "Zaroori hai — saaf aur haali tasveer pehchan mein madad karti hai.",
@@ -536,6 +547,16 @@ const ROMAN = {
   editUntilVerified: "Jab tak Khoj team verify nahi karti, aap ye report jitni baar chahen edit kar sakte hain. Verify hone ke baad editing lock ho jayegi.",
   pendingReviewFriendly: "Khoj team aapki request review kar rahi hai. Review mukammal hote hi aapka case board par live kar diya jayega.",
   searchUnavailable: "Search abhi available nahi hai — 'Use my current location' try karein ya seedha map par tap karein.",
+  shareToHelpHer: "Unhein dhoondhne mein madad ke liye share karein",
+  shareToHelpHim: "Unhein dhoondhne mein madad ke liye share karein",
+  shareToHelpThem: "Unhein dhoondhne mein madad ke liye share karein",
+  today: "aaj",
+  daysAbbrev: "din",
+  heroHeadline: "Har ghanta ahem hai.",
+  heroSubline: "Kisi ko ghar wapas laane mein madad karein.",
+  heroSearching: "log is waqt aapke saath dhoondh rahe hain.",
+  reunitedHighlight: "surakhiyat mil gaya",
+  reunitedHighlightSub: "Isi registry ke zariye reunited hua.",
 };
 
 const PA = {
@@ -987,19 +1008,24 @@ function fileToCompressedDataUrl(file, maxDim = 600, quality = 0.75) {
 }
 
 // ============================== Design tokens ==============================
+// "Official registry" theme — warm paper background, navy header, serif display type,
+// muted gold accent, deep red for urgent/missing, deep green for reunited/success.
 const C = {
-  bgFrom: "#1B1032",
-  bgTo: "#0D0818",
-  surface: "rgba(255,255,255,0.045)",
-  surfaceBorder: "rgba(255,255,255,0.09)",
-  rose: "#FF5470",
-  emerald: "#00C896",
-  amber: "#FFB627",
-  textPrimary: "#F5F3FA",
-  textMuted: "#9A93B3",
-  textFaint: "#5E5578",
+  bgFrom: "#FAF9F5",
+  bgTo: "#F0EEE6",
+  surface: "#FFFFFF",
+  surfaceBorder: "#DAD6C9",
+  rose: "#A32020",
+  emerald: "#3F6B4A",
+  amber: "#C99A3E",
+  navy: "#16213B",
+  textPrimary: "#16213B",
+  textMuted: "#5C5A50",
+  textFaint: "#B4B2A9",
 };
-const displayFont = "'Clash Display', 'Inter', sans-serif";
+const displayFont = "'Source Serif 4', 'IBM Plex Sans', serif";
+const bodyFont = "'IBM Plex Sans', sans-serif";
+const monoFont = "'IBM Plex Mono', monospace";
 
 // ============================== Logo ==============================
 function KhojMark({ size = 36 }) {
@@ -1012,9 +1038,9 @@ function KhojMark({ size = 36 }) {
         </linearGradient>
       </defs>
       <rect width="40" height="40" rx="11" fill="url(#khojGrad)" />
-      <circle cx="17" cy="17" r="7.5" stroke="#1B1032" strokeWidth="2.6" fill="none" />
-      <path d="M22.2 22.2 L28 28" stroke="#1B1032" strokeWidth="2.8" strokeLinecap="round" />
-      <path d="M17 13.5 C14.5 13.5 13.2 15.3 13.2 17" stroke="#1B1032" strokeWidth="1.6" strokeLinecap="round" opacity="0.55" />
+      <circle cx="17" cy="17" r="7.5" stroke="#16213B" strokeWidth="2.6" fill="none" />
+      <path d="M22.2 22.2 L28 28" stroke="#16213B" strokeWidth="2.8" strokeLinecap="round" />
+      <path d="M17 13.5 C14.5 13.5 13.2 15.3 13.2 17" stroke="#16213B" strokeWidth="1.6" strokeLinecap="round" opacity="0.55" />
     </svg>
   );
 }
@@ -1027,8 +1053,8 @@ function Pill({ active, children, onClick, activeColor }) {
       className="text-[13px] font-semibold px-3.5 py-[7px] rounded-full transition-all duration-200 whitespace-nowrap"
       style={
         active
-          ? { background: activeColor || C.rose, color: "#1B1032", boxShadow: `0 4px 14px ${(activeColor || C.rose)}55` }
-          : { background: "rgba(255,255,255,0.06)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }
+          ? { background: activeColor || C.rose, color: "#F7F5EE", boxShadow: `0 4px 14px ${(activeColor || C.rose)}55` }
+          : { background: "rgba(22,33,59,0.05)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }
       }
     >
       {children}
@@ -1046,8 +1072,8 @@ function Field({ label, required, icon: Icon, children }) {
     </label>
   );
 }
-const inputBase = "w-full rounded-xl px-3.5 py-3 text-[15px] focus:outline-none transition-all duration-150 placeholder:text-[#5E5578]";
-const inputStyle = { background: "rgba(255,255,255,0.045)", border: `1px solid ${C.surfaceBorder}`, color: C.textPrimary };
+const inputBase = "w-full rounded-xl px-3.5 py-3 text-[15px] focus:outline-none transition-all duration-150 placeholder:text-[#B4B2A9]";
+const inputStyle = { background: "rgba(22,33,59,0.04)", border: `1px solid ${C.surfaceBorder}`, color: C.textPrimary };
 function Input(props) {
   const { style, ...rest } = props;
   return (
@@ -1082,8 +1108,8 @@ function SegButton({ options, value, onChange }) {
           className="flex-1 text-[13px] font-medium py-2.5 rounded-xl transition-all"
           style={
             value === o.value
-              ? { background: C.rose, color: "#1B1032" }
-              : { background: "rgba(255,255,255,0.045)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }
+              ? { background: C.rose, color: "#F7F5EE" }
+              : { background: "rgba(22,33,59,0.04)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }
           }
         >
           {o.label}
@@ -1096,12 +1122,13 @@ function SegButton({ options, value, onChange }) {
 // ============================== Call button ==============================
 function CallButton({ number, label, icon: Icon = PhoneCall, tone = "rose", full }) {
   if (!number) return null;
-  const bg = tone === "rose" ? `linear-gradient(135deg, ${C.rose}, #FF7B54)` : tone === "emerald" ? `linear-gradient(135deg, ${C.emerald}, #00E0A8)` : `linear-gradient(135deg, ${C.amber}, #FFD166)`;
+  const bg = tone === "rose" ? `linear-gradient(135deg, ${C.rose}, #C23434)` : tone === "emerald" ? `linear-gradient(135deg, ${C.emerald}, #4F8058)` : `linear-gradient(135deg, ${C.amber}, #DBAF5C)`;
+  const fg = tone === "amber" ? "#16213B" : "#F7F5EE";
   return (
     <a
       href={`tel:${normalizePhone(number)}`}
       className={`${full ? "flex-1" : ""} inline-flex items-center justify-center gap-1.5 text-[13px] font-semibold px-3.5 py-2.5 rounded-xl transition-transform active:scale-95`}
-      style={{ background: bg, color: "#1B1032" }}
+      style={{ background: bg, color: fg }}
     >
       <Icon size={14} /> {label}
     </a>
@@ -1123,12 +1150,12 @@ function LangPicker({ lang, setLang }) {
       <button
         onClick={() => setOpen((v) => !v)}
         className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-full transition-colors"
-        style={{ background: "rgba(255,255,255,0.06)", color: C.textPrimary, border: `1px solid ${C.surfaceBorder}` }}
+        style={{ background: "rgba(22,33,59,0.05)", color: C.textPrimary, border: `1px solid ${C.surfaceBorder}` }}
       >
         <Globe size={13} /> {current.label}
       </button>
       {open && (
-        <div className="absolute right-0 mt-2 w-40 rounded-xl overflow-hidden z-50 shadow-2xl" style={{ background: "#1C1330", border: `1px solid ${C.surfaceBorder}` }}>
+        <div className="absolute right-0 mt-2 w-40 rounded-xl overflow-hidden z-50 shadow-2xl" style={{ background: "#FFFFFF", border: `1px solid ${C.surfaceBorder}` }}>
           {LANGS.map((l) => (
             <button
               key={l.code}
@@ -1149,7 +1176,7 @@ function LangPicker({ lang, setLang }) {
 // ============================== Notifications panel ==============================
 function NotifPanel({ notifications, t, onClose, onOpenReport }) {
   return (
-    <div className="absolute right-0 top-11 w-[300px] max-w-[85vw] rounded-2xl overflow-hidden z-50 shadow-2xl" style={{ background: "#1C1330", border: `1px solid ${C.surfaceBorder}` }}>
+    <div className="absolute right-0 top-11 w-[300px] max-w-[85vw] rounded-2xl overflow-hidden z-50 shadow-2xl" style={{ background: "#FFFFFF", border: `1px solid ${C.surfaceBorder}` }}>
       <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: `1px solid ${C.surfaceBorder}` }}>
         <span className="text-[13.5px] font-semibold" style={{ color: C.textPrimary }}>{t.notifTitle}</span>
       </div>
@@ -1181,8 +1208,8 @@ function NotifPanel({ notifications, t, onClose, onOpenReport }) {
 function ModalShell({ onClose, children }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4" style={{ background: "rgba(9,6,17,0.72)", backdropFilter: "blur(3px)" }} onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-sm rounded-2xl p-5 relative khoj-card-in" style={{ background: "#1C1330", border: `1px solid ${C.surfaceBorder}` }}>
-        <button onClick={onClose} className="absolute top-3.5 right-3.5 w-7 h-7 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.06)" }}>
+      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-sm rounded-2xl p-5 relative khoj-card-in" style={{ background: "#FFFFFF", border: `1px solid ${C.surfaceBorder}` }}>
+        <button onClick={onClose} className="absolute top-3.5 right-3.5 w-7 h-7 rounded-full flex items-center justify-center" style={{ background: "rgba(22,33,59,0.05)" }}>
           <X size={14} color={C.textMuted} />
         </button>
         {children}
@@ -1213,7 +1240,7 @@ function VerifyReunitedModal({ report, onClose, onConfirmed, t, title, sub, cont
       <form onSubmit={submit}>
         <Input value={value} onChange={(e) => { setValue(e.target.value.replace(/[^0-9]/g, "").slice(0, 6)); setWrong(false); }} placeholder={t.verifyContactPh} inputMode="numeric" type="password" />
         {wrong && <p className="text-[12.5px] mt-2" style={{ color: C.rose }}>{t.verifyWrong}</p>}
-        <button type="submit" className="w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px]" style={{ background: `linear-gradient(135deg, ${C.emerald}, #00E0A8)`, color: "#0D1F1A" }}>
+        <button type="submit" className="w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px]" style={{ background: `linear-gradient(135deg, ${C.emerald}, #4F8058)`, color: "#F7F5EE" }}>
           {continueLabel || t.verifyContinue}
         </button>
       </form>
@@ -1330,18 +1357,18 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex flex-col" style={{ background: "#100a1e" }}>
+    <div className="fixed inset-0 z-[60] flex flex-col" style={{ background: "#F0EEE6" }}>
       <div className="flex items-center justify-between px-4 py-3 shrink-0" style={{ borderBottom: `1px solid ${C.surfaceBorder}` }}>
         <span className="text-[13px] font-semibold flex items-center gap-1.5" style={{ color: C.textPrimary }}>
           <Navigation size={13} color={C.amber} /> {titleOverride || t.tapToPin}
         </span>
-        <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(255,255,255,0.06)" }}>
+        <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(22,33,59,0.05)" }}>
           <X size={16} color={C.textMuted} />
         </button>
       </div>
 
       <div className="px-4 py-2.5 shrink-0 relative" style={{ borderBottom: `1px solid ${C.surfaceBorder}` }}>
-        <div className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: "rgba(255,255,255,0.05)", border: `1px solid ${C.surfaceBorder}` }}>
+        <div className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: "rgba(22,33,59,0.045)", border: `1px solid ${C.surfaceBorder}` }}>
           <Search size={14} color={C.textFaint} className="shrink-0" />
           <input
             value={query}
@@ -1356,7 +1383,7 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
           <p className="text-[11px] mt-1.5 px-1" style={{ color: C.textFaint }}>{searchError}</p>
         )}
         {results.length > 0 && (
-          <div className="absolute left-4 right-4 mt-1 rounded-xl overflow-hidden z-10" style={{ background: "#1C1330", border: `1px solid ${C.surfaceBorder}` }}>
+          <div className="absolute left-4 right-4 mt-1 rounded-xl overflow-hidden z-10" style={{ background: "#FFFFFF", border: `1px solid ${C.surfaceBorder}` }}>
             {results.map((r, i) => (
               <button
                 key={i}
@@ -1374,7 +1401,7 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
 
       <div className="flex-1 relative">
         {!ready && (
-          <div className="absolute inset-0 flex items-center justify-center" style={{ background: "#151022" }}>
+          <div className="absolute inset-0 flex items-center justify-center" style={{ background: "#FFFFFF" }}>
             <Loader2 size={22} className="animate-spin" color={C.textMuted} />
           </div>
         )}
@@ -1395,7 +1422,7 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
             disabled={!coords}
             onClick={() => coords && onConfirm(coords)}
             className="flex-1 py-3 rounded-xl font-semibold text-[12.5px] disabled:opacity-40"
-            style={{ background: `linear-gradient(135deg, ${C.emerald}, #00E0A8)`, color: "#0D1F1A" }}
+            style={{ background: `linear-gradient(135deg, ${C.emerald}, #4F8058)`, color: "#F7F5EE" }}
           >
             {t.confirmPin}
           </button>
@@ -1440,7 +1467,7 @@ function AdminLoginModal({ onClose, onSuccess, t }) {
           <form onSubmit={submitStep1}>
             <Input type="password" value={pw} onChange={(e) => { setPw(e.target.value); setWrong(false); }} placeholder={t.adminPasswordPh} />
             {wrong && <p className="text-[12.5px] mt-2" style={{ color: C.rose }}>{t.adminWrong}</p>}
-            <button type="submit" className="w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px]" style={{ background: `linear-gradient(135deg, ${C.amber}, #FFD166)`, color: "#1B1032" }}>
+            <button type="submit" className="w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px]" style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B" }}>
               {t.adminNext}
             </button>
           </form>
@@ -1451,7 +1478,7 @@ function AdminLoginModal({ onClose, onSuccess, t }) {
           <form onSubmit={submitStep2}>
             <Input type="password" value={pin} onChange={(e) => { setPin(e.target.value.replace(/[^0-9]/g, "").slice(0, 6)); setWrong(false); }} placeholder={t.adminStep2Ph} inputMode="numeric" />
             {wrong && <p className="text-[12.5px] mt-2" style={{ color: C.rose }}>{t.adminWrong}</p>}
-            <button type="submit" className="w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px]" style={{ background: `linear-gradient(135deg, ${C.amber}, #FFD166)`, color: "#1B1032" }}>
+            <button type="submit" className="w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px]" style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B" }}>
               {t.adminEnter}
             </button>
           </form>
@@ -1511,7 +1538,7 @@ function LocationPromptModal({ onContinue, onClose, t }) {
         type="button"
         onClick={onContinue}
         className="w-full py-3 rounded-xl font-semibold text-[13.5px]"
-        style={{ background: `linear-gradient(135deg, ${C.amber}, #FFD166)`, color: "#1B1032" }}
+        style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B" }}
       >
         {t.continueBtn}
       </button>
@@ -1544,54 +1571,58 @@ function NoticeCard({ report, sightingCount, onOpen, t, index }) {
   const missing = report.status === "missing";
   const pending = report.status === "pending";
   const photo = getPhotos(report)[0];
+  const daysAgo = missing ? Math.max(0, Math.floor((Date.now() - new Date(report.createdAt).getTime()) / 86400000)) : null;
+  const statusColor = pending ? C.amber : missing ? C.rose : C.emerald;
+  const statusBg = pending ? "#FBF3E3" : missing ? "#FBEAEA" : "#EAF1EA";
+  const photoBg = missing ? "#EFEDE4" : pending ? "#FBF3E3" : "#EAF1EA";
   return (
     <button
       onClick={() => onOpen(report)}
       style={{ animationDelay: `${index * 40}ms` }}
-      className="khoj-card-in group relative text-left w-full rounded-2xl overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5470] transition-transform duration-300 hover:-translate-y-1"
+      className="khoj-card-in group text-left w-full rounded-md overflow-hidden focus:outline-none transition-transform duration-300 hover:-translate-y-0.5"
     >
-      <div className="relative aspect-[3/4] w-full overflow-hidden" style={{ background: "linear-gradient(160deg,#241a3d,#150f24)", border: `1px solid ${C.surfaceBorder}` }}>
-        {photo ? (
-          <img src={photo} alt={report.name} className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center"><User size={36} strokeWidth={1.3} color={C.textFaint} /></div>
-        )}
-        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(13,8,24,0) 40%, rgba(13,8,24,0.92) 100%)" }} />
-        <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide"
-          style={{ background: pending ? "rgba(255,182,39,0.2)" : missing ? "rgba(255,84,112,0.18)" : "rgba(0,200,150,0.18)", color: pending ? C.amber : missing ? C.rose : C.emerald, backdropFilter: "blur(6px)" }}>
-          {missing && (
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full rounded-full opacity-80" style={{ background: C.rose, animation: "khoj-pulse 1.8s cubic-bezier(0,0,0.2,1) infinite" }} />
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ background: C.rose }} />
-            </span>
+      <div className="bg-white" style={{ border: `1px solid ${C.surfaceBorder}` }}>
+        <div className="relative aspect-[4/3] w-full overflow-hidden flex items-center justify-center" style={{ background: photoBg }}>
+          {photo ? (
+            <img src={photo} alt={report.name} className="w-full h-full object-cover" />
+          ) : (
+            <User size={34} strokeWidth={1.3} color={C.textFaint} />
           )}
-          {missing ? t.statusMissing : pending ? t.statusPending : t.statusFound}
-        </div>
-        {missing && sightingCount > 0 && (
-          <div className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold" style={{ background: "rgba(255,182,39,0.2)", color: C.amber, backdropFilter: "blur(6px)" }}>
-            <Eye size={10} /> {sightingCount}
+          <div
+            className="absolute top-1.5 left-1.5 text-[9px] font-medium uppercase px-1.5 py-0.5 rounded-sm"
+            style={{ fontFamily: monoFont, border: `1.5px solid ${statusColor}`, color: statusColor, background: statusBg, letterSpacing: "0.4px", transform: "rotate(-3deg)" }}
+          >
+            {missing ? t.statusMissing : pending ? t.statusPending : t.statusFound}
           </div>
-        )}
-        <div className="absolute bottom-0 left-0 right-0 p-3">
-          <h3 className="text-[17px] leading-tight text-white flex items-center gap-1" style={{ fontFamily: displayFont, fontWeight: 600 }}>
-            {report.name}
-            {report.verified && <CheckCircle2 size={13} color={C.emerald} className="shrink-0" />}
-          </h3>
+          {missing && daysAgo != null && (
+            <div className="absolute bottom-1.5 right-1.5 text-[9px] px-1.5 py-0.5 rounded-sm" style={{ fontFamily: monoFont, background: C.navy, color: "#F0EEE6" }}>
+              {daysAgo <= 0 ? t.today : `${daysAgo}${t.daysAbbrev}`}
+            </div>
+          )}
+          {missing && sightingCount > 0 && (
+            <div className="absolute bottom-1.5 left-1.5 flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded-sm" style={{ fontFamily: monoFont, background: C.amber, color: C.navy }}>
+              <Eye size={9} /> {sightingCount}
+            </div>
+          )}
+        </div>
+        <div className="px-2.5 py-2">
+          <div className="flex items-center gap-1">
+            <h3 className="text-[13px] leading-tight truncate" style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }}>{report.name}</h3>
+            {report.verified && <CheckCircle2 size={11} color={C.emerald} className="shrink-0" />}
+          </div>
           {missing ? (
             <>
-              <div className="flex items-center gap-2 mt-0.5 text-[11px]" style={{ color: "rgba(255,255,255,0.65)" }}>
-                {report.age && <span>{report.age}y</span>}
-                {report.gender && <span>· {report.gender}</span>}
+              <div className="text-[10px] mt-0.5" style={{ fontFamily: monoFont, color: C.textMuted }}>
+                {report.age && `${report.age}y`}{report.gender && ` · ${report.gender}`}{report.city && ` · ${report.city}`}
               </div>
-              <div className="flex items-center gap-1 mt-1.5 text-[11.5px]" style={{ color: "rgba(255,255,255,0.75)" }}>
-                <MapPin size={11} className="shrink-0" />
-                <span className="truncate">{report.city || report.lastSeenLocation}</span>
+              <div className="flex items-center gap-1 mt-1.5" style={{ color: C.textMuted }}>
+                <Share2 size={10} className="shrink-0" />
+                <span className="text-[9px]">{report.gender === "female" ? t.shareToHelpHer : report.gender === "male" ? t.shareToHelpHim : t.shareToHelpThem}</span>
               </div>
             </>
           ) : (
-            <div className="flex items-center gap-1 mt-1 text-[11px]" style={{ color: "rgba(255,255,255,0.65)" }}>
-              <CheckCircle2 size={11} color={C.emerald} className="shrink-0" />
-              <span>{fmtDate(report.foundAt || report.createdAt)}</span>
+            <div className="text-[10px] mt-0.5" style={{ fontFamily: monoFont, color: C.textMuted }}>
+              {t.reunitedOn} {fmtDate(report.foundAt || report.createdAt)}
             </div>
           )}
         </div>
@@ -1709,11 +1740,11 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
               <button type="button" onClick={() => removePhoto(i)} className="absolute top-1 right-1 w-5 h-5 rounded-full flex items-center justify-center" style={{ background: "rgba(9,6,17,0.75)" }}>
                 <X size={11} color="#fff" />
               </button>
-              {i === 0 && <span className="absolute bottom-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ background: "rgba(0,200,150,0.85)", color: "#052018" }}>{t.photo}</span>}
+              {i === 0 && <span className="absolute bottom-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ background: "rgba(0,200,150,0.85)", color: "#16213B" }}>{t.photo}</span>}
             </div>
           ))}
           {photos.length < 3 && (
-            <div className="w-20 h-24 rounded-xl overflow-hidden flex items-center justify-center shrink-0" style={{ background: "rgba(255,255,255,0.04)", border: `1px dashed ${photos.length === 0 ? C.rose : C.surfaceBorder}` }}>
+            <div className="w-20 h-24 rounded-xl overflow-hidden flex items-center justify-center shrink-0" style={{ background: "rgba(22,33,59,0.035)", border: `1px dashed ${photos.length === 0 ? C.rose : C.surfaceBorder}` }}>
               <input ref={fileRef} type="file" accept="image/*" onChange={handlePhoto} className="hidden" />
               <button type="button" onClick={() => fileRef.current?.click()} className="w-full h-full flex flex-col items-center justify-center gap-1">
                 {photoLoading ? <Loader2 size={18} className="animate-spin" color={C.textFaint} /> : <><Plus size={16} color={C.textFaint} /><span className="text-[9.5px]" style={{ color: C.textFaint }}>{t.addPhoto}</span></>}
@@ -1741,7 +1772,7 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
           style={
             lastSeenCoords
               ? { background: "rgba(0,200,150,0.14)", color: C.emerald, border: `1px solid ${C.surfaceBorder}` }
-              : { background: "rgba(255,255,255,0.045)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }
+              : { background: "rgba(22,33,59,0.04)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }
           }
         >
           {lastSeenCoords ? <CheckCircle2 size={14} /> : <Navigation size={14} />}
@@ -1764,7 +1795,7 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
           style={
             homeCoords
               ? { background: "rgba(0,200,150,0.14)", color: C.emerald, border: `1px solid ${C.surfaceBorder}` }
-              : { background: "rgba(255,255,255,0.045)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }
+              : { background: "rgba(22,33,59,0.04)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }
           }
         >
           {homeCoords ? <CheckCircle2 size={14} /> : <Navigation size={14} />}
@@ -1785,8 +1816,8 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
       {error && <p className="text-[13px] mb-4" style={{ color: C.rose }}>{error}</p>}
 
       <div className="flex gap-3 mt-2">
-        <button type="button" onClick={onCancel} className="flex-1 py-3.5 rounded-xl font-semibold transition-colors" style={{ background: "rgba(255,255,255,0.05)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }}>{t.cancel}</button>
-        <button type="submit" disabled={submitting} className="flex-1 py-3.5 rounded-xl font-semibold transition-all disabled:opacity-60" style={{ background: `linear-gradient(135deg, ${C.rose}, #FF7B54)`, color: "#1B1032", boxShadow: `0 8px 20px ${C.rose}40` }}>
+        <button type="button" onClick={onCancel} className="flex-1 py-3.5 rounded-xl font-semibold transition-colors" style={{ background: "rgba(22,33,59,0.045)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }}>{t.cancel}</button>
+        <button type="submit" disabled={submitting} className="flex-1 py-3.5 rounded-xl font-semibold transition-all disabled:opacity-60" style={{ background: `linear-gradient(135deg, ${C.rose}, #C23434)`, color: "#F7F5EE", boxShadow: `0 8px 20px ${C.rose}40` }}>
           {submitting ? t.submitting : isEdit ? t.saveChanges : t.submitReport}
         </button>
       </div>
@@ -1884,7 +1915,7 @@ function SightingForm({ report, onCancel, onSubmit, t, initialData, isEdit }) {
           style={
             coords
               ? { background: "rgba(0,200,150,0.14)", color: C.emerald, border: `1px solid ${C.surfaceBorder}` }
-              : { background: "rgba(255,255,255,0.045)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }
+              : { background: "rgba(22,33,59,0.04)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }
           }
         >
           {coords ? <CheckCircle2 size={14} /> : <Navigation size={14} />}
@@ -1900,8 +1931,8 @@ function SightingForm({ report, onCancel, onSubmit, t, initialData, isEdit }) {
       {error && <p className="text-[13px] mb-4" style={{ color: C.rose }}>{error}</p>}
 
       <div className="flex gap-3 mt-2">
-        <button type="button" onClick={onCancel} className="flex-1 py-3.5 rounded-xl font-semibold transition-colors" style={{ background: "rgba(255,255,255,0.05)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }}>{t.cancel}</button>
-        <button type="submit" disabled={submitting} className="flex-1 py-3.5 rounded-xl font-semibold transition-all disabled:opacity-60" style={{ background: `linear-gradient(135deg, ${C.amber}, #FFD166)`, color: "#1B1032", boxShadow: `0 8px 20px ${C.amber}40` }}>
+        <button type="button" onClick={onCancel} className="flex-1 py-3.5 rounded-xl font-semibold transition-colors" style={{ background: "rgba(22,33,59,0.045)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }}>{t.cancel}</button>
+        <button type="submit" disabled={submitting} className="flex-1 py-3.5 rounded-xl font-semibold transition-all disabled:opacity-60" style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B", boxShadow: `0 8px 20px ${C.amber}40` }}>
           {submitting ? t.submitting : isEdit ? t.saveChanges : t.sendSighting}
         </button>
       </div>
@@ -1962,7 +1993,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
           </button>
         </div>
         <div className="rounded-2xl overflow-hidden mb-5" style={{ border: `1px solid ${C.surfaceBorder}` }}>
-          <div className="relative aspect-[16/10] w-full" style={{ background: "linear-gradient(160deg,#241a3d,#150f24)" }}>
+          <div className="relative aspect-[16/10] w-full" style={{ background: "linear-gradient(160deg,#2A3548,#16213B)" }}>
             {photos[0] ? <img src={photos[0]} alt={report.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><User size={40} color={C.textFaint} /></div>}
             <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(13,8,24,0) 45%, rgba(13,8,24,0.95) 100%)" }} />
             <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10.5px] font-bold uppercase tracking-wide flex items-center gap-1" style={{ background: "rgba(0,200,150,0.2)", color: C.emerald, backdropFilter: "blur(6px)" }}>
@@ -2031,7 +2062,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
           )}
           {missing && (
             <button onClick={() => onFollow(report)} className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-full transition-colors"
-              style={{ background: isFollowing ? "rgba(0,200,150,0.15)" : "rgba(255,255,255,0.06)", color: isFollowing ? C.emerald : C.textMuted, border: `1px solid ${C.surfaceBorder}` }}>
+              style={{ background: isFollowing ? "rgba(0,200,150,0.15)" : "rgba(22,33,59,0.05)", color: isFollowing ? C.emerald : C.textMuted, border: `1px solid ${C.surfaceBorder}` }}>
               {isFollowing ? <BellRing size={13} /> : <Bell size={13} />} {isFollowing ? t.following : t.follow}
             </button>
           )}
@@ -2061,7 +2092,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
       )}
 
       <div className="rounded-2xl overflow-hidden mb-2.5" style={{ border: `1px solid ${C.surfaceBorder}` }}>
-        <div className="relative aspect-[16/10] w-full" style={{ background: "linear-gradient(160deg,#241a3d,#150f24)" }}>
+        <div className="relative aspect-[16/10] w-full" style={{ background: "linear-gradient(160deg,#2A3548,#16213B)" }}>
           {photos[heroIdx] ? <img src={photos[heroIdx]} alt={report.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><User size={40} color={C.textFaint} /></div>}
           <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(13,8,24,0) 45%, rgba(13,8,24,0.95) 100%)" }} />
           <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10.5px] font-bold uppercase tracking-wide" style={{ background: pending ? "rgba(255,182,39,0.2)" : missing ? "rgba(255,84,112,0.2)" : "rgba(0,200,150,0.2)", color: pending ? C.amber : missing ? C.rose : C.emerald, backdropFilter: "blur(6px)" }}>
@@ -2139,7 +2170,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
                 type="button"
                 onClick={() => onLockedNotice && onLockedNotice(t.reportToContactMsg)}
                 className="flex-1 inline-flex items-center justify-center gap-1.5 text-[12.5px] font-medium px-3 py-2.5 rounded-xl"
-                style={{ background: "rgba(255,255,255,0.04)", color: C.textFaint, border: `1px solid ${C.surfaceBorder}` }}
+                style={{ background: "rgba(22,33,59,0.035)", color: C.textFaint, border: `1px solid ${C.surfaceBorder}` }}
               >
                 <Phone size={12} /> {t.callFamily}
               </button>
@@ -2148,7 +2179,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
                   type="button"
                   onClick={() => onReportSighting(report)}
                   className="flex-1 inline-flex items-center justify-center gap-1.5 text-[12.5px] font-semibold px-3 py-2.5 rounded-xl"
-                  style={{ background: `linear-gradient(135deg, ${C.amber}, #FFD166)`, color: "#1B1032" }}
+                  style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B" }}
                 >
                   <Eye size={12} /> {t.reportToUnlock}
                 </button>
@@ -2230,7 +2261,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
 
       {missing && (
         <div className="flex gap-3 mb-3">
-          <button onClick={() => onReportSighting(report)} className="flex-1 py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2" style={{ background: `linear-gradient(135deg, ${C.amber}, #FFD166)`, color: "#1B1032" }}>
+          <button onClick={() => onReportSighting(report)} className="flex-1 py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2" style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B" }}>
             <Eye size={16} /> {seeLabel}
           </button>
           <button
@@ -2272,7 +2303,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
           style={
             report.verified
               ? { background: "rgba(0,200,150,0.14)", color: C.emerald, border: `1px solid ${C.surfaceBorder}` }
-              : { background: "rgba(255,255,255,0.05)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }
+              : { background: "rgba(22,33,59,0.045)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }
           }
         >
           <CheckCircle2 size={13} /> {report.verified ? `✓ ${t.verifiedBadge}` : t.verifiedBadge}
@@ -2338,7 +2369,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
                 <div className="rounded-xl p-3.5" style={{ background: C.surface, border: `1px solid ${C.surfaceBorder}` }}>
                   <div className="flex items-center justify-between gap-2 mb-1 text-[11.5px]" style={{ color: C.textMuted }}>
                     <div className="flex items-center gap-2"><Calendar size={11} /><span>{t.sightedAt} {fmtDate(s.date) || fmtDate(s.createdAt)}{s.time && `, ${fmtTime(s.time)}`}</span></div>
-                    {s.edited && <span className="text-[10px] px-1.5 py-0.5 rounded-full shrink-0" style={{ background: "rgba(255,255,255,0.06)", color: C.textFaint }}>{t.edited}</span>}
+                    {s.edited && <span className="text-[10px] px-1.5 py-0.5 rounded-full shrink-0" style={{ background: "rgba(22,33,59,0.05)", color: C.textFaint }}>{t.edited}</span>}
                   </div>
                   <div className="flex items-center gap-1.5 text-[14px] font-semibold mb-1" style={{ color: C.textPrimary }}>
                     <MapPin size={13} color={C.amber} className="shrink-0" />
@@ -2619,21 +2650,21 @@ export default function App() {
   const pendingCount = reports.filter((r) => r.status === "pending").length;
 
   return (
-    <div dir={isUrduScript ? "rtl" : "ltr"} className={"min-h-screen w-full " + (isUrduScript ? "khoj-nastaliq" : "")} style={{ background: `radial-gradient(1100px 500px at 50% -8%, ${C.bgFrom} 0%, ${C.bgTo} 60%)`, fontFamily: isUrduScript ? undefined : "'Inter', sans-serif" }}>
-      <header className="sticky top-0 z-30" style={{ background: "rgba(13,8,24,0.78)", backdropFilter: "blur(14px)", borderBottom: `1px solid ${C.surfaceBorder}` }}>
+    <div dir={isUrduScript ? "rtl" : "ltr"} className={"min-h-screen w-full " + (isUrduScript ? "khoj-nastaliq" : "")} style={{ background: C.bgFrom, fontFamily: isUrduScript ? undefined : bodyFont }}>
+      <header className="sticky top-0 z-30" style={{ background: C.bgFrom, borderBottom: `2px solid ${C.navy}` }}>
         <div className="max-w-lg mx-auto px-5 pt-4 pb-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <KhojMark size={38} />
             <div>
               <h1 style={{ fontFamily: displayFont, fontWeight: 700, color: C.textPrimary }} className="text-[19px] leading-none">{t.appName}</h1>
-              <p className="text-[10.5px] mt-0.5" style={{ color: C.textFaint }}>{t.tagline}</p>
+              <p className="text-[10px] mt-0.5 uppercase" style={{ fontFamily: monoFont, letterSpacing: "0.5px", color: C.textMuted }}>{t.tagline}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setView("myPending")}
               className="relative flex items-center gap-1.5 text-[11.5px] font-semibold px-3 h-8 rounded-full transition-colors"
-              style={{ background: "rgba(255,255,255,0.06)", border: `1px solid ${C.surfaceBorder}`, color: C.textPrimary }}
+              style={{ background: "rgba(22,33,59,0.05)", border: `1px solid ${C.surfaceBorder}`, color: C.textPrimary }}
             >
               <Clock size={13} />
               <span className="hidden xs:inline">{t.myPendingRequests}</span>
@@ -2642,9 +2673,9 @@ export default function App() {
               )}
             </button>
             <div className="relative" ref={notifRef}>
-              <button onClick={() => setNotifOpen((v) => !v)} className="relative w-8 h-8 rounded-full flex items-center justify-center transition-colors" style={{ background: "rgba(255,255,255,0.06)", border: `1px solid ${C.surfaceBorder}` }}>
+              <button onClick={() => setNotifOpen((v) => !v)} className="relative w-8 h-8 rounded-full flex items-center justify-center transition-colors" style={{ background: "rgba(22,33,59,0.05)", border: `1px solid ${C.surfaceBorder}` }}>
                 <Bell size={15} color={C.textPrimary} />
-                {notifications.length > 0 && <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full" style={{ background: C.rose, border: "2px solid #0D0818" }} />}
+                {notifications.length > 0 && <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full" style={{ background: C.rose, border: "2px solid #F0EEE6" }} />}
               </button>
               {notifOpen && (
                 <NotifPanel
@@ -2663,37 +2694,83 @@ export default function App() {
         </div>
 
         {view === "board" && !loading && (
-          <div className="max-w-lg mx-auto px-5 pb-3 flex items-center gap-4 overflow-x-auto">
-            <div className="flex items-center gap-1.5 text-[12px] whitespace-nowrap" style={{ color: C.textMuted }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ background: C.rose }} />
-              <span style={{ color: C.textPrimary, fontWeight: 600 }}>{activeCount}</span> {t.activeCases}
-            </div>
-            <div className="flex items-center gap-1.5 text-[12px] whitespace-nowrap" style={{ color: C.textMuted }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ background: C.emerald }} />
-              <span style={{ color: C.textPrimary, fontWeight: 600 }}>{foundCount}</span> {t.reunited}
-            </div>
-            <div className="flex items-center gap-1.5 text-[12px] whitespace-nowrap" style={{ color: C.textMuted }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ background: C.amber }} />
-              <span style={{ color: C.textPrimary, fontWeight: 600 }}>{reports.length}</span> {t.totalCases}
+          <div style={{ background: C.navy }}>
+            <div className="max-w-lg mx-auto px-5 py-4">
+              <h2 style={{ fontFamily: displayFont, fontWeight: 600, color: "#F7F5EE" }} className="text-[19px] leading-snug">
+                {t.heroHeadline}<br />{t.heroSubline}
+              </h2>
+              <p className="text-[11.5px] mt-1.5 leading-relaxed" style={{ color: "#B9BDC9" }}>
+                {activeCount > 0 ? `${activeCount} ${activeCount === 1 ? t.activeCases.replace(/s$/, "") : t.activeCases} ${t.heroSearching}` : t.heroSearching}
+              </p>
+              <button
+                onClick={() => setLocationPromptFor("report")}
+                className="mt-3 text-[12px] font-medium px-3.5 py-2 rounded"
+                style={{ background: C.amber, color: "#3A2B08", fontFamily: bodyFont }}
+              >
+                {t.report}
+              </button>
             </div>
           </div>
         )}
 
         {view === "board" && !loading && (
-          <div className="max-w-lg mx-auto px-5 pb-3.5 flex items-center gap-2">
-            <span className="text-[10px] font-semibold uppercase tracking-wide shrink-0" style={{ color: C.textFaint }}>{t.emergencyHelplines}</span>
-            <a href="tel:15" className="inline-flex items-center gap-1 text-[11.5px] font-semibold px-2.5 py-1.5 rounded-full shrink-0" style={{ background: "rgba(255,84,112,0.14)", color: C.rose }}>
-              <Shield size={11} /> {t.callPolice} 15
-            </a>
-            <a href="tel:1122" className="inline-flex items-center gap-1 text-[11.5px] font-semibold px-2.5 py-1.5 rounded-full shrink-0" style={{ background: "rgba(255,182,39,0.16)", color: C.amber }}>
-              <Siren size={11} /> {t.callAmbulance} 1122
-            </a>
+          <div className="flex items-center gap-4 px-5 py-2" style={{ background: C.bgTo, borderBottom: `1px solid ${C.surfaceBorder}` }}>
+            <div className="max-w-lg mx-auto w-full flex items-center gap-4">
+              <a href="tel:15" className="flex items-center gap-1.5" style={{ color: C.rose }}>
+                <Shield size={13} />
+                <span className="text-[11.5px]" style={{ fontFamily: monoFont, color: C.textPrimary }}>{t.callPolice} 15</span>
+              </a>
+              <div className="w-px h-3.5" style={{ background: C.surfaceBorder }} />
+              <a href="tel:1122" className="flex items-center gap-1.5" style={{ color: C.rose }}>
+                <Siren size={13} />
+                <span className="text-[11.5px]" style={{ fontFamily: monoFont, color: C.textPrimary }}>{t.callAmbulance} 1122</span>
+              </a>
+            </div>
           </div>
         )}
+
+        {view === "board" && !loading && (
+          <div className="flex" style={{ borderBottom: `1px solid ${C.surfaceBorder}` }}>
+            <div className="max-w-lg mx-auto w-full flex">
+              <div className="flex-1 py-2.5 text-center" style={{ borderRight: `1px solid ${C.surfaceBorder}` }}>
+                <div style={{ fontFamily: monoFont, fontWeight: 600, fontSize: "16px", color: C.rose }}>{activeCount}</div>
+                <div className="text-[9.5px] uppercase" style={{ color: C.textMuted, letterSpacing: "0.4px" }}>{t.activeCases}</div>
+              </div>
+              <div className="flex-1 py-2.5 text-center" style={{ borderRight: `1px solid ${C.surfaceBorder}` }}>
+                <div style={{ fontFamily: monoFont, fontWeight: 600, fontSize: "16px", color: C.emerald }}>{foundCount}</div>
+                <div className="text-[9.5px] uppercase" style={{ color: C.textMuted, letterSpacing: "0.4px" }}>{t.reunited}</div>
+              </div>
+              <div className="flex-1 py-2.5 text-center">
+                <div style={{ fontFamily: monoFont, fontWeight: 600, fontSize: "16px", color: C.textPrimary }}>{reports.length}</div>
+                <div className="text-[9.5px] uppercase" style={{ color: C.textMuted, letterSpacing: "0.4px" }}>{t.totalCases}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {view === "board" && !loading && (() => {
+          const recentReunited = reports
+            .filter((r) => r.status === "found")
+            .sort((a, b) => new Date(b.foundAt || b.createdAt) - new Date(a.foundAt || a.createdAt))[0];
+          if (!recentReunited) return null;
+          return (
+            <div className="max-w-lg mx-auto px-5 pt-3">
+              <div className="flex items-center gap-2.5 rounded px-3 py-2.5" style={{ background: "#EAF1EA", border: `1px solid #C7DAC9` }}>
+                <Heart size={17} color={C.emerald} className="shrink-0" fill={C.emerald} />
+                <div className="min-w-0">
+                  <div className="text-[11px] font-medium truncate" style={{ color: "#254A30" }}>
+                    {recentReunited.name}{recentReunited.age ? `, ${recentReunited.age},` : ""} {t.reunitedHighlight}{recentReunited.city ? ` ${recentReunited.city === "in" ? "" : "in " + recentReunited.city}` : ""}
+                  </div>
+                  <div className="text-[10px] mt-0.5" style={{ color: C.textMuted }}>{t.reunitedHighlightSub}</div>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
       </header>
 
       {toast && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 px-4 py-2.5 rounded-full text-[13px] font-semibold shadow-2xl flex items-center gap-1.5" style={{ background: C.textPrimary, color: "#1B1032" }}>
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 px-4 py-2.5 rounded-full text-[13px] font-semibold shadow-2xl flex items-center gap-1.5" style={{ background: C.textPrimary, color: "#F7F5EE" }}>
           <Sparkles size={13} /> {toast}
         </div>
       )}
@@ -2764,7 +2841,7 @@ export default function App() {
         />
       ) : (
         <div className="max-w-lg mx-auto px-5 pt-5 relative">
-          <BoardBackground reports={reports} filter={filter} />
+          {/* Background photo collage removed — cleaner paper-registry look */}
           <div className="flex gap-2 mb-2.5 overflow-x-auto relative z-10">
             <Pill active={filter === "missing"} onClick={() => setFilter("missing")} activeColor={C.rose}>{t.tabMissing}</Pill>
             <Pill active={filter === "found"} onClick={() => setFilter("found")} activeColor={C.emerald}>{t.tabFound}</Pill>
@@ -2775,7 +2852,7 @@ export default function App() {
               </Pill>
             )}
           </div>
-          <div className="flex items-center gap-2 mb-3 px-3.5 py-[7px] rounded-full relative z-10" style={{ background: "rgba(255,255,255,0.06)", border: `1px solid ${C.surfaceBorder}` }}>
+          <div className="flex items-center gap-2 mb-3 px-3.5 py-[7px] rounded-full relative z-10" style={{ background: "rgba(22,33,59,0.05)", border: `1px solid ${C.surfaceBorder}` }}>
             <Search size={13} color={C.textFaint} className="shrink-0" />
             <input
               value={searchQuery}
@@ -2825,7 +2902,7 @@ export default function App() {
             </div>
           )}
 
-          <button onClick={() => setLocationPromptFor("report")} className="fixed bottom-6 right-6 z-30 flex items-center gap-2 px-5 py-3.5 rounded-full font-semibold text-[14px]" style={{ background: `linear-gradient(135deg, ${C.rose}, #FF7B54)`, color: "#1B1032", boxShadow: `0 10px 28px ${C.rose}55` }}>
+          <button onClick={() => setLocationPromptFor("report")} className="fixed bottom-6 right-6 z-30 flex items-center gap-2 px-5 py-3.5 rounded-full font-semibold text-[14px]" style={{ background: `linear-gradient(135deg, ${C.rose}, #C23434)`, color: "#F7F5EE", boxShadow: `0 10px 28px ${C.rose}55` }}>
             <Plus size={18} strokeWidth={2.5} /> {t.report}
           </button>
         </div>
@@ -2853,13 +2930,13 @@ export default function App() {
       )}
 
       <footer className="max-w-lg mx-auto px-5 pb-24 pt-4 text-center">
-        <p className="text-[10.5px] leading-relaxed mb-3" style={{ color: "#3D3654" }}>{t.footerNote}</p>
+        <p className="text-[10.5px] leading-relaxed mb-3" style={{ color: "#B4B2A9" }}>{t.footerNote}</p>
         {isAdmin ? (
           <button onClick={handleAdminExit} className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full" style={{ background: "rgba(0,200,150,0.12)", color: C.emerald }}>
             <Lock size={11} /> {t.adminModeOn} · {t.adminExit}
           </button>
         ) : (
-          <button onClick={() => setShowAdminLogin(true)} className="inline-flex items-center gap-1 text-[10.5px]" style={{ color: "#3D3654" }}>
+          <button onClick={() => setShowAdminLogin(true)} className="inline-flex items-center gap-1 text-[10.5px]" style={{ color: "#B4B2A9" }}>
             <Lock size={10} /> {t.adminLogin}
           </button>
         )}
