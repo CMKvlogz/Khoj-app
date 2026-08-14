@@ -1060,10 +1060,10 @@ function Pill({ active, children, onClick, activeColor }) {
   return (
     <button
       onClick={onClick}
-      className="text-[13px] font-semibold px-3.5 py-[7px] rounded-full transition-all duration-200 whitespace-nowrap"
+      className="text-[13px] font-semibold px-3.5 py-[7px] rounded-full transition-colors duration-150 whitespace-nowrap"
       style={
         active
-          ? { background: activeColor || C.rose, color: "#F7F5EE", boxShadow: `0 4px 14px ${(activeColor || C.rose)}55` }
+          ? { background: activeColor || C.rose, color: "#F7F5EE" }
           : { background: "rgba(22,33,59,0.05)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }
       }
     >
@@ -2756,15 +2756,15 @@ export default function App() {
         {view === "board" && !loading && (
           <div className="flex" style={{ borderBottom: `1px solid ${C.surfaceBorder}` }}>
             <div className="max-w-lg mx-auto w-full flex">
-              <button onClick={() => setFilter("missing")} className="flex-1 py-2.5 text-center transition-colors" style={{ borderRight: `1px solid ${C.surfaceBorder}` }}>
+              <button onClick={() => setFilter("missing")} className="flex-1 py-2.5 text-center transition-colors" style={{ borderRight: `1px solid ${C.surfaceBorder}`, background: filter === "missing" ? "rgba(163,32,32,0.07)" : "transparent" }}>
                 <div style={{ fontFamily: monoFont, fontWeight: 600, fontSize: "16px", color: C.rose }}>{activeCount}</div>
                 <div className="text-[9.5px] uppercase" style={{ color: C.textMuted, letterSpacing: "0.4px" }}>{t.activeCases}</div>
               </button>
-              <button onClick={() => setFilter("found")} className="flex-1 py-2.5 text-center transition-colors" style={{ borderRight: `1px solid ${C.surfaceBorder}` }}>
+              <button onClick={() => setFilter("found")} className="flex-1 py-2.5 text-center transition-colors" style={{ borderRight: `1px solid ${C.surfaceBorder}`, background: filter === "found" ? "rgba(63,107,74,0.07)" : "transparent" }}>
                 <div style={{ fontFamily: monoFont, fontWeight: 600, fontSize: "16px", color: C.emerald }}>{foundCount}</div>
                 <div className="text-[9.5px] uppercase" style={{ color: C.textMuted, letterSpacing: "0.4px" }}>{t.reunited}</div>
               </button>
-              <button onClick={() => setFilter("all")} className="flex-1 py-2.5 text-center transition-colors">
+              <button onClick={() => setFilter("all")} className="flex-1 py-2.5 text-center transition-colors" style={{ background: filter === "all" ? "rgba(22,33,59,0.05)" : "transparent" }}>
                 <div style={{ fontFamily: monoFont, fontWeight: 600, fontSize: "16px", color: C.textPrimary }}>{reports.length}</div>
                 <div className="text-[9.5px] uppercase" style={{ color: C.textMuted, letterSpacing: "0.4px" }}>{t.totalCases}</div>
               </button>
