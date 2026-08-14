@@ -277,6 +277,11 @@ const EN = {
   heroSearching: "people are searching alongside you right now.",
   reunitedHighlight: "was found safe",
   reunitedHighlightSub: "Reunited through this registry.",
+  reportedOn: "Reported on",
+  sightingEncourage: "Even a small detail — what they were wearing, where you saw them — could be the one that helps.",
+  shareEncourage: "The more people who see this, the sooner they come home.",
+  timelineEncourage: "This isn't just a timeline — it's people refusing to give up.",
+  pendingWaitingEncourage: "The moment this goes live, hundreds of eyes will start looking for them too.",
 };
 
 const UR = {
@@ -557,6 +562,11 @@ const ROMAN = {
   heroSearching: "log is waqt aapke saath dhoondh rahe hain.",
   reunitedHighlight: "surakhiyat mil gaya",
   reunitedHighlightSub: "Isi registry ke zariye reunited hua.",
+  reportedOn: "Report hui",
+  sightingEncourage: "Chhoti si detail bhi — unhon ne kya pehna tha, aapne unhein kahan dekha — wahi cheez unhein dhoondhne mein madadgar sabit ho sakti hai.",
+  shareEncourage: "Jitne zyada log ye dekhenge, utni jaldi wo ghar wapas aa sakte hain.",
+  timelineEncourage: "Ye sirf timeline nahi — ye wo log hain jo haar maanne se inkaar kar rahe hain.",
+  pendingWaitingEncourage: "Live hote hi, sainkron nazrein bhi inhein dhoondhna shuru kar dengi.",
 };
 
 const PA = {
@@ -1033,8 +1043,8 @@ function KhojMark({ size = 36 }) {
     <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
       <defs>
         <linearGradient id="khojGrad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#FF5470" />
-          <stop offset="100%" stopColor="#FFB627" />
+          <stop offset="0%" stopColor="#16213B" />
+          <stop offset="100%" stopColor="#C99A3E" />
         </linearGradient>
       </defs>
       <rect width="40" height="40" rx="11" fill="url(#khojGrad)" />
@@ -1620,6 +1630,10 @@ function NoticeCard({ report, sightingCount, onOpen, t, index }) {
                 <span className="text-[9px]">{report.gender === "female" ? t.shareToHelpHer : report.gender === "male" ? t.shareToHelpHim : t.shareToHelpThem}</span>
               </div>
             </>
+          ) : pending ? (
+            <div className="text-[10px] mt-0.5" style={{ fontFamily: monoFont, color: C.textMuted }}>
+              {t.reportedOn} {fmtDate(report.createdAt)}
+            </div>
           ) : (
             <div className="text-[10px] mt-0.5" style={{ fontFamily: monoFont, color: C.textMuted }}>
               {t.reunitedOn} {fmtDate(report.foundAt || report.createdAt)}
@@ -2069,6 +2083,10 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
         </div>
       </div>
 
+      {missing && report.verified && (
+        <p className="text-[11.5px] italic mb-4 -mt-2" style={{ color: C.textMuted, fontFamily: displayFont }}>{t.shareEncourage}</p>
+      )}
+
       {!missing && isAdmin && (
         <div className="mb-4 rounded-xl p-3 flex items-center gap-2 text-[11.5px]" style={{ background: "rgba(255,182,39,0.1)", color: C.amber, border: `1px solid ${C.surfaceBorder}` }}>
           <Lock size={12} /> Admin view — full details visible (hidden from public since this case is Reunited).
@@ -2080,7 +2098,8 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
           <Clock size={12} className="shrink-0 mt-0.5" />
           <div>
             <p>{t.pendingReviewFriendly}</p>
-            {isMyOwnReport && !isAdmin && <p className="mt-1" style={{ color: C.textFaint }}>{t.editUntilVerified}</p>}
+            {isMyOwnReport && !isAdmin && <p className="mt-1.5 italic" style={{ color: C.textMuted, fontFamily: displayFont }}>{t.pendingWaitingEncourage}</p>}
+            {isMyOwnReport && !isAdmin && <p className="mt-1.5" style={{ color: C.textFaint }}>{t.editUntilVerified}</p>}
           </div>
         </div>
       )}
@@ -2260,7 +2279,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
       )}
 
       {missing && (
-        <div className="flex gap-3 mb-3">
+        <div className="flex gap-3 mb-2.5">
           <button onClick={() => onReportSighting(report)} className="flex-1 py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2" style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B" }}>
             <Eye size={16} /> {seeLabel}
           </button>
@@ -2272,6 +2291,10 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
             <CheckCircle2 size={16} /> {t.markFound}
           </button>
         </div>
+      )}
+
+      {missing && (
+        <p className="text-[11.5px] leading-relaxed mb-4 italic" style={{ color: C.textMuted, fontFamily: displayFont }}>{t.sightingEncourage}</p>
       )}
 
       {(isAdmin || (pending && isMyOwnReport && !report.verified) || (missing && !report.verified)) && (
@@ -2340,7 +2363,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
         />
       )}
 
-      <div className="flex items-center justify-between mb-3 gap-2">
+      <div className="flex items-center justify-between mb-1 gap-2">
         <h3 className="text-[14px] font-semibold flex items-center gap-1.5" style={{ color: C.textPrimary }}>
           <Radio size={14} /> {t.timelineHeading} ({mySightings.length})
         </h3>
@@ -2350,6 +2373,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
           </button>
         )}
       </div>
+      <p className="text-[11.5px] italic mb-3" style={{ color: C.textMuted, fontFamily: displayFont }}>{t.timelineEncourage}</p>
       <div className="relative pl-5">
           <div className="absolute left-[7px] top-1.5 bottom-1.5 w-[1.5px]" style={{ background: C.surfaceBorder }} />
           {mySightings.length === 0 && <p className="text-[13.5px] mb-4" style={{ color: C.textFaint }}>{t.noSightings}</p>}
@@ -2732,18 +2756,18 @@ export default function App() {
         {view === "board" && !loading && (
           <div className="flex" style={{ borderBottom: `1px solid ${C.surfaceBorder}` }}>
             <div className="max-w-lg mx-auto w-full flex">
-              <div className="flex-1 py-2.5 text-center" style={{ borderRight: `1px solid ${C.surfaceBorder}` }}>
+              <button onClick={() => setFilter("missing")} className="flex-1 py-2.5 text-center transition-colors" style={{ borderRight: `1px solid ${C.surfaceBorder}` }}>
                 <div style={{ fontFamily: monoFont, fontWeight: 600, fontSize: "16px", color: C.rose }}>{activeCount}</div>
                 <div className="text-[9.5px] uppercase" style={{ color: C.textMuted, letterSpacing: "0.4px" }}>{t.activeCases}</div>
-              </div>
-              <div className="flex-1 py-2.5 text-center" style={{ borderRight: `1px solid ${C.surfaceBorder}` }}>
+              </button>
+              <button onClick={() => setFilter("found")} className="flex-1 py-2.5 text-center transition-colors" style={{ borderRight: `1px solid ${C.surfaceBorder}` }}>
                 <div style={{ fontFamily: monoFont, fontWeight: 600, fontSize: "16px", color: C.emerald }}>{foundCount}</div>
                 <div className="text-[9.5px] uppercase" style={{ color: C.textMuted, letterSpacing: "0.4px" }}>{t.reunited}</div>
-              </div>
-              <div className="flex-1 py-2.5 text-center">
+              </button>
+              <button onClick={() => setFilter("all")} className="flex-1 py-2.5 text-center transition-colors">
                 <div style={{ fontFamily: monoFont, fontWeight: 600, fontSize: "16px", color: C.textPrimary }}>{reports.length}</div>
                 <div className="text-[9.5px] uppercase" style={{ color: C.textMuted, letterSpacing: "0.4px" }}>{t.totalCases}</div>
-              </div>
+              </button>
             </div>
           </div>
         )}
@@ -2754,8 +2778,8 @@ export default function App() {
             .sort((a, b) => new Date(b.foundAt || b.createdAt) - new Date(a.foundAt || a.createdAt))[0];
           if (!recentReunited) return null;
           return (
-            <div className="max-w-lg mx-auto px-5 pt-3">
-              <div className="flex items-center gap-2.5 rounded px-3 py-2.5" style={{ background: "#EAF1EA", border: `1px solid #C7DAC9` }}>
+            <div style={{ background: "#EAF1EA", borderBottom: `1px solid #C7DAC9` }}>
+              <div className="max-w-lg mx-auto px-5 py-2.5 flex items-center gap-2.5">
                 <Heart size={17} color={C.emerald} className="shrink-0" fill={C.emerald} />
                 <div className="min-w-0">
                   <div className="text-[11px] font-medium truncate" style={{ color: "#254A30" }}>
@@ -2845,7 +2869,6 @@ export default function App() {
           <div className="flex gap-2 mb-2.5 overflow-x-auto relative z-10">
             <Pill active={filter === "missing"} onClick={() => setFilter("missing")} activeColor={C.rose}>{t.tabMissing}</Pill>
             <Pill active={filter === "found"} onClick={() => setFilter("found")} activeColor={C.emerald}>{t.tabFound}</Pill>
-            <Pill active={filter === "all"} onClick={() => setFilter("all")} activeColor={C.amber}>{t.tabAll}</Pill>
             {isAdmin && (
               <Pill active={filter === "pending"} onClick={() => setFilter("pending")} activeColor={C.amber}>
                 {t.tabPending}{pendingCount > 0 ? ` (${pendingCount})` : ""}
@@ -2901,10 +2924,6 @@ export default function App() {
               {filtered.map((r, i) => <NoticeCard key={r.id} report={r} sightingCount={sightingCountFor(r.id)} onOpen={openDetail} t={t} index={i} />)}
             </div>
           )}
-
-          <button onClick={() => setLocationPromptFor("report")} className="fixed bottom-6 right-6 z-30 flex items-center gap-2 px-5 py-3.5 rounded-full font-semibold text-[14px]" style={{ background: `linear-gradient(135deg, ${C.rose}, #C23434)`, color: "#F7F5EE", boxShadow: `0 10px 28px ${C.rose}55` }}>
-            <Plus size={18} strokeWidth={2.5} /> {t.report}
-          </button>
         </div>
       )}
 
