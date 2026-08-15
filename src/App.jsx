@@ -1377,7 +1377,7 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
         </button>
       </div>
 
-      <div className="px-4 py-2.5 shrink-0 relative" style={{ borderBottom: `1px solid ${C.surfaceBorder}` }}>
+      <div className="px-4 py-2.5 shrink-0 relative" style={{ borderBottom: `1px solid ${C.surfaceBorder}`, zIndex: 1000 }}>
         <div className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: "rgba(22,33,59,0.045)", border: `1px solid ${C.surfaceBorder}` }}>
           <Search size={14} color={C.textFaint} className="shrink-0" />
           <input
@@ -1393,7 +1393,7 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
           <p className="text-[11px] mt-1.5 px-1" style={{ color: C.textFaint }}>{searchError}</p>
         )}
         {results.length > 0 && (
-          <div className="absolute left-4 right-4 mt-1 rounded-xl overflow-hidden z-10" style={{ background: "#FFFFFF", border: `1px solid ${C.surfaceBorder}` }}>
+          <div className="absolute left-4 right-4 mt-1 rounded-xl overflow-hidden" style={{ background: "#FFFFFF", border: `1px solid ${C.surfaceBorder}`, zIndex: 1001, boxShadow: "0 8px 24px rgba(0,0,0,0.18)" }}>
             {results.map((r, i) => (
               <button
                 key={i}
