@@ -2010,7 +2010,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
           <div className="relative aspect-[16/10] w-full" style={{ background: "linear-gradient(160deg,#2A3548,#16213B)" }}>
             {photos[0] ? <img src={photos[0]} alt={report.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><User size={40} color={C.textFaint} /></div>}
             <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(13,8,24,0) 45%, rgba(13,8,24,0.95) 100%)" }} />
-            <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10.5px] font-bold uppercase tracking-wide flex items-center gap-1" style={{ background: "rgba(0,200,150,0.2)", color: C.emerald, backdropFilter: "blur(6px)" }}>
+            <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10.5px] font-bold uppercase tracking-wide flex items-center gap-1" style={{ background: C.emerald, color: "#F7F5EE" }}>
               <CheckCircle2 size={11} /> {t.statusFound}
             </div>
             <div className="absolute bottom-0 left-0 right-0 p-4">
@@ -2114,11 +2114,11 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
         <div className="relative aspect-[16/10] w-full" style={{ background: "linear-gradient(160deg,#2A3548,#16213B)" }}>
           {photos[heroIdx] ? <img src={photos[heroIdx]} alt={report.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><User size={40} color={C.textFaint} /></div>}
           <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(13,8,24,0) 45%, rgba(13,8,24,0.95) 100%)" }} />
-          <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10.5px] font-bold uppercase tracking-wide" style={{ background: pending ? "rgba(255,182,39,0.2)" : missing ? "rgba(255,84,112,0.2)" : "rgba(0,200,150,0.2)", color: pending ? C.amber : missing ? C.rose : C.emerald, backdropFilter: "blur(6px)" }}>
+          <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10.5px] font-bold uppercase tracking-wide" style={{ background: pending ? C.amber : missing ? C.rose : C.emerald, color: pending ? "#16213B" : "#F7F5EE" }}>
             {pending ? t.statusPending : missing ? t.statusMissing : t.statusFound}
           </div>
           {report.verified && (
-            <div className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold" style={{ background: "rgba(0,200,150,0.22)", color: C.emerald, backdropFilter: "blur(6px)" }}>
+            <div className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold" style={{ background: C.emerald, color: "#F7F5EE" }}>
               <CheckCircle2 size={11} /> {t.verifiedBadge}
             </div>
           )}
@@ -2210,14 +2210,14 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
 
       {isAdmin && (report.filingLat != null || report.markFoundLat != null || report.markFoundByAdmin) && (
         <div className="mb-3 rounded-xl p-3.5 space-y-2" style={{ background: "rgba(255,182,39,0.08)", border: `1px dashed ${C.amber}55` }}>
-          <div className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: C.amber }}><Lock size={11} /> {t.adminLocSection1}</div>
+          <div className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: "#8A6416" }}><Lock size={11} /> {t.adminLocSection1}</div>
           {report.filingLat != null && (
             <a
               href={`https://www.google.com/maps?q=${report.filingLat},${report.filingLng}`}
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
-              style={{ background: "rgba(255,182,39,0.14)", color: C.amber }}
+              style={{ background: "rgba(201,154,62,0.16)", color: "#8A6416" }}
             >
               <MapPin size={12} className="shrink-0" /> {t.adminFilerLocation}
             </a>
@@ -2228,7 +2228,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
-              style={{ background: "rgba(255,182,39,0.14)", color: C.amber }}
+              style={{ background: "rgba(201,154,62,0.16)", color: "#8A6416" }}
             >
               <MapPin size={12} className="shrink-0" /> {t.adminMarkFoundLocation}
             </a>
@@ -2241,14 +2241,14 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
 
       {isAdmin && (report.homeLat != null || report.lastSeenLat != null || report.foundLat != null) && (
         <div className="mb-5 rounded-xl p-3.5 space-y-2" style={{ background: "rgba(255,182,39,0.08)", border: `1px dashed ${C.amber}55` }}>
-          <div className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: C.amber }}><MapPin size={11} /> {t.adminLocSection2}</div>
+          <div className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: "#8A6416" }}><MapPin size={11} /> {t.adminLocSection2}</div>
           {report.lastSeenLat != null && (
             <a
               href={`https://www.google.com/maps?q=${report.lastSeenLat},${report.lastSeenLng}`}
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
-              style={{ background: "rgba(255,182,39,0.14)", color: C.amber }}
+              style={{ background: "rgba(201,154,62,0.16)", color: "#8A6416" }}
             >
               <MapPin size={12} className="shrink-0" /> {t.lastLocationByFiler}
             </a>
@@ -2259,7 +2259,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
-              style={{ background: "rgba(255,182,39,0.14)", color: C.amber }}
+              style={{ background: "rgba(201,154,62,0.16)", color: "#8A6416" }}
             >
               <MapPin size={12} className="shrink-0" /> {t.homePinLocation}
             </a>
@@ -2270,7 +2270,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
-              style={{ background: "rgba(255,182,39,0.14)", color: C.amber }}
+              style={{ background: "rgba(201,154,62,0.16)", color: "#8A6416" }}
             >
               <MapPin size={12} className="shrink-0" /> {t.reunitedLocation}
             </a>
@@ -2422,7 +2422,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
                       target="_blank"
                       rel="noreferrer"
                       className="flex items-center gap-1.5 text-[11px] font-medium mt-2 px-2.5 py-1.5 rounded-lg"
-                      style={{ background: "rgba(255,182,39,0.14)", color: C.amber }}
+                      style={{ background: "rgba(201,154,62,0.16)", color: "#8A6416" }}
                     >
                       <Lock size={10} className="shrink-0" /> {t.adminSightingLocation}
                     </a>
