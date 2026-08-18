@@ -1329,7 +1329,9 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
         const data = await res.json();
         normalized = (data?.features || []).map((f) => {
           const p = f.properties || {};
-          const label = [p.name, p.city || p.county, p.state, p.country].filter(Boolean).join(", ");
+          const label = [p.name, p.district || p.suburb || p.neighbourhood, p.city || p.county, p.state]
+            .filter(Boolean)
+            .join(", ");
           return { label: label || p.name || val, lat: f.geometry.coordinates[1], lng: f.geometry.coordinates[0] };
         });
       } catch {
@@ -2088,13 +2090,13 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
       )}
 
       {!missing && isAdmin && (
-        <div className="mb-4 rounded-xl p-3 flex items-center gap-2 text-[11.5px]" style={{ background: "rgba(255,182,39,0.1)", color: C.amber, border: `1px solid ${C.surfaceBorder}` }}>
+        <div className="mb-4 rounded-xl p-3 flex items-center gap-2 text-[11.5px]" style={{ background: "rgba(201,154,62,0.14)", color: "#8A6416", border: `1px solid ${C.surfaceBorder}` }}>
           <Lock size={12} /> Admin view — full details visible (hidden from public since this case is Reunited).
         </div>
       )}
 
       {pending && (isAdmin || isMyOwnReport) && (
-        <div className="mb-4 rounded-xl p-3 flex items-start gap-2 text-[11.5px]" style={{ background: "rgba(255,182,39,0.1)", color: C.amber, border: `1px solid ${C.surfaceBorder}` }}>
+        <div className="mb-4 rounded-xl p-3 flex items-start gap-2 text-[11.5px]" style={{ background: "rgba(201,154,62,0.14)", color: "#8A6416", border: `1px solid ${C.surfaceBorder}` }}>
           <Clock size={12} className="shrink-0 mt-0.5" />
           <div>
             <p>{t.pendingReviewFriendly}</p>
@@ -2433,7 +2435,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
                       <button
                         onClick={() => onEditSighting(s)}
                         className="inline-flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
-                        style={{ background: "rgba(255,182,39,0.12)", color: C.amber }}
+                        style={{ background: "rgba(201,154,62,0.16)", color: "#8A6416" }}
                       >
                         <Pencil size={12} /> {t.editSighting}
                       </button>
