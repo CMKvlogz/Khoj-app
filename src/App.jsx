@@ -188,6 +188,8 @@ const EN = {
   adminStep2Of: "Step 2 of 2",
   adminStep2Sub: "Enter the second security PIN to finish signing in.",
   adminStep2Ph: "Security PIN",
+  adminChecking: "Checking...",
+  adminServerError: "Couldn't reach the server. Please try again.",
   adminModeOn: "Admin mode active — you can manage all cases.",
   adminExit: "Exit admin",
   deleteCase: "Delete case",
@@ -473,6 +475,8 @@ const ROMAN = {
   adminStep2Of: "Step 2 of 2",
   adminStep2Sub: "Sign in mukammal karne ke liye doosra security PIN likhein.",
   adminStep2Ph: "Security PIN",
+  adminChecking: "Check ho raha hai...",
+  adminServerError: "Server tak nahi pohanch saka. Dobara koshish karein.",
   adminModeOn: "Admin mode active hai — ab aap tamam cases manage kar sakte hain.",
   adminExit: "Admin se bahar niklein",
   deleteCase: "Case delete karein",
@@ -916,8 +920,8 @@ async function deleteListItem(key, id) {
 // ============================== Admin ==============================
 // Change this password to whatever you like — this is the only thing
 // that gates access to deleting cases / force-marking Reunited / etc.
-const ADMIN_PASSWORD = "khoj@2026admincmk";
-const ADMIN_STEP2_PIN = "778899";
+// Admin credentials now live server-side only (Vercel Environment Variables),
+// checked via /api/verify-admin.js — never shipped in this browser bundle.
 const ADMIN_SESSION_KEY = "khoj_admin_session";
 const MY_SIGHTINGS_KEY = "khoj_my_sighting_ids";
 function getMySightingIds() {
@@ -1455,15 +1459,45 @@ function AdminLoginModal({ onClose, onSuccess, t }) {
   const [pw, setPw] = useState("");
   const [pin, setPin] = useState("");
   const [wrong, setWrong] = useState(false);
-  const submitStep1 = (e) => {
+  const [checking, setChecking] = useState(false);
+  const [serverError, setServerError] = useState("");
+  const submitStep1 = async (e) => {
     e.preventDefault();
-    if (pw === ADMIN_PASSWORD) { setWrong(false); setStep(2); }
-    else setWrong(true);
+    setChecking(true);
+    setServerError("");
+    try {
+      const res = await fetch("/api/verify-admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ step: 1, password: pw }),
+      });
+      const data = await res.json();
+      if (data.success) { setWrong(false); setStep(2); }
+      else setWrong(true);
+    } catch {
+      setServerError(t.adminServerError);
+    } finally {
+      setChecking(false);
+    }
   };
-  const submitStep2 = (e) => {
+  const submitStep2 = async (e) => {
     e.preventDefault();
-    if (pin === ADMIN_STEP2_PIN) onSuccess();
-    else setWrong(true);
+    setChecking(true);
+    setServerError("");
+    try {
+      const res = await fetch("/api/verify-admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ step: 2, pin }),
+      });
+      const data = await res.json();
+      if (data.success) onSuccess();
+      else setWrong(true);
+    } catch {
+      setServerError(t.adminServerError);
+    } finally {
+      setChecking(false);
+    }
   };
   return (
     <ModalShell onClose={onClose}>
@@ -1479,8 +1513,9 @@ function AdminLoginModal({ onClose, onSuccess, t }) {
           <form onSubmit={submitStep1}>
             <Input type="password" value={pw} onChange={(e) => { setPw(e.target.value); setWrong(false); }} placeholder={t.adminPasswordPh} />
             {wrong && <p className="text-[12.5px] mt-2" style={{ color: C.rose }}>{t.adminWrong}</p>}
-            <button type="submit" className="w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px]" style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B" }}>
-              {t.adminNext}
+            {serverError && <p className="text-[12.5px] mt-2" style={{ color: C.rose }}>{serverError}</p>}
+            <button type="submit" disabled={checking} className="w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px] disabled:opacity-60" style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B" }}>
+              {checking ? t.adminChecking : t.adminNext}
             </button>
           </form>
         </>
@@ -1490,8 +1525,9 @@ function AdminLoginModal({ onClose, onSuccess, t }) {
           <form onSubmit={submitStep2}>
             <Input type="password" value={pin} onChange={(e) => { setPin(e.target.value.replace(/[^0-9]/g, "").slice(0, 6)); setWrong(false); }} placeholder={t.adminStep2Ph} inputMode="numeric" />
             {wrong && <p className="text-[12.5px] mt-2" style={{ color: C.rose }}>{t.adminWrong}</p>}
-            <button type="submit" className="w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px]" style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B" }}>
-              {t.adminEnter}
+            {serverError && <p className="text-[12.5px] mt-2" style={{ color: C.rose }}>{serverError}</p>}
+            <button type="submit" disabled={checking} className="w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px] disabled:opacity-60" style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B" }}>
+              {checking ? t.adminChecking : t.adminEnter}
             </button>
           </form>
         </>
