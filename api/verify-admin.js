@@ -1,18 +1,20 @@
 // Vercel Serverless Function — runs on the server, never in the browser.
 // The real admin password/PIN live in Vercel's Environment Variables, not in
 // any code the browser can see. The browser only ever gets back {success:true/false}.
+//
+// Fallback defaults below let this work immediately even before you set the
+// Environment Variables in Vercel. Once you're able to access your Vercel
+// dashboard again, set ADMIN_PASSWORD and ADMIN_STEP2_PIN there (Settings ->
+// Environment Variables) — that is more secure than leaving the defaults here,
+// since anyone who can see this file's source could otherwise read them.
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-  const ADMIN_STEP2_PIN = process.env.ADMIN_STEP2_PIN;
-
-  if (!ADMIN_PASSWORD || !ADMIN_STEP2_PIN) {
-    return res.status(500).json({ error: "Server not configured. Add ADMIN_PASSWORD and ADMIN_STEP2_PIN in Vercel Environment Variables." });
-  }
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "khoj@2026admincmk";
+  const ADMIN_STEP2_PIN = process.env.ADMIN_STEP2_PIN || "778899";
 
   const { step, password, pin } = req.body || {};
 
