@@ -2092,8 +2092,8 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
   }
 
   const handleShare = () => {
-    const base = typeof window !== "undefined" ? `${window.location.origin}${window.location.pathname}` : "";
-    const url = `${base}?case=${report.id}`;
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const url = `${origin}/case/${report.id}`;
     const msg = `${t.shareHelp}\n\n${t.shareText} ${report.name} (${report.age || "?"}y)\n${report.city || ""}${report.city && report.lastSeenLocation ? " — " : ""}${report.lastSeenLocation || ""}\n\n${url}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
   };
