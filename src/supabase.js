@@ -3,7 +3,46 @@ import { createClient } from "@supabase/supabase-js";
 const supabaseUrl = "https://utmyossoycpywvauaccz.supabase.co";
 const supabaseAnonKey = "sb_publishable_8f0zNxsyqPTAIFvpXXNqgg_qeSvDhit";
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    // Keeps an admin signed in across refreshes, and picks the recovery token
+    // out of the URL when someone follows a password-reset link.
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+  },
+});
+
+// ---------------------------------------------------------------------------
+// Admin auth
+// ---------------------------------------------------------------------------
+// admin_users has RLS that lets a signed-in user read only their OWN row, so a
+// row coming back is proof this account is on the allowlist. Anyone not on it
+// - including a user who obtained an account some other way - gets nothing.
+export async function isAdminUser(userId) {
+  if (!userId) return false;
+  try {
+    const { data, error } = await supabase
+      .from("admin_users")
+      .select("id")
+      .eq("id", userId)
+      .maybeSingle();
+    if (error) return false;
+    return !!data;
+  } catch (e) {
+    return false;
+  }
+}
+
+export async function signOutAdmin() {
+  try {
+    await supabase.auth.signOut();
+    return true;
+  } catch (e) {
+    console.error("signOut failed", e);
+    return false;
+  }
+}
 
 export async function loadCollection(name) {
   try {

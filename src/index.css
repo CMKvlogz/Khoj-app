@@ -10,3 +10,67 @@ html, body, #root { height: 100%; margin: 0; }
 @keyframes khoj-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .khoj-card-in { animation: khoj-rise 0.45s cubic-bezier(.2,.7,.3,1) both; }
 .khoj-nastaliq { font-family: 'Noto Nastaliq Urdu', serif; }
+
+/* ---------------------------------------------------------------------------
+   Interactive affordances: hover, keyboard focus and disabled treatments.
+   These live here rather than as Tailwind utilities because most controls set
+   their colours through inline style, which a utility class cannot override,
+   and because :hover / :focus-visible cannot be expressed inline at all.
+   Colour is the existing navy theme token (#16213B = rgb(22,33,59)).
+   --------------------------------------------------------------------------- */
+.khoj-tap,
+.khoj-tap-solid,
+.khoj-tap-text,
+.khoj-tap-card {
+  cursor: pointer;
+  transition: box-shadow 150ms ease, filter 150ms ease, opacity 150ms ease,
+              background-color 150ms ease, border-color 150ms ease;
+}
+
+/* Flat controls: a light navy wash laid over whatever background they already have. */
+.khoj-tap:hover:not(:disabled),
+.khoj-tap:focus-visible {
+  box-shadow: inset 0 0 0 999px rgba(22, 33, 59, 0.055);
+}
+
+/* Gradient / shadowed CTAs already own their box-shadow, so lift them instead. */
+.khoj-tap-solid:hover:not(:disabled),
+.khoj-tap-solid:focus-visible {
+  filter: brightness(1.07);
+}
+
+/* Text and icon links. */
+.khoj-tap-text:hover:not(:disabled),
+.khoj-tap-text:focus-visible {
+  opacity: 0.7;
+}
+
+/* Case cards: their inner panel paints its own white background over any inset
+   wash, so these shift elevation instead. */
+.khoj-tap-card:hover:not(:disabled),
+.khoj-tap-card:focus-visible {
+  box-shadow: 0 6px 16px rgba(22, 33, 59, 0.14);
+}
+
+/* Keyboard focus mirrors hover and adds a visible ring. */
+.khoj-tap:focus-visible,
+.khoj-tap-solid:focus-visible,
+.khoj-tap-text:focus-visible,
+.khoj-tap-card:focus-visible {
+  outline: 2px solid #16213B;
+  outline-offset: 2px;
+}
+
+/* Disabled controls stay flat and inert. */
+.khoj-tap:disabled,
+.khoj-tap-solid:disabled,
+.khoj-tap-text:disabled,
+.khoj-tap-card:disabled,
+.khoj-tap:disabled:hover,
+.khoj-tap-solid:disabled:hover,
+.khoj-tap-text:disabled:hover,
+.khoj-tap-card:disabled:hover {
+  cursor: not-allowed;
+  box-shadow: none;
+  filter: none;
+}

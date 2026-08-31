@@ -31,6 +31,8 @@ import {
   Share2,
   Search,
   Heart,
+  Mail,
+  LogOut,
 } from "lucide-react";
 
 // ============================== Fonts ==============================
@@ -284,6 +286,38 @@ const EN = {
   shareEncourage: "The more people who see this, the sooner they come home.",
   timelineEncourage: "This isn't just a timeline — it's people refusing to give up.",
   pendingWaitingEncourage: "The moment this goes live, hundreds of eyes will start looking for them too.",
+  errAgeInvalid: "Enter age in whole numbers only (0-999).",
+  errCityInvalid: "Please pick a city from the list.",
+  errPhoneInvalid: "Enter a valid Pakistani mobile number - 11 digits starting with 03 (e.g. 03001234567).",
+  errLocationOutsidePk: "The pinned location must be inside Pakistan.",
+  cityPickPh: "Type to search a city...",
+  cityNoMatch: "No city matches that search.",
+  goHomeAria: "Khoj home - back to the main board",
+  discardConfirm: "Discard this report?",
+  adminLoginTitle: "Admin Sign In",
+  adminLoginSub: "Sign in with your admin email and password.",
+  adminEmailPh: "Email address",
+  adminSignIn: "Sign In",
+  adminInvalidCreds: "Incorrect email or password.",
+  adminRateLimited: "Too many attempts. Please try again later.",
+  adminSignOut: "Sign out",
+  forgotPassword: "Forgot password?",
+  resetRequestTitle: "Reset your password",
+  resetRequestSub: "Enter your admin email address and we'll send you a reset link.",
+  resetSendLink: "Send reset link",
+  resetSending: "Sending...",
+  resetGenericSent: "If that email is registered, a reset link has been sent.",
+  backToLogin: "Back to sign in",
+  resetPasswordTitle: "Set a new password",
+  resetPasswordSub: "Choose a new password for your admin account.",
+  newPasswordPh: "New password",
+  confirmPasswordPh: "Confirm new password",
+  resetTooShort: "Password must be at least 8 characters.",
+  resetMismatch: "The two passwords don't match.",
+  resetSaveBtn: "Update password",
+  resetSaving: "Updating...",
+  resetSuccess: "Password updated. Please sign in with your new password.",
+  resetLinkInvalid: "This reset link is invalid or has expired. Please request a new one.",
 };
 
 const UR = {
@@ -365,6 +399,38 @@ const UR = {
   notifClear: "سب پڑھی ہوئی نشان زد کریں",
   follow: "اس کیس کی اپڈیٹس حاصل کریں",
   following: "اپڈیٹس مل رہی ہیں",
+  errAgeInvalid: "عمر صرف مکمل ہندسوں میں لکھیں (0 تا 999)۔",
+  errCityInvalid: "براہِ کرم فہرست میں سے شہر منتخب کریں۔",
+  errPhoneInvalid: "درست پاکستانی موبائل نمبر لکھیں — 03 سے شروع ہونے والے 11 ہندسے (مثلاً 03001234567)۔",
+  errLocationOutsidePk: "منتخب کردہ مقام پاکستان کے اندر ہونا ضروری ہے۔",
+  cityPickPh: "شہر تلاش کرنے کے لیے لکھیں...",
+  cityNoMatch: "اس تلاش سے کوئی شہر نہیں ملا۔",
+  goHomeAria: "کھوج ہوم — مرکزی بورڈ پر واپس",
+  discardConfirm: "کیا یہ رپورٹ ترک کر دیں؟",
+  adminLoginTitle: "ایڈمن سائن اِن",
+  adminLoginSub: "اپنا ایڈمن ای میل اور پاس ورڈ درج کریں۔",
+  adminEmailPh: "ای میل ایڈریس",
+  adminSignIn: "سائن اِن",
+  adminInvalidCreds: "ای میل یا پاس ورڈ غلط ہے۔",
+  adminRateLimited: "بہت زیادہ کوششیں۔ براہِ کرم کچھ دیر بعد دوبارہ کوشش کریں۔",
+  adminSignOut: "سائن آؤٹ",
+  forgotPassword: "پاس ورڈ بھول گئے؟",
+  resetRequestTitle: "پاس ورڈ ری سیٹ کریں",
+  resetRequestSub: "اپنا ایڈمن ای میل درج کریں، ہم آپ کو ری سیٹ لنک بھیجیں گے۔",
+  resetSendLink: "ری سیٹ لنک بھیجیں",
+  resetSending: "بھیجا جا رہا ہے...",
+  resetGenericSent: "اگر یہ ای میل رجسٹرڈ ہے تو ری سیٹ لنک بھیج دیا گیا ہے۔",
+  backToLogin: "واپس سائن اِن پر",
+  resetPasswordTitle: "نیا پاس ورڈ مقرر کریں",
+  resetPasswordSub: "اپنے ایڈمن اکاؤنٹ کے لیے نیا پاس ورڈ منتخب کریں۔",
+  newPasswordPh: "نیا پاس ورڈ",
+  confirmPasswordPh: "نئے پاس ورڈ کی تصدیق کریں",
+  resetTooShort: "پاس ورڈ کم از کم 8 حروف کا ہونا چاہیے۔",
+  resetMismatch: "دونوں پاس ورڈ آپس میں نہیں ملتے۔",
+  resetSaveBtn: "پاس ورڈ اپڈیٹ کریں",
+  resetSaving: "اپڈیٹ ہو رہا ہے...",
+  resetSuccess: "پاس ورڈ اپڈیٹ ہو گیا۔ براہِ کرم نئے پاس ورڈ سے سائن اِن کریں۔",
+  resetLinkInvalid: "یہ ری سیٹ لنک غلط یا میعاد ختم ہو چکا ہے۔ نیا لنک منگوائیں۔",
 };
 
 const ROMAN = {
@@ -571,6 +637,38 @@ const ROMAN = {
   shareEncourage: "Jitne zyada log ye dekhenge, utni jaldi wo ghar wapas aa sakte hain.",
   timelineEncourage: "Ye sirf timeline nahi — ye wo log hain jo haar maanne se inkaar kar rahe hain.",
   pendingWaitingEncourage: "Live hote hi, sainkron nazrein bhi inhein dhoondhna shuru kar dengi.",
+  errAgeInvalid: "Umar sirf mukammal hindson mein likhein (0 se 999).",
+  errCityInvalid: "Baraye meherbani list mein se shehar muntakhib karein.",
+  errPhoneInvalid: "Sahih Pakistani mobile number likhein - 03 se shuru hone wale 11 hindse (misal: 03001234567).",
+  errLocationOutsidePk: "Muntakhib kiya gaya maqam Pakistan ke andar hona zaroori hai.",
+  cityPickPh: "Shehar dhoondhne ke liye likhein...",
+  cityNoMatch: "Is talash se koi shehar nahin mila.",
+  goHomeAria: "Khoj home - wapas main board par",
+  discardConfirm: "Kya ye report chhod dein?",
+  adminLoginTitle: "Admin Sign In",
+  adminLoginSub: "Apna admin email aur password daalein.",
+  adminEmailPh: "Email address",
+  adminSignIn: "Sign In",
+  adminInvalidCreds: "Email ya password ghalat hai.",
+  adminRateLimited: "Bohat zyada koshishein. Baraye meherbani thodi der baad dobara koshish karein.",
+  adminSignOut: "Sign out",
+  forgotPassword: "Password bhool gaye?",
+  resetRequestTitle: "Password reset karein",
+  resetRequestSub: "Apna admin email daalein, hum aapko reset link bhej denge.",
+  resetSendLink: "Reset link bhejein",
+  resetSending: "Bheja ja raha hai...",
+  resetGenericSent: "Agar ye email registered hai to reset link bhej diya gaya hai.",
+  backToLogin: "Wapas sign in par",
+  resetPasswordTitle: "Naya password set karein",
+  resetPasswordSub: "Apne admin account ke liye naya password chunein.",
+  newPasswordPh: "Naya password",
+  confirmPasswordPh: "Naye password ki tasdeeq karein",
+  resetTooShort: "Password kam az kam 8 characters ka hona chahiye.",
+  resetMismatch: "Dono passwords aapas mein nahin miltay.",
+  resetSaveBtn: "Password update karein",
+  resetSaving: "Update ho raha hai...",
+  resetSuccess: "Password update ho gaya. Baraye meherbani naye password se sign in karein.",
+  resetLinkInvalid: "Ye reset link ghalat ya expire ho chuka hai. Naya link mangwaein.",
 };
 
 const PA = {
@@ -652,6 +750,38 @@ const PA = {
   notifClear: "سب پڑھیاں نشان زد کرو",
   follow: "ایس کیس دیاں اپڈیٹس لوو",
   following: "اپڈیٹس مل رہیاں نیں",
+  errAgeInvalid: "عمر صرف پورے ہندسیاں وچ لکھو (0 توں 999)۔",
+  errCityInvalid: "مہربانی کر کے لسٹ وچوں شہر چُنو۔",
+  errPhoneInvalid: "ٹھیک پاکستانی موبائل نمبر لکھو — 03 توں شروع ہون والے 11 ہندسے (مثلاً 03001234567)۔",
+  errLocationOutsidePk: "چُنی ہوئی تھاں پاکستان دے اندر ہونی چاہیدی اے۔",
+  cityPickPh: "شہر لبھن لئی لکھو...",
+  cityNoMatch: "ایس تلاش نال کوئی شہر نہیں لبھیا۔",
+  goHomeAria: "کھوج ہوم — مکھ بورڈ تے واپس",
+  discardConfirm: "کی ایہ رپورٹ چھڈ دیئے؟",
+  adminLoginTitle: "ایڈمن سائن اِن",
+  adminLoginSub: "اپنا ایڈمن ای میل تے پاس ورڈ پاؤ۔",
+  adminEmailPh: "ای میل ایڈریس",
+  adminSignIn: "سائن اِن",
+  adminInvalidCreds: "ای میل یا پاس ورڈ غلط اے۔",
+  adminRateLimited: "بہت زیادہ کوششاں۔ تھوڑی دیر بعد فیر کوشش کرو۔",
+  adminSignOut: "سائن آؤٹ",
+  forgotPassword: "پاس ورڈ بھل گئے او؟",
+  resetRequestTitle: "پاس ورڈ ری سیٹ کرو",
+  resetRequestSub: "اپنا ایڈمن ای میل پاؤ، اسیں تہانوں ری سیٹ لنک گھلاں گے۔",
+  resetSendLink: "ری سیٹ لنک گھلو",
+  resetSending: "گھلیا جا رہیا اے...",
+  resetGenericSent: "جے ایہ ای میل رجسٹرڈ اے تاں ری سیٹ لنک گھل دتا گیا اے۔",
+  backToLogin: "واپس سائن اِن تے",
+  resetPasswordTitle: "نواں پاس ورڈ مقرر کرو",
+  resetPasswordSub: "اپنے ایڈمن اکاؤنٹ لئی نواں پاس ورڈ چُنو۔",
+  newPasswordPh: "نواں پاس ورڈ",
+  confirmPasswordPh: "نویں پاس ورڈ دی تصدیق کرو",
+  resetTooShort: "پاس ورڈ گھٹو گھٹ 8 حرفاں دا ہونا چاہیدا اے۔",
+  resetMismatch: "دوویں پاس ورڈ آپس وچ نہیں ملدے۔",
+  resetSaveBtn: "پاس ورڈ اپڈیٹ کرو",
+  resetSaving: "اپڈیٹ ہو رہیا اے...",
+  resetSuccess: "پاس ورڈ اپڈیٹ ہو گیا۔ نویں پاس ورڈ نال سائن اِن کرو۔",
+  resetLinkInvalid: "ایہ ری سیٹ لنک غلط یا میعاد مُک چکی اے۔ نواں لنک منگواؤ۔",
 };
 
 const PS = {
@@ -733,6 +863,38 @@ const PS = {
   notifClear: "ټول لوستل شوي نښه کړئ",
   follow: "د دې کیس تازه معلومات ترلاسه کړئ",
   following: "تازه معلومات ترلاسه کیږي",
+  errAgeInvalid: "عمر یوازې په بشپړو عددونو کې ولیکئ (0 تر 999).",
+  errCityInvalid: "مهرباني وکړئ له لیست څخه ښار وټاکئ.",
+  errPhoneInvalid: "سمه پاکستانۍ موبایل شمیره ولیکئ — 11 عدده چې په 03 پیل کیږي (لکه 03001234567).",
+  errLocationOutsidePk: "ټاکل شوی ځای باید د پاکستان دننه وي.",
+  cityPickPh: "د ښار لټون لپاره ولیکئ...",
+  cityNoMatch: "په دې لټون کې کوم ښار ونه موندل شو.",
+  goHomeAria: "کھوج کور — بیرته اصلي بورډ ته",
+  discardConfirm: "ایا دا راپور پریږدئ؟",
+  adminLoginTitle: "د اډمن ننوتل",
+  adminLoginSub: "خپل د اډمن بریښنالیک او پټنوم ولیکئ.",
+  adminEmailPh: "بریښنالیک پته",
+  adminSignIn: "ننوتل",
+  adminInvalidCreds: "بریښنالیک یا پټنوم سم نه دی.",
+  adminRateLimited: "ډېرې هڅې وشوې. مهرباني وکړئ وروسته بیا هڅه وکړئ.",
+  adminSignOut: "وتل",
+  forgotPassword: "پټنوم مو هېر شوی؟",
+  resetRequestTitle: "پټنوم بیا تنظیم کړئ",
+  resetRequestSub: "خپل د اډمن بریښنالیک ولیکئ، موږ به تاسو ته د بیا تنظیم لینک ولیږو.",
+  resetSendLink: "د بیا تنظیم لینک ولیږئ",
+  resetSending: "لیږل کیږي...",
+  resetGenericSent: "که دا بریښنالیک ثبت وي، د بیا تنظیم لینک ولیږل شو.",
+  backToLogin: "بیرته ننوتلو ته",
+  resetPasswordTitle: "نوی پټنوم وټاکئ",
+  resetPasswordSub: "د خپل اډمن حساب لپاره نوی پټنوم وټاکئ.",
+  newPasswordPh: "نوی پټنوم",
+  confirmPasswordPh: "نوی پټنوم تایید کړئ",
+  resetTooShort: "پټنوم باید لږ تر لږه 8 تورې ولري.",
+  resetMismatch: "دواړه پټنومونه سره نه خوري.",
+  resetSaveBtn: "پټنوم تازه کړئ",
+  resetSaving: "تازه کیږي...",
+  resetSuccess: "پټنوم تازه شو. مهرباني وکړئ په نوي پټنوم ننوځئ.",
+  resetLinkInvalid: "دا لینک ناسم دی یا یې وخت تېر شوی. نوی لینک وغواړئ.",
 };
 
 const SD = {
@@ -814,26 +976,121 @@ const SD = {
   notifClear: "سڀ پڙهيل نشان لڳايو",
   follow: "هن ڪيس جون تازه ڪاريون حاصل ڪريو",
   following: "تازه ڪاريون پيون اچن",
+  errAgeInvalid: "عمر رڳو مڪمل انگن ۾ لکو (0 کان 999).",
+  errCityInvalid: "مهرباني ڪري فهرست مان شهر چونڊيو.",
+  errPhoneInvalid: "صحيح پاڪستاني موبائل نمبر لکو — 03 سان شروع ٿيندڙ 11 انگ (مثال: 03001234567).",
+  errLocationOutsidePk: "چونڊيل هنڌ پاڪستان جي اندر هجڻ ضروري آهي.",
+  cityPickPh: "شهر ڳولڻ لاءِ لکو...",
+  cityNoMatch: "هن ڳولا سان ڪو شهر نه مليو.",
+  goHomeAria: "کھوج گھر — واپس مکيه بورڊ تي",
+  discardConfirm: "ڇا هي رپورٽ ڇڏي ڏجي؟",
+  adminLoginTitle: "ايڊمن سائن اِن",
+  adminLoginSub: "پنهنجو ايڊمن اي ميل ۽ پاسورڊ لکو.",
+  adminEmailPh: "اي ميل ايڊريس",
+  adminSignIn: "سائن اِن",
+  adminInvalidCreds: "اي ميل يا پاسورڊ غلط آهي.",
+  adminRateLimited: "تمام گهڻيون ڪوششون. مهرباني ڪري ٿوري دير کان پوءِ وري ڪوشش ڪريو.",
+  adminSignOut: "سائن آئوٽ",
+  forgotPassword: "پاسورڊ وسري ويو؟",
+  resetRequestTitle: "پاسورڊ ري سيٽ ڪريو",
+  resetRequestSub: "پنهنجو ايڊمن اي ميل لکو، اسان توهان کي ري سيٽ لنڪ موڪلينداسين.",
+  resetSendLink: "ري سيٽ لنڪ موڪليو",
+  resetSending: "موڪليو پيو وڃي...",
+  resetGenericSent: "جيڪڏهن اهو اي ميل رجسٽرڊ آهي ته ري سيٽ لنڪ موڪليو ويو آهي.",
+  backToLogin: "واپس سائن اِن تي",
+  resetPasswordTitle: "نئون پاسورڊ مقرر ڪريو",
+  resetPasswordSub: "پنهنجي ايڊمن اڪائونٽ لاءِ نئون پاسورڊ چونڊيو.",
+  newPasswordPh: "نئون پاسورڊ",
+  confirmPasswordPh: "نئين پاسورڊ جي تصديق ڪريو",
+  resetTooShort: "پاسورڊ گهٽ ۾ گهٽ 8 اکر هئڻ گهرجي.",
+  resetMismatch: "ٻئي پاسورڊ پاڻ ۾ نٿا ملن.",
+  resetSaveBtn: "پاسورڊ اپڊيٽ ڪريو",
+  resetSaving: "اپڊيٽ ٿي رهيو آهي...",
+  resetSuccess: "پاسورڊ اپڊيٽ ٿي ويو. مهرباني ڪري نئين پاسورڊ سان سائن اِن ڪريو.",
+  resetLinkInvalid: "هي ري سيٽ لنڪ غلط يا ختم ٿي چڪو آهي. نئون لنڪ گهرايو.",
 };
 
 const STR = { en: EN, ur: UR, roman: ROMAN, pa: PA, ps: PS, sd: SD };
 
 // ============================== Pakistan cities ==============================
-const PAKISTAN_CITIES = [
-  "Karachi", "Lahore", "Faisalabad", "Rawalpindi", "Multan", "Hyderabad", "Gujranwala",
-  "Peshawar", "Islamabad", "Quetta", "Bahawalpur", "Sargodha", "Sialkot", "Sukkur",
-  "Larkana", "Sheikhupura", "Rahim Yar Khan", "Jhang", "Dera Ghazi Khan", "Gujrat",
-  "Sahiwal", "Wah Cantonment", "Mardan", "Kasur", "Okara", "Mingora", "Nawabshah",
-  "Chiniot", "Kotri", "Kohat", "Hafizabad", "Muzaffargarh", "Khanpur", "Gojra",
-  "Bahawalnagar", "Muridke", "Jacobabad", "Shikarpur", "Khanewal", "Dera Ismail Khan",
-  "Abbottabad", "Mianwali", "Vehari", "Jaranwala", "Nowshera", "Chakwal", "Attock",
-  "Jhelum", "Toba Tek Singh", "Tando Adam", "Turbat", "Khuzdar", "Chaman", "Zhob",
-  "Gwadar", "Mirpur Khas", "Pakpattan", "Kamoke", "Daska", "Swabi", "Charsadda",
-  "Mansehra", "Haripur", "Muzaffarabad", "Mirpur (AJK)", "Skardu", "Gilgit", "Gwalior",
-  "Ghotki", "Badin", "Thatta", "Tando Allahyar", "Dadu", "Naushahro Feroze",
-  "Layyah", "Bhakkar", "Narowal", "Pattoki", "Ferozwala", "Kabirwala", "Burewala",
+// Provincial capitals, divisional and district headquarters, and every town of
+// roughly 100k+ across Punjab, Sindh, KP, Balochistan, GB, AJK and Islamabad.
+// Exported so the report form's combobox and the board's filter share one list.
+// "Other" stays last as the escape hatch for smaller towns and villages.
+export const PAKISTAN_CITIES = [
+  "Abbottabad", "Ahmadpur East", "Akora Khattak", "Aliabad", "Alipur", "Alpuri", "Arifwala",
+  "Astore", "Athmuqam", "Attock", "Awaran", "Badin", "Bagh", "Bahawalnagar", "Bahawalpur",
+  "Bahrain", "Balakot", "Bannu", "Barikot", "Barkhan", "Batkhela", "Battagram", "Bela",
+  "Bhakkar", "Bhalwal", "Bhera", "Bhimber", "Burewala", "Chak Jhumra", "Chakswari", "Chakwal",
+  "Chaman", "Charsadda", "Chilas", "Chiniot", "Chishtian", "Chitral", "Choa Saidan Shah",
+  "Chunian", "Dadu", "Dadyal", "Daggar", "Daharki", "Dalbandin", "Danyore", "Dargai", "Daska",
+  "Dasu", "Depalpur", "Dera Allah Yar", "Dera Ghazi Khan", "Dera Ismail Khan",
+  "Dera Murad Jamali", "Digri", "Dinga", "Domel", "Duki", "Dunyapur", "Faisalabad",
+  "Fateh Jang", "Ferozwala", "Fort Abbas", "Forward Kahuta", "Gahkuch", "Gambat", "Gandava",
+  "Garhi Khairo", "Ghotki", "Gilgit", "Gojra", "Gujar Khan", "Gujranwala", "Gujrat", "Gupis",
+  "Gwadar", "Hafizabad", "Hala", "Hangu", "Haripur", "Harnai", "Haroonabad", "Hasan Abdal",
+  "Hasilpur", "Hattian Bala", "Havelian", "Hazro", "Hub", "Hyderabad", "Islamabad",
+  "Islamgarh", "Jacobabad", "Jahanian", "Jalalpur Jattan", "Jampur", "Jamrud", "Jamshoro",
+  "Jaranwala", "Jatoi", "Jauharabad", "Jhang", "Jhelum", "Jiwani", "Kabal", "Kabirwala",
+  "Kahror Pakka", "Kahuta", "Kalam", "Kalat", "Kalat Cantonment", "Kallar Syedan", "Kamalia",
+  "Kamoke", "Kandhkot", "Karachi", "Karak", "Karimabad", "Karor Lal Esan", "Kashmore",
+  "Kasur", "Katlang", "Keti Bandar", "Khairpur", "Khanewal", "Khanpur", "Khaplu", "Khar",
+  "Kharan", "Kharian", "Kharmang", "Khipro", "Khuiratta", "Khushab", "Khuzdar", "Khwazakhela",
+  "Kohat", "Kohlu", "Kot Abdul Malik", "Kot Addu", "Kot Diji", "Kot Momin",
+  "Kot Radha Kishan", "Kotli", "Kotri", "Kulachi", "Kunri", "Lahore", "Lakki Marwat",
+  "Landi Kotal", "Larkana", "Layyah", "Liaquatpur", "Lodhran", "Loralai", "Lower Dir",
+  "Lundkhwar", "Mach", "Malakand", "Malakwal", "Mandi Bahauddin", "Mansehra", "Mardan",
+  "Mastung", "Matiari", "Matta", "Mehar", "Mian Channu", "Mianwali", "Minchinabad", "Mingora",
+  "Miranshah", "Mirpur (AJK)", "Mirpur Khas", "Mithi", "Moro", "Multan", "Muridke", "Murree",
+  "Musakhel", "Muslim Bagh", "Muzaffarabad", "Muzaffargarh", "Nagar", "Nakyal",
+  "Nankana Sahib", "Narowal", "Naushahro Feroze", "Nawabshah", "New Sukkur", "Nowshera",
+  "Nowshera Virkan", "Nushki", "Oghi", "Okara", "Ormara", "Pabbi", "Paharpur", "Pakpattan",
+  "Pallandri", "Panjgur", "Pano Aqil", "Parachinar", "Pasni", "Pasrur", "Pattoki", "Peshawar",
+  "Phool Nagar", "Pind Dadan Khan", "Pindi Bhattian", "Pishin", "Qambar", "Qila Abdullah",
+  "Qila Saifullah", "Quetta", "Rahim Yar Khan", "Raiwind", "Rajanpur", "Ratodero",
+  "Rawalakot", "Rawalpindi", "Renala Khurd", "Risalpur", "Rohri", "Sadiqabad", "Safdarabad",
+  "Sahiwal", "Sambrial", "Samundri", "Sanghar", "Sangla Hill", "Sarai Alamgir", "Sargodha",
+  "Sehnsa", "Sehwan", "Serai Naurang", "Shabqadar", "Shahdadkot", "Shahdadpur", "Shahkot",
+  "Shakargarh", "Sheikhupura", "Shigar", "Shikarpur", "Shinkiari", "Shorkot", "Sialkot",
+  "Sibi", "Sillanwali", "Skardu", "Sohawa", "Sohbatpur", "Sost", "Sui", "Sujawal", "Sukkur",
+  "Surab", "Swabi", "Takht Bhai", "Talagang", "Talhar", "Tandlianwala", "Tando Adam",
+  "Tando Allahyar", "Tando Bago", "Tando Muhammad Khan", "Tangi", "Tank", "Taunsa", "Taxila",
+  "Thari Mirwah", "Thatta", "Timergara", "Toba Tek Singh", "Topi", "Turbat", "Ubauro",
+  "Umerkot", "Upper Dir", "Usta Muhammad", "Uthal", "Utmanzai", "Vehari", "Wadh",
+  "Wah Cantonment", "Wana", "Wazirabad", "Winder", "Yasin", "Yazman", "Zafarwal", "Zhob",
+  "Ziarat",
   "Other",
 ];
+
+// ============================== Pakistan map bounds ==============================
+// South-west (23.6, 60.8) to north-east (37.1, 77.9). The map picker is locked to
+// this box. Note it is a rectangle, not the border: it covers all of Pakistan but
+// also clips corners of Afghanistan, Iran, India and China. It stops a pin landing
+// on another continent, not every pin just across the line.
+export const PK_BOUNDS = { south: 23.6, west: 60.8, north: 37.1, east: 77.9 };
+const PK_MIN_ZOOM = 5;
+function isInPakistan(c) {
+  if (!c || !Number.isFinite(c.lat) || !Number.isFinite(c.lng)) return false;
+  return (
+    c.lat >= PK_BOUNDS.south && c.lat <= PK_BOUNDS.north &&
+    c.lng >= PK_BOUNDS.west && c.lng <= PK_BOUNDS.east
+  );
+}
+
+// ============================== Field validation ==============================
+// Age: whole numbers only, at most three digits. Phone: Pakistani mobile format.
+const AGE_RE = /^\d{1,3}$/;
+const PK_PHONE_RE = /^03\d{9}$/;
+function onlyDigits(value, max) {
+  return (value || "").replace(/[^0-9]/g, "").slice(0, max);
+}
+// Stops letters, decimal points and signs before they ever reach the field;
+// onlyDigits() above still sanitises pastes and autofill.
+function blockNonDigitKey(e) {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.key.length !== 1) return;
+  if (!/[0-9]/.test(e.key)) e.preventDefault();
+}
 
 // ============================== Photo helpers ==============================
 function getPhotos(report) {
@@ -904,7 +1161,7 @@ function getT(lang) {
 }
 
 // ============================== Storage (Firebase) ==============================
-import { loadCollection, saveItem, deleteItem, subscribeToCollection } from "./supabase.js";
+import { loadCollection, saveItem, deleteItem, subscribeToCollection, supabase, isAdminUser, signOutAdmin } from "./supabase.js";
 async function loadList(key) {
   return await loadCollection(key);
 }
@@ -918,11 +1175,10 @@ async function deleteListItem(key, id) {
 }
 
 // ============================== Admin ==============================
-// Change this password to whatever you like — this is the only thing
-// that gates access to deleting cases / force-marking Reunited / etc.
-// Admin credentials now live server-side only (Vercel Environment Variables),
-// checked via /api/verify-admin.js — never shipped in this browser bundle.
-const ADMIN_SESSION_KEY = "khoj_admin_session";
+// There is no shared admin password. Admins are real Supabase Auth users whose
+// id also appears in the admin_users allowlist table; sign-in goes through
+// /api/admin-auth.js, which rate limits attempts and checks that allowlist
+// server side. Nothing here grants admin rights on its own.
 const MY_SIGHTINGS_KEY = "khoj_my_sighting_ids";
 function getMySightingIds() {
   try { return JSON.parse(localStorage.getItem(MY_SIGHTINGS_KEY) || "[]"); } catch { return []; }
@@ -1041,6 +1297,15 @@ const displayFont = "'Source Serif 4', 'IBM Plex Sans', serif";
 const bodyFont = "'IBM Plex Sans', sans-serif";
 const monoFont = "'IBM Plex Mono', monospace";
 
+// ============================== Layout shells ==============================
+// One shared page shell so the header, hero, stats row, emergency bar and the
+// card grid all sit on the same left/right edges at every screen size.
+// Mobile stays edge-to-edge with a small gutter; tablets and desktops widen out.
+const SHELL = "w-full max-w-full md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto px-5 md:px-8 lg:px-10";
+// Forms and the case detail page keep a comfortable reading measure instead of
+// stretching a single column of inputs across a 1440px monitor.
+const SHELL_NARROW = "w-full max-w-full md:max-w-2xl lg:max-w-3xl mx-auto px-5 md:px-8 lg:px-10";
+
 // ============================== Logo ==============================
 function KhojMark({ size = 36 }) {
   return (
@@ -1064,7 +1329,7 @@ function Pill({ active, children, onClick, activeColor }) {
   return (
     <button
       onClick={onClick}
-      className="text-[13px] font-semibold px-3.5 py-[7px] rounded-full transition-colors duration-150 whitespace-nowrap"
+      className="khoj-tap text-[13px] font-semibold px-3.5 py-[7px] rounded-full transition-colors duration-150 whitespace-nowrap"
       style={
         active
           ? { background: activeColor || C.rose, color: "#F7F5EE" }
@@ -1075,7 +1340,7 @@ function Pill({ active, children, onClick, activeColor }) {
     </button>
   );
 }
-function Field({ label, required, icon: Icon, children }) {
+function Field({ label, required, icon: Icon, children, error }) {
   return (
     <label className="block mb-4">
       <span className="flex items-center gap-1.5 text-[13px] font-medium mb-1.5" style={{ color: C.textMuted }}>
@@ -1083,6 +1348,7 @@ function Field({ label, required, icon: Icon, children }) {
         {label} {required && <span style={{ color: C.rose }}>*</span>}
       </span>
       {children}
+      {error && <span className="block text-[11.5px] mt-1.5" style={{ color: C.rose }}>{error}</span>}
     </label>
   );
 }
@@ -1119,7 +1385,7 @@ function SegButton({ options, value, onChange }) {
           key={o.value}
           type="button"
           onClick={() => onChange(o.value)}
-          className="flex-1 text-[13px] font-medium py-2.5 rounded-xl transition-all"
+          className="khoj-tap flex-1 text-[13px] font-medium py-2.5 rounded-xl transition-all"
           style={
             value === o.value
               ? { background: C.rose, color: "#F7F5EE" }
@@ -1133,6 +1399,91 @@ function SegButton({ options, value, onChange }) {
   );
 }
 
+// ============================== City combobox ==============================
+// Type-to-filter dropdown over PAKISTAN_CITIES. Free text is never accepted:
+// the value only changes when an option is chosen, and anything left
+// half-typed in the box is reverted as soon as the field loses focus.
+function CityCombobox({ value, onChange, placeholder, emptyLabel }) {
+  const [query, setQuery] = useState(value || "");
+  const [open, setOpen] = useState(false);
+  const [highlight, setHighlight] = useState(0);
+
+  useEffect(() => { setQuery(value || ""); }, [value]);
+
+  const q = query.trim().toLowerCase();
+  const showAll = !open || !q || q === (value || "").trim().toLowerCase();
+  const matches = showAll ? PAKISTAN_CITIES : PAKISTAN_CITIES.filter((c) => c.toLowerCase().includes(q));
+
+  const commit = (city) => { onChange(city); setQuery(city); setOpen(false); setHighlight(0); };
+  const revert = () => { setOpen(false); setQuery(value || ""); };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      if (!open) { setOpen(true); return; }
+      if (matches.length === 0) return;
+      setHighlight((h) => {
+        const next = e.key === "ArrowDown" ? h + 1 : h - 1;
+        return next < 0 ? matches.length - 1 : next >= matches.length ? 0 : next;
+      });
+    } else if (e.key === "Enter") {
+      if (open && matches[highlight]) { e.preventDefault(); commit(matches[highlight]); }
+    } else if (e.key === "Escape") {
+      revert();
+    }
+  };
+
+  return (
+    <div className="relative">
+      <input
+        value={query}
+        placeholder={placeholder}
+        role="combobox"
+        aria-expanded={open}
+        aria-autocomplete="list"
+        autoComplete="off"
+        onChange={(e) => { setQuery(e.target.value); setOpen(true); setHighlight(0); }}
+        onFocus={(e) => { setOpen(true); e.target.style.border = `1px solid ${C.rose}`; }}
+        onBlur={(e) => { revert(); e.target.style.border = `1px solid ${C.surfaceBorder}`; }}
+        onKeyDown={handleKeyDown}
+        className={inputBase}
+        style={inputStyle}
+      />
+      {open && (
+        <div
+          role="listbox"
+          onMouseDown={(e) => e.preventDefault()}
+          className="absolute left-0 right-0 top-full mt-1 max-h-56 overflow-y-auto rounded-xl z-50 shadow-2xl"
+          style={{ background: "#FFFFFF", border: `1px solid ${C.surfaceBorder}` }}
+        >
+          {matches.length === 0 ? (
+            <div className="px-3.5 py-2.5 text-[13px]" style={{ color: C.textFaint }}>{emptyLabel}</div>
+          ) : (
+            matches.map((c, i) => (
+              <button
+                key={c}
+                type="button"
+                role="option"
+                aria-selected={c === value}
+                onMouseEnter={() => setHighlight(i)}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); commit(c); }}
+                className="khoj-tap w-full text-left px-3.5 py-2.5 text-[14px] transition-colors"
+                style={{
+                  background: i === highlight ? "rgba(22,33,59,0.06)" : "transparent",
+                  color: c === value ? C.rose : C.textPrimary,
+                  fontWeight: c === value ? 600 : 400,
+                }}
+              >
+                {c}
+              </button>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ============================== Call button ==============================
 function CallButton({ number, label, icon: Icon = PhoneCall, tone = "rose", full }) {
   if (!number) return null;
@@ -1141,7 +1492,7 @@ function CallButton({ number, label, icon: Icon = PhoneCall, tone = "rose", full
   return (
     <a
       href={`tel:${normalizePhone(number)}`}
-      className={`${full ? "flex-1" : ""} inline-flex items-center justify-center gap-1.5 text-[13px] font-semibold px-3.5 py-2.5 rounded-xl transition-transform active:scale-95`}
+      className={`khoj-tap-text ${full ? "flex-1" : ""} inline-flex items-center justify-center gap-1.5 text-[13px] font-semibold px-3.5 py-2.5 rounded-xl transition-transform active:scale-95`}
       style={{ background: bg, color: fg }}
     >
       <Icon size={14} /> {label}
@@ -1163,7 +1514,7 @@ function LangPicker({ lang, setLang }) {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-full transition-colors"
+        className="khoj-tap flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-full transition-colors"
         style={{ background: "rgba(22,33,59,0.05)", color: C.textPrimary, border: `1px solid ${C.surfaceBorder}` }}
       >
         <Globe size={13} /> {current.label}
@@ -1174,7 +1525,7 @@ function LangPicker({ lang, setLang }) {
             <button
               key={l.code}
               onClick={() => { setLang(l.code); setOpen(false); }}
-              className={`w-full text-left px-3.5 py-2.5 text-[13.5px] flex items-center justify-between transition-colors ${l.script === "urdu" ? "khoj-nastaliq" : ""}`}
+              className={`khoj-tap w-full text-left px-3.5 py-2.5 text-[13.5px] flex items-center justify-between transition-colors ${l.script === "urdu" ? "khoj-nastaliq" : ""}`}
               style={{ color: lang === l.code ? C.rose : C.textPrimary, background: lang === l.code ? "rgba(255,84,112,0.08)" : "transparent" }}
             >
               {l.label}
@@ -1202,7 +1553,7 @@ function NotifPanel({ notifications, t, onClose, onOpenReport }) {
             <button
               key={n.id}
               onClick={() => n.reportId && onOpenReport && onOpenReport(n.reportId)}
-              className="w-full text-left px-4 py-3 flex gap-2.5 transition-colors hover:bg-white/5"
+              className="khoj-tap w-full text-left px-4 py-3 flex gap-2.5 transition-colors hover:bg-white/5"
               style={{ borderBottom: `1px solid ${C.surfaceBorder}` }}
             >
               <div className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: n.type === "found" || n.type === "verified" ? C.emerald : n.type === "sighting" ? C.amber : C.rose }} />
@@ -1223,7 +1574,7 @@ function ModalShell({ onClose, children }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4" style={{ background: "rgba(9,6,17,0.72)", backdropFilter: "blur(3px)" }} onClick={onClose}>
       <div onClick={(e) => e.stopPropagation()} className="w-full max-w-sm rounded-2xl p-5 relative khoj-card-in" style={{ background: "#FFFFFF", border: `1px solid ${C.surfaceBorder}` }}>
-        <button onClick={onClose} className="absolute top-3.5 right-3.5 w-7 h-7 rounded-full flex items-center justify-center" style={{ background: "rgba(22,33,59,0.05)" }}>
+        <button onClick={onClose} className="khoj-tap absolute top-3.5 right-3.5 w-7 h-7 rounded-full flex items-center justify-center" style={{ background: "rgba(22,33,59,0.05)" }}>
           <X size={14} color={C.textMuted} />
         </button>
         {children}
@@ -1254,7 +1605,7 @@ function VerifyReunitedModal({ report, onClose, onConfirmed, t, title, sub, cont
       <form onSubmit={submit}>
         <Input value={value} onChange={(e) => { setValue(e.target.value.replace(/[^0-9]/g, "").slice(0, 6)); setWrong(false); }} placeholder={t.verifyContactPh} inputMode="numeric" type="password" />
         {wrong && <p className="text-[12.5px] mt-2" style={{ color: C.rose }}>{t.verifyWrong}</p>}
-        <button type="submit" className="w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px]" style={{ background: `linear-gradient(135deg, ${C.emerald}, #4F8058)`, color: "#F7F5EE" }}>
+        <button type="submit" className="khoj-tap-solid w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px]" style={{ background: `linear-gradient(135deg, ${C.emerald}, #4F8058)`, color: "#F7F5EE" }}>
           {continueLabel || t.verifyContinue}
         </button>
       </form>
@@ -1269,6 +1620,9 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
   const mapRef = useRef(null);
   const markerRef = useRef(null);
   const [coords, setCoords] = useState(initial || null);
+  const [outsideError, setOutsideError] = useState(false);
+  const coordsRef = useRef(initial || null);
+  useEffect(() => { coordsRef.current = coords; }, [coords]);
   const [locating, setLocating] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -1278,19 +1632,42 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
   useEffect(() => {
     if (!ready || !mapDivRef.current || mapRef.current || !window.L) return;
     const start = initial || { lat: 30.3753, lng: 69.3451 };
-    const map = window.L.map(mapDivRef.current, { zoomControl: true }).setView([start.lat, start.lng], initial ? 15 : 5.4);
+    // Pan is clamped to Pakistan and the world cannot be zoomed out to.
+    const pkBounds = window.L.latLngBounds(
+      [PK_BOUNDS.south, PK_BOUNDS.west],
+      [PK_BOUNDS.north, PK_BOUNDS.east]
+    );
+    const map = window.L.map(mapDivRef.current, {
+      zoomControl: true,
+      maxBounds: pkBounds,
+      maxBoundsViscosity: 1.0,
+      minZoom: PK_MIN_ZOOM,
+    }).setView([start.lat, start.lng], initial ? 15 : 5.4);
     window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap",
       maxZoom: 19,
     }).addTo(map);
     const marker = window.L.marker([start.lat, start.lng], { draggable: true }).addTo(map);
+    // Tiles for neighbouring countries stay visible at the edges, so clicks and
+    // drags are checked too - maxBounds alone only constrains panning.
     marker.on("dragend", () => {
       const p = marker.getLatLng();
-      setCoords({ lat: p.lat, lng: p.lng });
+      const next = { lat: p.lat, lng: p.lng };
+      if (!isInPakistan(next)) {
+        const back = coordsRef.current || start;
+        marker.setLatLng([back.lat, back.lng]);
+        setOutsideError(true);
+        return;
+      }
+      setOutsideError(false);
+      setCoords(next);
     });
     map.on("click", (e) => {
+      const next = { lat: e.latlng.lat, lng: e.latlng.lng };
+      if (!isInPakistan(next)) { setOutsideError(true); return; }
+      setOutsideError(false);
       marker.setLatLng(e.latlng);
-      setCoords({ lat: e.latlng.lat, lng: e.latlng.lng });
+      setCoords(next);
     });
     mapRef.current = map;
     markerRef.current = marker;
@@ -1305,8 +1682,10 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const p = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        setCoords(p);
         setLocating(false);
+        if (!isInPakistan(p)) { setOutsideError(true); return; }
+        setOutsideError(false);
+        setCoords(p);
         if (mapRef.current && markerRef.current) {
           mapRef.current.setView([p.lat, p.lng], 16);
           markerRef.current.setLatLng([p.lat, p.lng]);
@@ -1329,7 +1708,10 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
       let normalized = [];
       try {
         // Primary: Photon (OSM-based, built for search-as-you-type, reliable CORS).
-        const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(val)}&limit=6&lang=en`);
+        const res = await fetch(
+          `https://photon.komoot.io/api/?q=${encodeURIComponent(val)}&limit=6&lang=en` +
+            `&bbox=${PK_BOUNDS.west},${PK_BOUNDS.south},${PK_BOUNDS.east},${PK_BOUNDS.north}`
+        );
         const data = await res.json();
         normalized = (data?.features || []).map((f) => {
           const p = f.properties || {};
@@ -1341,16 +1723,18 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
       } catch {
         normalized = [];
       }
+      // Photon's bbox is a bias, not a hard filter - drop anything outside Pakistan.
+      normalized = normalized.filter((r) => isInPakistan(r));
       if (normalized.length === 0) {
         // Fallback: Nominatim.
         try {
           const res2 = await fetch(
-            `https://nominatim.openstreetmap.org/search?format=json&limit=6&q=${encodeURIComponent(val)}`
+            `https://nominatim.openstreetmap.org/search?format=json&limit=6&countrycodes=pk&q=${encodeURIComponent(val)}`
           );
           const data2 = await res2.json();
           normalized = (Array.isArray(data2) ? data2 : []).map((r) => ({
             label: r.display_name, lat: parseFloat(r.lat), lng: parseFloat(r.lon),
-          }));
+          })).filter((r) => isInPakistan(r));
         } catch {
           normalized = [];
         }
@@ -1363,6 +1747,8 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
 
   const pickResult = (r) => {
     const p = { lat: r.lat, lng: r.lng };
+    if (!isInPakistan(p)) { setOutsideError(true); return; }
+    setOutsideError(false);
     setCoords(p);
     setResults([]);
     setQuery(r.label);
@@ -1378,7 +1764,7 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
         <span className="text-[13px] font-semibold flex items-center gap-1.5" style={{ color: C.textPrimary }}>
           <Navigation size={13} color={C.amber} /> {titleOverride || t.tapToPin}
         </span>
-        <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(22,33,59,0.05)" }}>
+        <button onClick={onClose} className="khoj-tap w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(22,33,59,0.05)" }}>
           <X size={16} color={C.textMuted} />
         </button>
       </div>
@@ -1405,7 +1791,7 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
                 key={i}
                 type="button"
                 onClick={() => pickResult(r)}
-                className="w-full text-left px-3 py-2.5 text-[12px] transition-colors hover:bg-white/5"
+                className="khoj-tap w-full text-left px-3 py-2.5 text-[12px] transition-colors hover:bg-white/5"
                 style={{ color: C.textMuted, borderBottom: i < results.length - 1 ? `1px solid ${C.surfaceBorder}` : "none" }}
               >
                 {r.label}
@@ -1424,27 +1810,30 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
         <div ref={mapDivRef} style={{ height: "100%", width: "100%" }} />
       </div>
       <div className="p-4 flex flex-col gap-2.5 shrink-0" style={{ borderTop: `1px solid ${C.surfaceBorder}`, background: C.bgTo }}>
+        {outsideError && (
+          <p className="text-[12px] text-center" style={{ color: C.rose }}>{t.errLocationOutsidePk}</p>
+        )}
         <div className="flex gap-3">
           <button
             type="button"
             onClick={handleUseMyLocation}
-            className="flex-1 py-3 rounded-xl font-medium text-[12.5px] flex items-center justify-center gap-2"
+            className="khoj-tap flex-1 py-3 rounded-xl font-medium text-[12.5px] flex items-center justify-center gap-2"
             style={{ border: `1px solid ${C.surfaceBorder}`, color: C.textMuted }}
           >
             {locating ? <Loader2 size={13} className="animate-spin" /> : <Navigation size={13} />} {t.useMyLocation}
           </button>
           <button
             type="button"
-            disabled={!coords}
-            onClick={() => coords && onConfirm(coords)}
-            className="flex-1 py-3 rounded-xl font-semibold text-[12.5px] disabled:opacity-40"
+            disabled={!coords || !isInPakistan(coords)}
+            onClick={() => coords && isInPakistan(coords) && onConfirm(coords)}
+            className="khoj-tap-solid flex-1 py-3 rounded-xl font-semibold text-[12.5px] disabled:opacity-40"
             style={{ background: `linear-gradient(135deg, ${C.emerald}, #4F8058)`, color: "#F7F5EE" }}
           >
             {t.confirmPin}
           </button>
         </div>
         {allowSkip && (
-          <button type="button" onClick={onSkip} className="text-[12px] font-medium py-1" style={{ color: C.textFaint }}>
+          <button type="button" onClick={onSkip} className="khoj-tap text-[12px] font-medium py-1" style={{ color: C.textFaint }}>
             {t.skipBtn}
           </button>
         )}
@@ -1454,87 +1843,206 @@ function MapPickerModal({ initial, onClose, onConfirm, t, allowSkip, onSkip, tit
 }
 
 // ============================== Admin login modal ==============================
+// Email + password against Supabase Auth. The call goes through /api/admin-auth
+// rather than straight to supabase.auth so attempts can be rate limited and the
+// admin_users allowlist checked server side. Every failure - wrong password,
+// unknown address, or a valid account that simply is not an admin - returns the
+// same message, so this screen cannot be used to find out who the admins are.
 function AdminLoginModal({ onClose, onSuccess, t }) {
-  const [step, setStep] = useState(1);
-  const [pw, setPw] = useState("");
-  const [pin, setPin] = useState("");
-  const [wrong, setWrong] = useState(false);
-  const [checking, setChecking] = useState(false);
-  const [serverError, setServerError] = useState("");
-  const submitStep1 = async (e) => {
+  const [mode, setMode] = useState("login"); // 'login' | 'forgot'
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+
+  const post = async (body) => {
+    const res = await fetch("/api/admin-auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    let data = {};
+    try { data = await res.json(); } catch (e) { data = {}; }
+    return { status: res.status, data };
+  };
+
+  const submitLogin = async (e) => {
     e.preventDefault();
-    setChecking(true);
-    setServerError("");
+    setBusy(true); setError(""); setNotice("");
     try {
-      const res = await fetch("/api/verify-admin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ step: 1, password: pw }),
+      const { status, data } = await post({ action: "login", email, password });
+      if (status === 429) { setError(t.adminRateLimited); return; }
+      if (status >= 500) { setError(t.adminServerError); return; }
+      if (!data.ok || !data.access_token) { setError(t.adminInvalidCreds); return; }
+      const { error: sessionError } = await supabase.auth.setSession({
+        access_token: data.access_token,
+        refresh_token: data.refresh_token,
       });
-      const data = await res.json();
-      if (data.success) { setWrong(false); setStep(2); }
-      else setWrong(true);
-    } catch {
-      setServerError(t.adminServerError);
+      if (sessionError) { setError(t.adminInvalidCreds); return; }
+      onSuccess();
+    } catch (err) {
+      setError(t.adminServerError);
     } finally {
-      setChecking(false);
+      setBusy(false);
     }
   };
-  const submitStep2 = async (e) => {
+
+  const submitForgot = async (e) => {
     e.preventDefault();
-    setChecking(true);
-    setServerError("");
+    setBusy(true); setError(""); setNotice("");
     try {
-      const res = await fetch("/api/verify-admin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ step: 2, pin }),
-      });
-      const data = await res.json();
-      if (data.success) onSuccess();
-      else setWrong(true);
-    } catch {
-      setServerError(t.adminServerError);
+      const { status } = await post({ action: "reset", email });
+      if (status === 429) { setError(t.adminRateLimited); return; }
+      if (status >= 500) { setError(t.adminServerError); return; }
+      // Identical confirmation whether or not that address is an admin.
+      setNotice(t.resetGenericSent);
+    } catch (err) {
+      setError(t.adminServerError);
     } finally {
-      setChecking(false);
+      setBusy(false);
     }
   };
+
+  const switchMode = (next) => {
+    setMode(next); setError(""); setNotice(""); setPassword("");
+  };
+
   return (
     <ModalShell onClose={onClose}>
       <div className="flex items-center gap-2 mb-1.5">
         <Lock size={18} color={C.amber} />
         <h3 style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }} className="text-[17px]">
-          {t.adminPasswordTitle} {step === 2 && <span style={{ color: C.textFaint, fontWeight: 400 }}>· {t.adminStep2Of}</span>}
+          {mode === "login" ? t.adminLoginTitle : t.resetRequestTitle}
         </h3>
       </div>
-      {step === 1 ? (
-        <>
-          <p className="text-[13px] mb-4" style={{ color: C.textMuted }}>{t.adminPasswordSub}</p>
-          <form onSubmit={submitStep1}>
-            <Input type="password" value={pw} onChange={(e) => { setPw(e.target.value); setWrong(false); }} placeholder={t.adminPasswordPh} />
-            {wrong && <p className="text-[12.5px] mt-2" style={{ color: C.rose }}>{t.adminWrong}</p>}
-            {serverError && <p className="text-[12.5px] mt-2" style={{ color: C.rose }}>{serverError}</p>}
-            <button type="submit" disabled={checking} className="w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px] disabled:opacity-60" style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B" }}>
-              {checking ? t.adminChecking : t.adminNext}
-            </button>
-          </form>
-        </>
-      ) : (
-        <>
-          <p className="text-[13px] mb-4" style={{ color: C.textMuted }}>{t.adminStep2Sub}</p>
-          <form onSubmit={submitStep2}>
-            <Input type="password" value={pin} onChange={(e) => { setPin(e.target.value.replace(/[^0-9]/g, "").slice(0, 6)); setWrong(false); }} placeholder={t.adminStep2Ph} inputMode="numeric" />
-            {wrong && <p className="text-[12.5px] mt-2" style={{ color: C.rose }}>{t.adminWrong}</p>}
-            {serverError && <p className="text-[12.5px] mt-2" style={{ color: C.rose }}>{serverError}</p>}
-            <button type="submit" disabled={checking} className="w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px] disabled:opacity-60" style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B" }}>
-              {checking ? t.adminChecking : t.adminEnter}
-            </button>
-          </form>
-        </>
-      )}
+      <p className="text-[13px] mb-4" style={{ color: C.textMuted }}>
+        {mode === "login" ? t.adminLoginSub : t.resetRequestSub}
+      </p>
+
+      <form onSubmit={mode === "login" ? submitLogin : submitForgot}>
+        <div className="mb-2.5">
+          <Input
+            type="email"
+            autoComplete="username"
+            value={email}
+            onChange={(e) => { setEmail(e.target.value); setError(""); }}
+            placeholder={t.adminEmailPh}
+          />
+        </div>
+        {mode === "login" && (
+          <Input
+            type="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => { setPassword(e.target.value); setError(""); }}
+            placeholder={t.adminPasswordPh}
+          />
+        )}
+
+        {error && <p className="text-[12.5px] mt-2" style={{ color: C.rose }}>{error}</p>}
+        {notice && <p className="text-[12.5px] mt-2" style={{ color: C.emerald }}>{notice}</p>}
+
+        <button
+          type="submit"
+          disabled={busy}
+          className="khoj-tap-solid w-full mt-4 py-3 rounded-xl font-semibold text-[13.5px] disabled:opacity-60"
+          style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B" }}
+        >
+          {mode === "login"
+            ? (busy ? t.adminChecking : t.adminSignIn)
+            : (busy ? t.resetSending : t.resetSendLink)}
+        </button>
+      </form>
+
+      <button
+        type="button"
+        onClick={() => switchMode(mode === "login" ? "forgot" : "login")}
+        className="khoj-tap-text w-full mt-3 text-[12px] font-medium py-1"
+        style={{ color: C.textMuted }}
+      >
+        {mode === "login" ? t.forgotPassword : t.backToLogin}
+      </button>
     </ModalShell>
   );
 }
+
+// ============================== Reset password view ==============================
+// Reached by following the emailed recovery link. Supabase has already put a
+// short-lived recovery session in place by the time this renders, which is what
+// lets updateUser() set the new password.
+function ResetPasswordView({ t, onDone }) {
+  const [pw, setPw] = useState("");
+  const [confirmPw, setConfirmPw] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [done, setDone] = useState(false);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (pw.length < 8) { setError(t.resetTooShort); return; }
+    if (pw !== confirmPw) { setError(t.resetMismatch); return; }
+    setBusy(true); setError("");
+    try {
+      const { error: updateError } = await supabase.auth.updateUser({ password: pw });
+      if (updateError) { setError(t.resetLinkInvalid); setBusy(false); return; }
+      // Drop the recovery session so the new password has to be used to get back in.
+      await signOutAdmin();
+      setDone(true);
+      setTimeout(onDone, 1600);
+    } catch (err) {
+      setError(t.adminServerError);
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className={`${SHELL_NARROW} pb-20`}>
+      <div className="flex items-center gap-2 mb-1 mt-3">
+        <Lock size={20} color={C.amber} />
+        <h2 style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }} className="text-2xl md:text-3xl">{t.resetPasswordTitle}</h2>
+      </div>
+      <p className="text-[13.5px] mb-4" style={{ color: C.textMuted }}>{t.resetPasswordSub}</p>
+
+      {done ? (
+        <div className="rounded-2xl p-5 text-center" style={{ background: C.surface, border: `1px solid ${C.surfaceBorder}` }}>
+          <CheckCircle2 size={26} color={C.emerald} className="mx-auto mb-2" />
+          <p className="text-[13.5px]" style={{ color: C.textPrimary }}>{t.resetSuccess}</p>
+        </div>
+      ) : (
+        <form onSubmit={submit}>
+          <Field label={t.newPasswordPh} required icon={Lock}>
+            <Input
+              type="password"
+              autoComplete="new-password"
+              value={pw}
+              onChange={(e) => { setPw(e.target.value); setError(""); }}
+              placeholder={t.newPasswordPh}
+            />
+          </Field>
+          <Field label={t.confirmPasswordPh} required icon={Lock} error={error}>
+            <Input
+              type="password"
+              autoComplete="new-password"
+              value={confirmPw}
+              onChange={(e) => { setConfirmPw(e.target.value); setError(""); }}
+              placeholder={t.confirmPasswordPh}
+            />
+          </Field>
+          <button
+            type="submit"
+            disabled={busy}
+            className="khoj-tap-solid w-full py-3.5 rounded-xl font-semibold transition-all disabled:opacity-60"
+            style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B", boxShadow: `0 8px 20px ${C.amber}40` }}
+          >
+            {busy ? t.resetSaving : t.resetSaveBtn}
+          </button>
+        </form>
+      )}
+    </div>
+  );
+}
+
 
 // ============================== Board background photo collage ==============================
 function shuffledOnce(list, seedKey) {
@@ -1585,7 +2093,7 @@ function LocationPromptModal({ onContinue, onClose, t }) {
       <button
         type="button"
         onClick={onContinue}
-        className="w-full py-3 rounded-xl font-semibold text-[13.5px]"
+        className="khoj-tap-solid w-full py-3 rounded-xl font-semibold text-[13.5px]"
         style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B" }}
       >
         {t.continueBtn}
@@ -1627,7 +2135,7 @@ function NoticeCard({ report, sightingCount, onOpen, t, index }) {
     <button
       onClick={() => onOpen(report)}
       style={{ animationDelay: `${index * 40}ms` }}
-      className="khoj-card-in group text-left w-full rounded-md overflow-hidden focus:outline-none transition-transform duration-300 hover:-translate-y-0.5"
+      className="khoj-tap-card khoj-card-in group text-left w-full rounded-md overflow-hidden transition-transform duration-300 hover:-translate-y-0.5"
     >
       <div className="bg-white" style={{ border: `1px solid ${C.surfaceBorder}` }}>
         <div className="relative aspect-[4/3] w-full overflow-hidden flex items-center justify-center" style={{ background: photoBg }}>
@@ -1637,43 +2145,43 @@ function NoticeCard({ report, sightingCount, onOpen, t, index }) {
             <User size={34} strokeWidth={1.3} color={C.textFaint} />
           )}
           <div
-            className="absolute top-1.5 left-1.5 text-[9px] font-medium uppercase px-1.5 py-0.5 rounded-sm"
+            className="absolute top-1.5 left-1.5 md:top-2.5 md:left-2.5 text-[9px] md:text-[10px] font-medium uppercase px-1.5 py-0.5 rounded-sm"
             style={{ fontFamily: monoFont, border: `1.5px solid ${statusColor}`, color: statusColor, background: statusBg, letterSpacing: "0.4px", transform: "rotate(-3deg)" }}
           >
             {missing ? t.statusMissing : pending ? t.statusPending : t.statusFound}
           </div>
           {missing && daysAgo != null && (
-            <div className="absolute bottom-1.5 right-1.5 text-[9px] px-1.5 py-0.5 rounded-sm" style={{ fontFamily: monoFont, background: C.navy, color: "#F0EEE6" }}>
+            <div className="absolute bottom-1.5 right-1.5 md:bottom-2.5 md:right-2.5 text-[9px] md:text-[10px] px-1.5 py-0.5 rounded-sm" style={{ fontFamily: monoFont, background: C.navy, color: "#F0EEE6" }}>
               {daysAgo <= 0 ? t.today : `${daysAgo}${t.daysAbbrev}`}
             </div>
           )}
           {missing && sightingCount > 0 && (
-            <div className="absolute bottom-1.5 left-1.5 flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded-sm" style={{ fontFamily: monoFont, background: C.amber, color: C.navy }}>
+            <div className="absolute bottom-1.5 left-1.5 md:bottom-2.5 md:left-2.5 flex items-center gap-1 text-[9px] md:text-[10px] px-1.5 py-0.5 rounded-sm" style={{ fontFamily: monoFont, background: C.amber, color: C.navy }}>
               <Eye size={9} /> {sightingCount}
             </div>
           )}
         </div>
-        <div className="px-2.5 py-2">
+        <div className="px-2.5 py-2 md:px-3.5 md:py-3">
           <div className="flex items-center gap-1">
-            <h3 className="text-[13px] leading-tight truncate" style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }}>{report.name}</h3>
+            <h3 className="text-[13px] md:text-[15px] lg:text-[16px] leading-tight truncate" style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }}>{report.name}</h3>
             {report.verified && <CheckCircle2 size={11} color={C.emerald} className="shrink-0" />}
           </div>
           {missing ? (
             <>
-              <div className="text-[10px] mt-0.5" style={{ fontFamily: monoFont, color: C.textMuted }}>
+              <div className="text-[10px] md:text-[11.5px] mt-0.5" style={{ fontFamily: monoFont, color: C.textMuted }}>
                 {report.age && `${report.age}y`}{report.gender && ` · ${report.gender}`}{report.city && ` · ${report.city}`}
               </div>
               <div className="flex items-center gap-1 mt-1.5" style={{ color: C.textMuted }}>
                 <Share2 size={10} className="shrink-0" />
-                <span className="text-[9px]">{report.gender === "female" ? t.shareToHelpHer : report.gender === "male" ? t.shareToHelpHim : t.shareToHelpThem}</span>
+                <span className="text-[9px] md:text-[10.5px]">{report.gender === "female" ? t.shareToHelpHer : report.gender === "male" ? t.shareToHelpHim : t.shareToHelpThem}</span>
               </div>
             </>
           ) : pending ? (
-            <div className="text-[10px] mt-0.5" style={{ fontFamily: monoFont, color: C.textMuted }}>
+            <div className="text-[10px] md:text-[11.5px] mt-0.5" style={{ fontFamily: monoFont, color: C.textMuted }}>
               {t.reportedOn} {fmtDate(report.createdAt)}
             </div>
           ) : (
-            <div className="text-[10px] mt-0.5" style={{ fontFamily: monoFont, color: C.textMuted }}>
+            <div className="text-[10px] md:text-[11.5px] mt-0.5" style={{ fontFamily: monoFont, color: C.textMuted }}>
               {t.reunitedOn} {fmtDate(report.foundAt || report.createdAt)}
             </div>
           )}
@@ -1708,6 +2216,8 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
   const [showLastSeenMapPicker, setShowLastSeenMapPicker] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
+  const clearFieldError = (key) => setFieldErrors((p) => (p[key] ? { ...p, [key]: "" } : p));
   const fileRef = useRef(null);
 
   const genderOptions = [
@@ -1740,6 +2250,18 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
       setError(t.errRequired);
       return;
     }
+    const fe = {};
+    if (!AGE_RE.test(age.trim())) fe.age = t.errAgeInvalid;
+    if (!PAKISTAN_CITIES.includes(city)) fe.city = t.errCityInvalid;
+    if (!PK_PHONE_RE.test(contactInfo.trim())) fe.contactInfo = t.errPhoneInvalid;
+    if (lastSeenCoords && !isInPakistan(lastSeenCoords)) fe.lastSeenCoords = t.errLocationOutsidePk;
+    if (homeCoords && !isInPakistan(homeCoords)) fe.homeCoords = t.errLocationOutsidePk;
+    if (Object.keys(fe).length > 0) {
+      setFieldErrors(fe);
+      setError("");
+      return;
+    }
+    setFieldErrors({});
     if (lastSeenDate > todayStr()) {
       setError(t.futureDateError);
       return;
@@ -1776,10 +2298,10 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto px-5 pb-20">
+    <form onSubmit={handleSubmit} className={`${SHELL_NARROW} pb-20`}>
       <div className="flex items-center gap-2 mb-1 mt-3">
         <ShieldAlert size={20} color={C.rose} />
-        <h2 style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }} className="text-2xl">{isEdit ? t.editReportTitle : t.reportFormTitle}</h2>
+        <h2 style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }} className="text-2xl md:text-3xl">{isEdit ? t.editReportTitle : t.reportFormTitle}</h2>
       </div>
       <p className="text-[13.5px] mb-4" style={{ color: C.textMuted }}>{t.reportFormSub}</p>
       <LegalWarningBanner t={t} />
@@ -1789,7 +2311,7 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
           {photos.map((p, i) => (
             <div key={i} className="relative w-20 h-24 rounded-xl overflow-hidden shrink-0" style={{ border: `1px solid ${C.surfaceBorder}` }}>
               <img src={p} className="w-full h-full object-cover" alt="preview" />
-              <button type="button" onClick={() => removePhoto(i)} className="absolute top-1 right-1 w-5 h-5 rounded-full flex items-center justify-center" style={{ background: "rgba(9,6,17,0.75)" }}>
+              <button type="button" onClick={() => removePhoto(i)} className="khoj-tap absolute top-1 right-1 w-5 h-5 rounded-full flex items-center justify-center" style={{ background: "rgba(9,6,17,0.75)" }}>
                 <X size={11} color="#fff" />
               </button>
               {i === 0 && <span className="absolute bottom-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ background: "rgba(0,200,150,0.85)", color: "#16213B" }}>{t.photo}</span>}
@@ -1798,7 +2320,7 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
           {photos.length < 3 && (
             <div className="w-20 h-24 rounded-xl overflow-hidden flex items-center justify-center shrink-0" style={{ background: "rgba(22,33,59,0.035)", border: `1px dashed ${photos.length === 0 ? C.rose : C.surfaceBorder}` }}>
               <input ref={fileRef} type="file" accept="image/*" onChange={handlePhoto} className="hidden" />
-              <button type="button" onClick={() => fileRef.current?.click()} className="w-full h-full flex flex-col items-center justify-center gap-1">
+              <button type="button" onClick={() => fileRef.current?.click()} className="khoj-tap w-full h-full flex flex-col items-center justify-center gap-1">
                 {photoLoading ? <Loader2 size={18} className="animate-spin" color={C.textFaint} /> : <><Plus size={16} color={C.textFaint} /><span className="text-[9.5px]" style={{ color: C.textFaint }}>{t.addPhoto}</span></>}
               </button>
             </div>
@@ -1809,18 +2331,34 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
 
       <div className="grid grid-cols-2 gap-3">
         <Field label={t.fullName} required icon={User}><Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t.fullNamePh} /></Field>
-        <Field label={t.age} required><Input value={age} onChange={(e) => setAge(e.target.value)} placeholder={t.agePh} inputMode="numeric" /></Field>
+        <Field label={t.age} required error={fieldErrors.age}>
+          <Input
+            value={age}
+            onChange={(e) => { setAge(onlyDigits(e.target.value, 3)); clearFieldError("age"); }}
+            onKeyDown={blockNonDigitKey}
+            placeholder={t.agePh}
+            inputMode="numeric"
+            maxLength={3}
+          />
+        </Field>
       </div>
 
       <Field label={t.gender} required><SegButton options={genderOptions} value={gender} onChange={setGender} /></Field>
-      <Field label={t.city} required icon={MapPin}><Input value={city} onChange={(e) => setCity(e.target.value)} placeholder={t.cityPh} /></Field>
+      <Field label={t.city} required icon={MapPin} error={fieldErrors.city}>
+        <CityCombobox
+          value={city}
+          onChange={(c) => { setCity(c); clearFieldError("city"); }}
+          placeholder={t.cityPickPh}
+          emptyLabel={t.cityNoMatch}
+        />
+      </Field>
       <Field label={t.lastSeenLocation} required icon={MapPin}><Input value={lastSeenLocation} onChange={(e) => setLastSeenLocation(e.target.value)} placeholder={t.lastSeenLocationPh} /></Field>
 
-      <Field label={t.pinLocation} icon={Navigation}>
+      <Field label={t.pinLocation} icon={Navigation} error={fieldErrors.lastSeenCoords}>
         <button
           type="button"
           onClick={() => setShowLastSeenMapPicker(true)}
-          className="w-full flex items-center justify-center gap-2 text-[13.5px] font-medium py-3 rounded-xl transition-colors"
+          className="khoj-tap w-full flex items-center justify-center gap-2 text-[13.5px] font-medium py-3 rounded-xl transition-colors"
           style={
             lastSeenCoords
               ? { background: "rgba(0,200,150,0.14)", color: C.emerald, border: `1px solid ${C.surfaceBorder}` }
@@ -1839,11 +2377,11 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
 
       <Field label={t.homeAddress} required icon={Home}><Input value={homeAddress} onChange={(e) => setHomeAddress(e.target.value)} placeholder={t.homeAddressPh} /></Field>
 
-      <Field label={t.homePinLocation} icon={Navigation}>
+      <Field label={t.homePinLocation} icon={Navigation} error={fieldErrors.homeCoords}>
         <button
           type="button"
           onClick={() => setShowMapPicker(true)}
-          className="w-full flex items-center justify-center gap-2 text-[13.5px] font-medium py-3 rounded-xl transition-colors"
+          className="khoj-tap w-full flex items-center justify-center gap-2 text-[13.5px] font-medium py-3 rounded-xl transition-colors"
           style={
             homeCoords
               ? { background: "rgba(0,200,150,0.14)", color: C.emerald, border: `1px solid ${C.surfaceBorder}` }
@@ -1856,7 +2394,17 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
       </Field>
 
       <Field label={t.description}><TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t.descriptionPh} /></Field>
-      <Field label={t.yourContact} required icon={Phone}><Input value={contactInfo} onChange={(e) => setContactInfo(e.target.value.replace(/[^0-9]/g, ""))} placeholder={t.yourContactPh} inputMode="numeric" type="tel" /></Field>
+      <Field label={t.yourContact} required icon={Phone} error={fieldErrors.contactInfo}>
+        <Input
+          value={contactInfo}
+          onChange={(e) => { setContactInfo(onlyDigits(e.target.value, 11)); clearFieldError("contactInfo"); }}
+          onKeyDown={blockNonDigitKey}
+          placeholder={t.yourContactPh}
+          inputMode="tel"
+          type="tel"
+          maxLength={11}
+        />
+      </Field>
 
       {!isEdit && (
         <Field label={t.reunionPin} required icon={Lock}>
@@ -1868,8 +2416,8 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
       {error && <p className="text-[13px] mb-4" style={{ color: C.rose }}>{error}</p>}
 
       <div className="flex gap-3 mt-2">
-        <button type="button" onClick={onCancel} className="flex-1 py-3.5 rounded-xl font-semibold transition-colors" style={{ background: "rgba(22,33,59,0.045)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }}>{t.cancel}</button>
-        <button type="submit" disabled={submitting} className="flex-1 py-3.5 rounded-xl font-semibold transition-all disabled:opacity-60" style={{ background: `linear-gradient(135deg, ${C.rose}, #C23434)`, color: "#F7F5EE", boxShadow: `0 8px 20px ${C.rose}40` }}>
+        <button type="button" onClick={onCancel} className="khoj-tap flex-1 py-3.5 rounded-xl font-semibold transition-colors" style={{ background: "rgba(22,33,59,0.045)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }}>{t.cancel}</button>
+        <button type="submit" disabled={submitting} className="khoj-tap-solid flex-1 py-3.5 rounded-xl font-semibold transition-all disabled:opacity-60" style={{ background: `linear-gradient(135deg, ${C.rose}, #C23434)`, color: "#F7F5EE", boxShadow: `0 8px 20px ${C.rose}40` }}>
           {submitting ? t.submitting : isEdit ? t.saveChanges : t.submitReport}
         </button>
       </div>
@@ -1888,7 +2436,7 @@ function ReportForm({ onCancel, onSubmit, t, initialData, isEdit }) {
           t={t}
           initial={lastSeenCoords}
           onClose={() => setShowLastSeenMapPicker(false)}
-          onConfirm={(c) => { setLastSeenCoords(c); setShowLastSeenMapPicker(false); }}
+          onConfirm={(c) => { setLastSeenCoords(c); clearFieldError("lastSeenCoords"); setShowLastSeenMapPicker(false); }}
         />
       )}
     </form>
@@ -1906,6 +2454,8 @@ function SightingForm({ report, onCancel, onSubmit, t, initialData, isEdit }) {
   const [contactInfo, setContactInfo] = useState(initialData?.contactInfo || "");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
+  const clearFieldError = (key) => setFieldErrors((p) => (p[key] ? { ...p, [key]: "" } : p));
   const [coords, setCoords] = useState(
     initialData?.lat != null ? { lat: initialData.lat, lng: initialData.lng } : null
   );
@@ -1917,6 +2467,16 @@ function SightingForm({ report, onCancel, onSubmit, t, initialData, isEdit }) {
       setError(t.errRequired);
       return;
     }
+    const fe = {};
+    if (!PAKISTAN_CITIES.includes(seenCity)) fe.seenCity = t.errCityInvalid;
+    if (!PK_PHONE_RE.test(contactInfo.trim())) fe.contactInfo = t.errPhoneInvalid;
+    if (coords && !isInPakistan(coords)) fe.coords = t.errLocationOutsidePk;
+    if (Object.keys(fe).length > 0) {
+      setFieldErrors(fe);
+      setError("");
+      return;
+    }
+    setFieldErrors({});
     if (date > todayStr()) {
       setError(t.futureDateError);
       return;
@@ -1939,10 +2499,10 @@ function SightingForm({ report, onCancel, onSubmit, t, initialData, isEdit }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto px-5 pb-20">
+    <form onSubmit={handleSubmit} className={`${SHELL_NARROW} pb-20`}>
       <div className="flex items-center gap-2 mb-1 mt-3">
         <Eye size={20} color={C.amber} />
-        <h2 style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }} className="text-2xl">{isEdit ? t.editSighting : t.sightingFormTitle}</h2>
+        <h2 style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }} className="text-2xl md:text-3xl">{isEdit ? t.editSighting : t.sightingFormTitle}</h2>
       </div>
       <p className="text-[13.5px] mb-4" style={{ color: C.textMuted }}>
         {t.sightingFormSubPre} <span style={{ color: C.textPrimary, fontWeight: 600 }}>{report.name}</span> {t.sightingFormSubPost}
@@ -1950,7 +2510,14 @@ function SightingForm({ report, onCancel, onSubmit, t, initialData, isEdit }) {
       <LegalWarningBanner t={t} />
 
       <Field label={t.seenLocation} required icon={MapPin}><Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder={t.seenLocationPh} /></Field>
-      <Field label={t.seenCity} required icon={MapPin}><Input value={seenCity} onChange={(e) => setSeenCity(e.target.value)} placeholder={t.cityPh} /></Field>
+      <Field label={t.seenCity} required icon={MapPin} error={fieldErrors.seenCity}>
+        <CityCombobox
+          value={seenCity}
+          onChange={(c) => { setSeenCity(c); clearFieldError("seenCity"); }}
+          placeholder={t.cityPickPh}
+          emptyLabel={t.cityNoMatch}
+        />
+      </Field>
 
       <div className="grid grid-cols-2 gap-3">
         <Field label={t.seenDate} required icon={Calendar}><Input type="date" value={date} max={todayStr()} onChange={(e) => setDate(e.target.value)} /></Field>
@@ -1959,11 +2526,11 @@ function SightingForm({ report, onCancel, onSubmit, t, initialData, isEdit }) {
 
       <Field label={t.notes}><TextArea rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder={t.notesPh} /></Field>
 
-      <Field label={t.pinLocation} icon={Navigation}>
+      <Field label={t.pinLocation} icon={Navigation} error={fieldErrors.coords}>
         <button
           type="button"
           onClick={() => setShowMapPicker(true)}
-          className="w-full flex items-center justify-center gap-2 text-[13.5px] font-medium py-3 rounded-xl transition-colors"
+          className="khoj-tap w-full flex items-center justify-center gap-2 text-[13.5px] font-medium py-3 rounded-xl transition-colors"
           style={
             coords
               ? { background: "rgba(0,200,150,0.14)", color: C.emerald, border: `1px solid ${C.surfaceBorder}` }
@@ -1977,14 +2544,24 @@ function SightingForm({ report, onCancel, onSubmit, t, initialData, isEdit }) {
 
       <div className="grid grid-cols-2 gap-3">
         <Field label={t.yourName} required icon={User}><Input value={yourName} onChange={(e) => setYourName(e.target.value)} placeholder={t.yourNamePh} /></Field>
-        <Field label={t.optionalContact} required icon={Phone}><Input value={contactInfo} onChange={(e) => setContactInfo(e.target.value.replace(/[^0-9]/g, ""))} placeholder={t.optionalContactPh} inputMode="numeric" type="tel" /></Field>
+        <Field label={t.optionalContact} required icon={Phone} error={fieldErrors.contactInfo}>
+          <Input
+            value={contactInfo}
+            onChange={(e) => { setContactInfo(onlyDigits(e.target.value, 11)); clearFieldError("contactInfo"); }}
+            onKeyDown={blockNonDigitKey}
+            placeholder={t.optionalContactPh}
+            inputMode="tel"
+            type="tel"
+            maxLength={11}
+          />
+        </Field>
       </div>
 
       {error && <p className="text-[13px] mb-4" style={{ color: C.rose }}>{error}</p>}
 
       <div className="flex gap-3 mt-2">
-        <button type="button" onClick={onCancel} className="flex-1 py-3.5 rounded-xl font-semibold transition-colors" style={{ background: "rgba(22,33,59,0.045)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }}>{t.cancel}</button>
-        <button type="submit" disabled={submitting} className="flex-1 py-3.5 rounded-xl font-semibold transition-all disabled:opacity-60" style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B", boxShadow: `0 8px 20px ${C.amber}40` }}>
+        <button type="button" onClick={onCancel} className="khoj-tap flex-1 py-3.5 rounded-xl font-semibold transition-colors" style={{ background: "rgba(22,33,59,0.045)", color: C.textMuted, border: `1px solid ${C.surfaceBorder}` }}>{t.cancel}</button>
+        <button type="submit" disabled={submitting} className="khoj-tap-solid flex-1 py-3.5 rounded-xl font-semibold transition-all disabled:opacity-60" style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B", boxShadow: `0 8px 20px ${C.amber}40` }}>
           {submitting ? t.submitting : isEdit ? t.saveChanges : t.sendSighting}
         </button>
       </div>
@@ -1994,7 +2571,7 @@ function SightingForm({ report, onCancel, onSubmit, t, initialData, isEdit }) {
           t={t}
           initial={coords}
           onClose={() => setShowMapPicker(false)}
-          onConfirm={(c) => { setCoords(c); setShowMapPicker(false); }}
+          onConfirm={(c) => { setCoords(c); clearFieldError("coords"); setShowMapPicker(false); }}
         />
       )}
     </form>
@@ -2021,9 +2598,9 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
   // ---- Pending review — hidden from everyone except admin and the case filer themselves ----
   if (pending && !isAdmin && !isMyOwnReport) {
     return (
-      <div className="max-w-lg mx-auto px-5 pb-20">
+      <div className={`${SHELL_NARROW} pb-20`}>
         <div className="flex items-center mt-3 mb-4">
-          <button onClick={onBack} className="flex items-center gap-1.5 text-[13px] transition-colors" style={{ color: C.textMuted }}>
+          <button onClick={onBack} className="khoj-tap flex items-center gap-1.5 text-[13px] transition-colors" style={{ color: C.textMuted }}>
             <ArrowLeft size={15} /> {t.back}
           </button>
         </div>
@@ -2038,9 +2615,9 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
   // ---- Restricted privacy view for reunited cases (non-admin) ----
   if (report.status === "found" && !isAdmin) {
     return (
-      <div className="max-w-lg mx-auto px-5 pb-20">
+      <div className={`${SHELL_NARROW} pb-20`}>
         <div className="flex items-center mt-3 mb-4">
-          <button onClick={onBack} className="flex items-center gap-1.5 text-[13px] transition-colors" style={{ color: C.textMuted }}>
+          <button onClick={onBack} className="khoj-tap flex items-center gap-1.5 text-[13px] transition-colors" style={{ color: C.textMuted }}>
             <ArrowLeft size={15} /> {t.back}
           </button>
         </div>
@@ -2078,7 +2655,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
                   href={`https://www.google.com/maps?q=${report.foundLat},${report.foundLng}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-1 mt-1 text-[11px] justify-center font-medium"
+                  className="khoj-tap-text flex items-center gap-1 mt-1 text-[11px] justify-center font-medium"
                   style={{ color: C.amber }}
                 >
                   <MapPin size={10} className="shrink-0" /><span>{t.reunitedLocation}</span>
@@ -2099,21 +2676,21 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
   };
 
   return (
-    <div className="max-w-lg mx-auto px-5 pb-20">
+    <div className={`${SHELL_NARROW} pb-20`}>
       <div className="flex items-center justify-between mt-3 mb-4">
-        <button onClick={onBack} className="flex items-center gap-1.5 text-[13px] transition-colors" style={{ color: C.textMuted }}>
+        <button onClick={onBack} className="khoj-tap flex items-center gap-1.5 text-[13px] transition-colors" style={{ color: C.textMuted }}>
           <ArrowLeft size={15} /> {t.back}
         </button>
         <div className="flex items-center gap-2">
           {missing && report.verified && (
-            <button onClick={handleShare} aria-label={t.shareCase} className="flex items-center gap-1 px-2.5 py-1.5 rounded-full transition-colors"
+            <button onClick={handleShare} aria-label={t.shareCase} className="khoj-tap flex items-center gap-1 px-2.5 py-1.5 rounded-full transition-colors"
               style={{ background: "rgba(37,211,102,0.14)", border: `1px solid ${C.surfaceBorder}` }}>
               <WhatsAppIcon size={14} color="#25D366" />
               <Share2 size={11} color="#25D366" />
             </button>
           )}
           {missing && (
-            <button onClick={() => onFollow(report)} className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-full transition-colors"
+            <button onClick={() => onFollow(report)} className="khoj-tap flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-full transition-colors"
               style={{ background: isFollowing ? "rgba(0,200,150,0.15)" : "rgba(22,33,59,0.05)", color: isFollowing ? C.emerald : C.textMuted, border: `1px solid ${C.surfaceBorder}` }}>
               {isFollowing ? <BellRing size={13} /> : <Bell size={13} />} {isFollowing ? t.following : t.follow}
             </button>
@@ -2171,7 +2748,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
       {photos.length > 1 && (
         <div className="flex gap-2 mb-5">
           {photos.map((p, i) => (
-            <button key={i} type="button" onClick={() => setHeroIdx(i)} className="w-14 h-16 rounded-lg overflow-hidden shrink-0" style={{ border: `2px solid ${i === heroIdx ? C.rose : "transparent"}`, opacity: i === heroIdx ? 1 : 0.55 }}>
+            <button key={i} type="button" onClick={() => setHeroIdx(i)} className="khoj-tap w-14 h-16 rounded-lg overflow-hidden shrink-0" style={{ border: `2px solid ${i === heroIdx ? C.rose : "transparent"}`, opacity: i === heroIdx ? 1 : 0.55 }}>
               <img src={p} className="w-full h-full object-cover" alt="" />
             </button>
           ))}
@@ -2183,7 +2760,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
         <div className="flex items-start justify-between gap-2.5">
           <div className="flex gap-2.5"><MapPin size={15} className="mt-0.5 shrink-0" color={C.textMuted} /><span>{report.city ? `${report.city} — ` : ""}{report.lastSeenLocation}</span></div>
           {report.lastSeenLat != null && report.lastSeenLng != null && (
-            <a href={`https://www.google.com/maps?q=${report.lastSeenLat},${report.lastSeenLng}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[11.5px] font-medium shrink-0" style={{ color: C.amber }}>
+            <a href={`https://www.google.com/maps?q=${report.lastSeenLat},${report.lastSeenLng}`} target="_blank" rel="noreferrer" className="khoj-tap-text inline-flex items-center gap-1 text-[11.5px] font-medium shrink-0" style={{ color: C.amber }}>
               <MapPin size={11} /> {t.viewOnMap}
             </a>
           )}
@@ -2199,7 +2776,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
               <div className="flex items-start justify-between gap-2.5 pt-2 border-t" style={{ borderColor: C.surfaceBorder }}>
                 <div className="flex gap-2.5"><Home size={15} className="mt-0.5 shrink-0" color={C.textMuted} /><span>{report.homeAddress}</span></div>
                 {report.homeLat != null && report.homeLng != null && (
-                  <a href={`https://www.google.com/maps?q=${report.homeLat},${report.homeLng}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[11.5px] font-medium shrink-0" style={{ color: C.amber }}>
+                  <a href={`https://www.google.com/maps?q=${report.homeLat},${report.homeLng}`} target="_blank" rel="noreferrer" className="khoj-tap-text inline-flex items-center gap-1 text-[11.5px] font-medium shrink-0" style={{ color: C.amber }}>
                     <MapPin size={11} /> {t.viewOnMap}
                   </a>
                 )}
@@ -2226,7 +2803,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
               <button
                 type="button"
                 onClick={() => onLockedNotice && onLockedNotice(t.reportToContactMsg)}
-                className="flex-1 inline-flex items-center justify-center gap-1.5 text-[12.5px] font-medium px-3 py-2.5 rounded-xl"
+                className="khoj-tap flex-1 inline-flex items-center justify-center gap-1.5 text-[12.5px] font-medium px-3 py-2.5 rounded-xl"
                 style={{ background: "rgba(22,33,59,0.035)", color: C.textFaint, border: `1px solid ${C.surfaceBorder}` }}
               >
                 <Phone size={12} /> {t.callFamily}
@@ -2235,7 +2812,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
                 <button
                   type="button"
                   onClick={() => onReportSighting(report)}
-                  className="flex-1 inline-flex items-center justify-center gap-1.5 text-[12.5px] font-semibold px-3 py-2.5 rounded-xl"
+                  className="khoj-tap-solid flex-1 inline-flex items-center justify-center gap-1.5 text-[12.5px] font-semibold px-3 py-2.5 rounded-xl"
                   style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B" }}
                 >
                   <Eye size={12} /> {t.reportToUnlock}
@@ -2254,7 +2831,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
               href={`https://www.google.com/maps?q=${report.filingLat},${report.filingLng}`}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
+              className="khoj-tap-text flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
               style={{ background: "rgba(201,154,62,0.16)", color: "#8A6416" }}
             >
               <MapPin size={12} className="shrink-0" /> {t.adminFilerLocation}
@@ -2265,7 +2842,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
               href={`https://www.google.com/maps?q=${report.markFoundLat},${report.markFoundLng}`}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
+              className="khoj-tap-text flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
               style={{ background: "rgba(201,154,62,0.16)", color: "#8A6416" }}
             >
               <MapPin size={12} className="shrink-0" /> {t.adminMarkFoundLocation}
@@ -2285,7 +2862,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
               href={`https://www.google.com/maps?q=${report.lastSeenLat},${report.lastSeenLng}`}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
+              className="khoj-tap-text flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
               style={{ background: "rgba(201,154,62,0.16)", color: "#8A6416" }}
             >
               <MapPin size={12} className="shrink-0" /> {t.lastLocationByFiler}
@@ -2296,7 +2873,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
               href={`https://www.google.com/maps?q=${report.homeLat},${report.homeLng}`}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
+              className="khoj-tap-text flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
               style={{ background: "rgba(201,154,62,0.16)", color: "#8A6416" }}
             >
               <MapPin size={12} className="shrink-0" /> {t.homePinLocation}
@@ -2307,7 +2884,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
               href={`https://www.google.com/maps?q=${report.foundLat},${report.foundLng}`}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
+              className="khoj-tap-text flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
               style={{ background: "rgba(201,154,62,0.16)", color: "#8A6416" }}
             >
               <MapPin size={12} className="shrink-0" /> {t.reunitedLocation}
@@ -2318,12 +2895,12 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
 
       {missing && (
         <div className="flex gap-3 mb-2.5">
-          <button onClick={() => onReportSighting(report)} className="flex-1 py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2" style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B" }}>
+          <button onClick={() => onReportSighting(report)} className="khoj-tap-solid flex-1 py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2" style={{ background: `linear-gradient(135deg, ${C.amber}, #DBAF5C)`, color: "#16213B" }}>
             <Eye size={16} /> {seeLabel}
           </button>
           <button
             onClick={() => (isAdmin ? setShowFoundLocationPrompt(true) : setVerifyMode("markFound"))}
-            className="py-3.5 px-4 rounded-xl font-medium transition-colors flex items-center gap-2"
+            className="khoj-tap py-3.5 px-4 rounded-xl font-medium transition-colors flex items-center gap-2"
             style={{ border: `1px solid ${C.surfaceBorder}`, color: C.textMuted }}
           >
             <CheckCircle2 size={16} /> {t.markFound}
@@ -2338,7 +2915,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
       {(isAdmin || (pending && isMyOwnReport && !report.verified) || (missing && !report.verified)) && (
         <button
           onClick={() => (isAdmin ? onEditReport(report) : setVerifyMode("edit"))}
-          className="w-full mb-6 py-2.5 rounded-xl font-medium text-[12.5px] flex items-center justify-center gap-1.5"
+          className="khoj-tap w-full mb-6 py-2.5 rounded-xl font-medium text-[12.5px] flex items-center justify-center gap-1.5"
           style={{ border: `1px solid ${C.surfaceBorder}`, color: C.textMuted }}
         >
           <Pencil size={12} /> {t.editCase}
@@ -2349,7 +2926,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
         <div className="flex gap-3 mb-3 -mt-3">
           <button
             onClick={() => { if (window.confirm(t.confirmDeleteCase)) onDeleteCase(report); }}
-            className="flex-1 py-2.5 rounded-xl font-semibold text-[12.5px] flex items-center justify-center gap-1.5"
+            className="khoj-tap flex-1 py-2.5 rounded-xl font-semibold text-[12.5px] flex items-center justify-center gap-1.5"
             style={{ background: "rgba(255,84,112,0.12)", color: C.rose, border: `1px solid ${C.surfaceBorder}` }}
           >
             <Trash2 size={13} /> {t.deleteCase}
@@ -2360,7 +2937,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
       {isAdmin && (
         <button
           onClick={() => onToggleVerified(report)}
-          className="w-full mb-6 py-2.5 rounded-xl font-semibold text-[12.5px] flex items-center justify-center gap-1.5"
+          className="khoj-tap w-full mb-6 py-2.5 rounded-xl font-semibold text-[12.5px] flex items-center justify-center gap-1.5"
           style={
             report.verified
               ? { background: "rgba(0,200,150,0.14)", color: C.emerald, border: `1px solid ${C.surfaceBorder}` }
@@ -2406,7 +2983,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
           <Radio size={14} /> {t.timelineHeading} ({mySightings.length})
         </h3>
         {missing && !isAdmin && !filerVerified && mySightings.length > 0 && (
-          <button onClick={() => setVerifyMode("viewFiler")} className="flex items-center gap-1 text-[10.5px] font-medium shrink-0" style={{ color: C.amber }}>
+          <button onClick={() => setVerifyMode("viewFiler")} className="khoj-tap flex items-center gap-1 text-[10.5px] font-medium shrink-0" style={{ color: C.amber }}>
             <Lock size={10} /> {t.viewReporterInfo}
           </button>
         )}
@@ -2450,7 +3027,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
                     </p>
                   )}
                   {s.lat != null && s.lng != null && (
-                    <a href={`https://www.google.com/maps?q=${s.lat},${s.lng}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[11.5px] mt-1.5 font-medium" style={{ color: C.amber }}>
+                    <a href={`https://www.google.com/maps?q=${s.lat},${s.lng}`} target="_blank" rel="noreferrer" className="khoj-tap-text inline-flex items-center gap-1 text-[11.5px] mt-1.5 font-medium" style={{ color: C.amber }}>
                       <MapPin size={11} /> {t.viewOnMap}
                     </a>
                   )}
@@ -2459,7 +3036,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
                       href={`https://www.google.com/maps?q=${s.filingLat},${s.filingLng}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex items-center gap-1.5 text-[11px] font-medium mt-2 px-2.5 py-1.5 rounded-lg"
+                      className="khoj-tap-text flex items-center gap-1.5 text-[11px] font-medium mt-2 px-2.5 py-1.5 rounded-lg"
                       style={{ background: "rgba(201,154,62,0.16)", color: "#8A6416" }}
                     >
                       <Lock size={10} className="shrink-0" /> {t.adminSightingLocation}
@@ -2470,7 +3047,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
                     {canEdit && (
                       <button
                         onClick={() => onEditSighting(s)}
-                        className="inline-flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
+                        className="khoj-tap inline-flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
                         style={{ background: "rgba(201,154,62,0.16)", color: "#8A6416" }}
                       >
                         <Pencil size={12} /> {t.editSighting}
@@ -2479,7 +3056,7 @@ function DetailView({ report, sightings, onBack, onReportSighting, onMarkFound, 
                     {isAdmin && (
                       <button
                         onClick={() => { if (window.confirm(t.confirmDeleteSighting)) onDeleteSighting(s); }}
-                        className="inline-flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
+                        className="khoj-tap inline-flex items-center gap-1.5 text-[12px] font-medium px-3 py-2 rounded-xl"
                         style={{ background: "rgba(255,84,112,0.1)", color: C.rose }}
                       >
                         <Trash2 size={12} /> {t.deleteSighting}
@@ -2526,9 +3103,7 @@ export default function App() {
   const [toast, setToast] = useState("");
   const [notifOpen, setNotifOpen] = useState(false);
   const notifRef = useRef(null);
-  const [isAdmin, setIsAdmin] = useState(() => {
-    try { return localStorage.getItem(ADMIN_SESSION_KEY) === "1"; } catch { return false; }
-  });
+  const [isAdmin, setIsAdmin] = useState(false);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [editingReport, setEditingReport] = useState(null);
   const [editingSighting, setEditingSighting] = useState(null);
@@ -2588,6 +3163,41 @@ export default function App() {
       },
     });
     return () => { unsubReports(); unsubSightings(); unsubNotifs(); };
+  }, []);
+
+  // ---- Admin session ----------------------------------------------------
+  // A stored Supabase session is not by itself admin rights: the account has to
+  // still be on the admin_users allowlist, re-checked on every load and on every
+  // auth state change, so removing a row revokes access at the next page load.
+  useEffect(() => {
+    let cancelled = false;
+
+    const applySession = async (session) => {
+      const user = session?.user;
+      if (!user) { if (!cancelled) setIsAdmin(false); return; }
+      const allowed = await isAdminUser(user.id);
+      if (cancelled) return;
+      if (!allowed) {
+        await signOutAdmin();
+        setIsAdmin(false);
+        return;
+      }
+      setIsAdmin(true);
+    };
+
+    supabase.auth.getSession().then(({ data }) => applySession(data?.session));
+
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY") { setView("resetPassword"); return; }
+      applySession(session);
+    });
+
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("view") === "reset-password") setView("resetPassword");
+    } catch (e) { /* no query string available */ }
+
+    return () => { cancelled = true; listener?.subscription?.unsubscribe(); };
   }, []);
 
   useEffect(() => {
@@ -2678,6 +3288,30 @@ export default function App() {
   };
   const openDetail = (report) => { setActiveReport(report); setView("detail"); };
 
+  // Views that hold unsaved user input. The form state lives inside the form
+  // components, so we confirm whenever one is open rather than guessing whether
+  // a field has been touched - better a stray prompt than a lost report.
+  const FORM_VIEWS = ["report", "editReport", "sighting", "editSighting"];
+  const resetToBoard = () => {
+    setEditingReport(null);
+    setEditingSighting(null);
+    setActiveReport(null);
+    setSearchQuery("");
+    setNotifOpen(false);
+    setView("board");
+    setFilter("missing");
+  };
+  const goHome = () => {
+    if (FORM_VIEWS.includes(view) && !window.confirm(t.discardConfirm)) return;
+    resetToBoard();
+  };
+  const handleHomeKey = (e) => {
+    if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+      e.preventDefault();
+      goHome();
+    }
+  };
+
   const handleDeleteCase = async (report) => {
     await deleteListItem("khoj-reports", report.id);
     setReports((prev) => prev.filter((r) => r.id !== report.id));
@@ -2688,13 +3322,22 @@ export default function App() {
     setSightings((prev) => prev.filter((s) => s.id !== sighting.id));
   };
   const handleAdminSuccess = () => {
+    // The server already verified the allowlist; onAuthStateChange re-checks it.
     setIsAdmin(true);
     setShowAdminLogin(false);
-    try { localStorage.setItem(ADMIN_SESSION_KEY, "1"); } catch {}
+    // Always land on the board, whichever screen the login was started from.
+    // resetToBoard() drops any in-progress draft so stale data cannot carry over.
+    resetToBoard();
   };
-  const handleAdminExit = () => {
+  const handleAdminExit = async () => {
+    await signOutAdmin();
     setIsAdmin(false);
-    try { localStorage.removeItem(ADMIN_SESSION_KEY); } catch {}
+    resetToBoard();
+  };
+  const handleResetDone = () => {
+    try { window.history.replaceState({}, "", "/"); } catch (e) { /* ignore */ }
+    resetToBoard();
+    setShowAdminLogin(true);
   };
 
   const filtered = reports.filter((r) => {
@@ -2714,28 +3357,35 @@ export default function App() {
   return (
     <div dir={isUrduScript ? "rtl" : "ltr"} className={"min-h-screen w-full " + (isUrduScript ? "khoj-nastaliq" : "")} style={{ background: C.bgFrom, fontFamily: isUrduScript ? undefined : bodyFont }}>
       <header className="sticky top-0 z-30" style={{ background: C.bgFrom, borderBottom: `2px solid ${C.navy}` }}>
-        <div className="max-w-lg mx-auto px-5 pt-4 pb-3 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
+        <div className={`${SHELL} pt-4 pb-3 md:pt-5 md:pb-4 flex items-center justify-between`}>
+          <div
+            role="button"
+            tabIndex={0}
+            aria-label={t.goHomeAria}
+            onClick={goHome}
+            onKeyDown={handleHomeKey}
+            className="khoj-tap flex items-center gap-2.5 rounded-lg px-1.5 py-1 -mx-1.5"
+          >
             <KhojMark size={38} />
             <div>
-              <h1 style={{ fontFamily: displayFont, fontWeight: 700, color: C.textPrimary }} className="text-[19px] leading-none">{t.appName}</h1>
-              <p className="text-[10px] mt-0.5 uppercase" style={{ fontFamily: monoFont, letterSpacing: "0.5px", color: C.textMuted }}>{t.tagline}</p>
+              <h1 style={{ fontFamily: displayFont, fontWeight: 700, color: C.textPrimary }} className="text-[19px] md:text-[23px] lg:text-[26px] leading-none">{t.appName}</h1>
+              <p className="text-[10px] md:text-[11px] mt-0.5 uppercase" style={{ fontFamily: monoFont, letterSpacing: "0.5px", color: C.textMuted }}>{t.tagline}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setView("myPending")}
-              className="relative flex items-center gap-1.5 text-[11.5px] font-semibold px-3 h-8 rounded-full transition-colors"
+              className="khoj-tap relative flex items-center gap-1.5 text-[11.5px] font-semibold px-3 h-8 rounded-full transition-colors"
               style={{ background: "rgba(22,33,59,0.05)", border: `1px solid ${C.surfaceBorder}`, color: C.textPrimary }}
             >
               <Clock size={13} />
-              <span className="hidden xs:inline">{t.myPendingRequests}</span>
+              <span className="hidden sm:inline">{t.myPendingRequests}</span>
               {reports.some((r) => myReportIds.includes(r.id) && r.status === "pending") && (
                 <span className="w-1.5 h-1.5 rounded-full" style={{ background: C.amber }} />
               )}
             </button>
             <div className="relative" ref={notifRef}>
-              <button onClick={() => setNotifOpen((v) => !v)} className="relative w-8 h-8 rounded-full flex items-center justify-center transition-colors" style={{ background: "rgba(22,33,59,0.05)", border: `1px solid ${C.surfaceBorder}` }}>
+              <button onClick={() => setNotifOpen((v) => !v)} className="khoj-tap relative w-8 h-8 rounded-full flex items-center justify-center transition-colors" style={{ background: "rgba(22,33,59,0.05)", border: `1px solid ${C.surfaceBorder}` }}>
                 <Bell size={15} color={C.textPrimary} />
                 {notifications.length > 0 && <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full" style={{ background: C.rose, border: "2px solid #F0EEE6" }} />}
               </button>
@@ -2754,82 +3404,82 @@ export default function App() {
             <LangPicker lang={lang} setLang={setLang} />
           </div>
         </div>
+      </header>
 
-        {view === "board" && !loading && (
-          <div style={{ background: C.navy }}>
-            <div className="max-w-lg mx-auto px-5 py-4">
-              <h2 style={{ fontFamily: displayFont, fontWeight: 600, color: "#F7F5EE" }} className="text-[19px] leading-snug">
-                {t.heroHeadline}<br />{t.heroSubline}
-              </h2>
-              <p className="text-[11.5px] mt-1.5 leading-relaxed" style={{ color: "#B9BDC9" }}>
-                {activeCount > 0 ? `${activeCount} ${activeCount === 1 ? t.activeCases.replace(/s$/, "") : t.activeCases} ${t.heroSearching}` : t.heroSearching}
-              </p>
-              <button
-                onClick={() => setLocationPromptFor("report")}
-                className="mt-3 text-[12px] font-medium px-3.5 py-2 rounded"
-                style={{ background: C.amber, color: "#3A2B08", fontFamily: bodyFont }}
-              >
-                {t.report}
-              </button>
-            </div>
+      {view === "board" && !loading && (
+        <div style={{ background: C.navy }}>
+          <div className={`${SHELL} py-4 md:py-6 lg:py-8`}>
+            <h2 style={{ fontFamily: displayFont, fontWeight: 600, color: "#F7F5EE" }} className="text-[19px] md:text-[28px] lg:text-[34px] leading-snug">
+              {t.heroHeadline}<br />{t.heroSubline}
+            </h2>
+            <p className="text-[11.5px] md:text-[14px] lg:text-[15.5px] mt-1.5 md:mt-3 leading-relaxed" style={{ color: "#B9BDC9" }}>
+              {activeCount > 0 ? `${activeCount} ${activeCount === 1 ? t.activeCases.replace(/s$/, "") : t.activeCases} ${t.heroSearching}` : t.heroSearching}
+            </p>
+            <button
+              onClick={() => setLocationPromptFor("report")}
+              className="khoj-tap mt-3 md:mt-5 text-[12px] md:text-[14px] font-medium px-3.5 md:px-6 py-2 md:py-2.5 rounded"
+              style={{ background: C.amber, color: "#3A2B08", fontFamily: bodyFont }}
+            >
+              {t.report}
+            </button>
           </div>
-        )}
+        </div>
+      )}
 
-        {view === "board" && !loading && (
-          <div className="flex items-center gap-4 px-5 py-2" style={{ background: C.bgTo, borderBottom: `1px solid ${C.surfaceBorder}` }}>
-            <div className="max-w-lg mx-auto w-full flex items-center gap-4">
-              <a href="tel:15" className="flex items-center gap-1.5" style={{ color: C.rose }}>
-                <Shield size={13} />
-                <span className="text-[11.5px]" style={{ fontFamily: monoFont, color: C.textPrimary }}>{t.callPolice} 15</span>
-              </a>
-              <div className="w-px h-3.5" style={{ background: C.surfaceBorder }} />
-              <a href="tel:1122" className="flex items-center gap-1.5" style={{ color: C.rose }}>
-                <Siren size={13} />
-                <span className="text-[11.5px]" style={{ fontFamily: monoFont, color: C.textPrimary }}>{t.callAmbulance} 1122</span>
-              </a>
-            </div>
+      {view === "board" && !loading && (
+        <div className="py-2 md:py-2.5" style={{ background: C.bgTo, borderBottom: `1px solid ${C.surfaceBorder}` }}>
+          <div className={`${SHELL} flex items-center gap-4`}>
+            <a href="tel:15" className="khoj-tap-text flex items-center gap-1.5" style={{ color: C.rose }}>
+              <Shield size={13} />
+              <span className="text-[11.5px] md:text-[13px]" style={{ fontFamily: monoFont, color: C.textPrimary }}>{t.callPolice} 15</span>
+            </a>
+            <div className="w-px h-3.5" style={{ background: C.surfaceBorder }} />
+            <a href="tel:1122" className="khoj-tap-text flex items-center gap-1.5" style={{ color: C.rose }}>
+              <Siren size={13} />
+              <span className="text-[11.5px] md:text-[13px]" style={{ fontFamily: monoFont, color: C.textPrimary }}>{t.callAmbulance} 1122</span>
+            </a>
           </div>
-        )}
+        </div>
+      )}
 
-        {view === "board" && !loading && (
-          <div className="flex" style={{ borderBottom: `1px solid ${C.surfaceBorder}` }}>
-            <div className="max-w-lg mx-auto w-full flex">
-              <button onClick={() => setFilter("missing")} className="flex-1 py-2.5 text-center transition-colors" style={{ borderRight: `1px solid ${C.surfaceBorder}`, background: filter === "missing" ? "rgba(163,32,32,0.07)" : "transparent" }}>
-                <div style={{ fontFamily: monoFont, fontWeight: 600, fontSize: "16px", color: C.rose }}>{activeCount}</div>
-                <div className="text-[9.5px] uppercase" style={{ color: C.textMuted, letterSpacing: "0.4px" }}>{t.activeCases}</div>
-              </button>
-              <button onClick={() => setFilter("found")} className="flex-1 py-2.5 text-center transition-colors" style={{ borderRight: `1px solid ${C.surfaceBorder}`, background: filter === "found" ? "rgba(63,107,74,0.07)" : "transparent" }}>
-                <div style={{ fontFamily: monoFont, fontWeight: 600, fontSize: "16px", color: C.emerald }}>{foundCount}</div>
-                <div className="text-[9.5px] uppercase" style={{ color: C.textMuted, letterSpacing: "0.4px" }}>{t.reunited}</div>
-              </button>
-              <button onClick={() => setFilter("all")} className="flex-1 py-2.5 text-center transition-colors" style={{ background: filter === "all" ? "rgba(22,33,59,0.05)" : "transparent" }}>
-                <div style={{ fontFamily: monoFont, fontWeight: 600, fontSize: "16px", color: C.textPrimary }}>{reports.length}</div>
-                <div className="text-[9.5px] uppercase" style={{ color: C.textMuted, letterSpacing: "0.4px" }}>{t.totalCases}</div>
-              </button>
-            </div>
+      {view === "board" && !loading && (
+        <div style={{ borderBottom: `1px solid ${C.surfaceBorder}` }}>
+          <div className={`${SHELL} flex`}>
+            <button onClick={() => setFilter("missing")} className="khoj-tap flex-1 py-2.5 md:py-4 text-center transition-colors" style={{ borderRight: `1px solid ${C.surfaceBorder}`, background: filter === "missing" ? "rgba(163,32,32,0.07)" : "transparent" }}>
+              <div className="text-[16px] md:text-[22px] lg:text-[26px] leading-tight" style={{ fontFamily: monoFont, fontWeight: 600, color: C.rose }}>{activeCount}</div>
+              <div className="text-[9.5px] md:text-[11px] uppercase" style={{ color: C.textMuted, letterSpacing: "0.4px" }}>{t.activeCases}</div>
+            </button>
+            <button onClick={() => setFilter("found")} className="khoj-tap flex-1 py-2.5 md:py-4 text-center transition-colors" style={{ borderRight: `1px solid ${C.surfaceBorder}`, background: filter === "found" ? "rgba(63,107,74,0.07)" : "transparent" }}>
+              <div className="text-[16px] md:text-[22px] lg:text-[26px] leading-tight" style={{ fontFamily: monoFont, fontWeight: 600, color: C.emerald }}>{foundCount}</div>
+              <div className="text-[9.5px] md:text-[11px] uppercase" style={{ color: C.textMuted, letterSpacing: "0.4px" }}>{t.reunited}</div>
+            </button>
+            <button onClick={() => setFilter("all")} className="khoj-tap flex-1 py-2.5 md:py-4 text-center transition-colors" style={{ background: filter === "all" ? "rgba(22,33,59,0.05)" : "transparent" }}>
+              <div className="text-[16px] md:text-[22px] lg:text-[26px] leading-tight" style={{ fontFamily: monoFont, fontWeight: 600, color: C.textPrimary }}>{reports.length}</div>
+              <div className="text-[9.5px] md:text-[11px] uppercase" style={{ color: C.textMuted, letterSpacing: "0.4px" }}>{t.totalCases}</div>
+            </button>
           </div>
-        )}
+        </div>
+      )}
 
-        {view === "board" && !loading && (() => {
-          const recentReunited = reports
-            .filter((r) => r.status === "found")
-            .sort((a, b) => new Date(b.foundAt || b.createdAt) - new Date(a.foundAt || a.createdAt))[0];
-          if (!recentReunited) return null;
-          return (
-            <div style={{ background: "#EAF1EA", borderBottom: `1px solid #C7DAC9` }}>
-              <div className="max-w-lg mx-auto px-5 py-2.5 flex items-center gap-2.5">
-                <Heart size={17} color={C.emerald} className="shrink-0" fill={C.emerald} />
-                <div className="min-w-0">
-                  <div className="text-[11px] font-medium truncate" style={{ color: "#254A30" }}>
-                    {recentReunited.name}{recentReunited.age ? `, ${recentReunited.age},` : ""} {t.reunitedHighlight}{recentReunited.city ? ` ${recentReunited.city === "in" ? "" : "in " + recentReunited.city}` : ""}
-                  </div>
-                  <div className="text-[10px] mt-0.5" style={{ color: C.textMuted }}>{t.reunitedHighlightSub}</div>
+      {view === "board" && !loading && (() => {
+        const recentReunited = reports
+          .filter((r) => r.status === "found")
+          .sort((a, b) => new Date(b.foundAt || b.createdAt) - new Date(a.foundAt || a.createdAt))[0];
+        if (!recentReunited) return null;
+        return (
+          <div style={{ background: "#EAF1EA", borderBottom: `1px solid #C7DAC9` }}>
+            <div className={`${SHELL} py-2.5 md:py-3.5 flex items-center gap-2.5`}>
+              <Heart size={17} color={C.emerald} className="shrink-0" fill={C.emerald} />
+              <div className="min-w-0">
+                <div className="text-[11px] md:text-[13.5px] font-medium truncate" style={{ color: "#254A30" }}>
+                  {recentReunited.name}{recentReunited.age ? `, ${recentReunited.age},` : ""} {t.reunitedHighlight}{recentReunited.city ? ` ${recentReunited.city === "in" ? "" : "in " + recentReunited.city}` : ""}
                 </div>
+                <div className="text-[10px] md:text-[12px] mt-0.5" style={{ color: C.textMuted }}>{t.reunitedHighlightSub}</div>
               </div>
             </div>
-          );
-        })()}
-      </header>
+          </div>
+        );
+      })()}
 
       {toast && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 px-4 py-2.5 rounded-full text-[13px] font-semibold shadow-2xl flex items-center gap-1.5" style={{ background: C.textPrimary, color: "#F7F5EE" }}>
@@ -2842,6 +3492,8 @@ export default function App() {
           <Loader2 className="animate-spin mb-2" size={22} />
           <p className="text-[13px]">{t.loading}</p>
         </div>
+      ) : view === "resetPassword" ? (
+        <ResetPasswordView t={t} onDone={handleResetDone} />
       ) : view === "report" ? (
         <ReportForm onCancel={() => setView("board")} onSubmit={handleSubmitReport} t={t} />
       ) : view === "editReport" && editingReport ? (
@@ -2864,11 +3516,11 @@ export default function App() {
           isEdit
         />
       ) : view === "myPending" ? (
-        <div className="max-w-lg mx-auto px-5 pt-5 pb-20">
-          <button onClick={() => setView("board")} className="flex items-center gap-1.5 text-[13px] mb-4" style={{ color: C.textMuted }}>
+        <div className={`${SHELL} pt-5 md:pt-8 pb-20`}>
+          <button onClick={() => setView("board")} className="khoj-tap flex items-center gap-1.5 text-[13px] mb-4" style={{ color: C.textMuted }}>
             <ArrowLeft size={15} /> {t.back}
           </button>
-          <h2 style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }} className="text-2xl mb-4 flex items-center gap-2">
+          <h2 style={{ fontFamily: displayFont, fontWeight: 600, color: C.textPrimary }} className="text-2xl md:text-3xl mb-4 flex items-center gap-2">
             <Clock size={20} color={C.amber} /> {t.myPendingRequests}
           </h2>
           {(() => {
@@ -2877,7 +3529,7 @@ export default function App() {
               return <p className="text-[13.5px]" style={{ color: C.textFaint }}>{t.myPendingEmptyNew}</p>;
             }
             return (
-              <div className="grid grid-cols-2 gap-3.5">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 md:gap-5 lg:gap-6">
                 {myPending.map((r, i) => <NoticeCard key={r.id} report={r} sightingCount={sightingCountFor(r.id)} onOpen={(rep) => { setActiveReport(rep); setView("detail"); }} t={t} index={i} />)}
               </div>
             );
@@ -2902,7 +3554,7 @@ export default function App() {
           onToggleVerified={handleToggleVerified}
         />
       ) : (
-        <div className="max-w-lg mx-auto px-5 pt-5 relative">
+        <div className={`${SHELL} pt-5 md:pt-8 relative`}>
           {/* Background photo collage removed — cleaner paper-registry look */}
           <div className="flex gap-2 mb-2.5 overflow-x-auto relative z-10">
             <Pill active={filter === "missing"} onClick={() => setFilter("missing")} activeColor={C.rose}>{t.tabMissing}</Pill>
@@ -2913,13 +3565,13 @@ export default function App() {
               </Pill>
             )}
           </div>
-          <div className="flex items-center gap-2 mb-3 px-3.5 py-[7px] rounded-full relative z-10" style={{ background: "rgba(22,33,59,0.05)", border: `1px solid ${C.surfaceBorder}` }}>
+          <div className="flex items-center gap-2 mb-3 px-3.5 py-[7px] md:py-2.5 rounded-full relative z-10" style={{ background: "rgba(22,33,59,0.05)", border: `1px solid ${C.surfaceBorder}` }}>
             <Search size={13} color={C.textFaint} className="shrink-0" />
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t.searchByName}
-              className="bg-transparent outline-none text-[13px] w-full"
+              className="bg-transparent outline-none text-[13px] md:text-[15px] w-full"
               style={{ color: C.textPrimary }}
             />
           </div>
@@ -2930,7 +3582,7 @@ export default function App() {
             <select
               value={cityFilter}
               onChange={(e) => setCityFilter(e.target.value)}
-              className="flex-1 text-[12.5px] rounded-xl px-3 py-2 outline-none"
+              className="khoj-tap flex-1 text-[12.5px] md:text-[14px] rounded-xl px-3 py-2 md:py-2.5 outline-none"
               style={{ background: C.surface, border: `1px solid ${C.surfaceBorder}`, color: C.textPrimary }}
             >
               <option value="all">{t.allCities}</option>
@@ -2939,7 +3591,7 @@ export default function App() {
             <select
               value={genderFilter}
               onChange={(e) => setGenderFilter(e.target.value)}
-              className="flex-1 text-[12.5px] rounded-xl px-3 py-2 outline-none"
+              className="khoj-tap flex-1 text-[12.5px] md:text-[14px] rounded-xl px-3 py-2 md:py-2.5 outline-none"
               style={{ background: C.surface, border: `1px solid ${C.surfaceBorder}`, color: C.textPrimary }}
             >
               <option value="all">{t.allGenders}</option>
@@ -2954,11 +3606,11 @@ export default function App() {
               <div className="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center" style={{ background: C.surface, border: `1px solid ${C.surfaceBorder}` }}>
                 <Users size={24} color={C.textFaint} />
               </div>
-              <p className="text-[14px] mb-1" style={{ color: C.textMuted }}>{t.emptyTitle}</p>
-              <p className="text-[12.5px]" style={{ color: C.textFaint }}>{t.emptySub}</p>
+              <p className="text-[14px] md:text-[16px] mb-1" style={{ color: C.textMuted }}>{t.emptyTitle}</p>
+              <p className="text-[12.5px] md:text-[14px]" style={{ color: C.textFaint }}>{t.emptySub}</p>
             </div>
           ) : (
-            <div className="relative z-10 grid grid-cols-2 gap-3.5 pb-24">
+            <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 md:gap-5 lg:gap-6 pb-24">
               {filtered.map((r, i) => <NoticeCard key={r.id} report={r} sightingCount={sightingCountFor(r.id)} onOpen={openDetail} t={t} index={i} />)}
             </div>
           )}
@@ -2986,14 +3638,14 @@ export default function App() {
         />
       )}
 
-      <footer className="max-w-lg mx-auto px-5 pb-24 pt-4 text-center">
-        <p className="text-[10.5px] leading-relaxed mb-3" style={{ color: "#B4B2A9" }}>{t.footerNote}</p>
+      <footer className={`${SHELL} pb-24 pt-4 md:pt-8 text-center`}>
+        <p className="text-[10.5px] md:text-[12px] leading-relaxed mb-3" style={{ color: "#B4B2A9" }}>{t.footerNote}</p>
         {isAdmin ? (
-          <button onClick={handleAdminExit} className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full" style={{ background: "rgba(0,200,150,0.12)", color: C.emerald }}>
-            <Lock size={11} /> {t.adminModeOn} · {t.adminExit}
+          <button onClick={handleAdminExit} className="khoj-tap inline-flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full" style={{ background: "rgba(0,200,150,0.12)", color: C.emerald }}>
+            <LogOut size={11} /> {t.adminModeOn} · {t.adminSignOut}
           </button>
         ) : (
-          <button onClick={() => setShowAdminLogin(true)} className="inline-flex items-center gap-1 text-[10.5px]" style={{ color: "#B4B2A9" }}>
+          <button onClick={() => setShowAdminLogin(true)} className="khoj-tap inline-flex items-center gap-1 text-[10.5px]" style={{ color: "#B4B2A9" }}>
             <Lock size={10} /> {t.adminLogin}
           </button>
         )}
